@@ -7,7 +7,6 @@
 
 #include <iostream>
 
-
 // /* ************************************************************************** */
 
 // int main() {
@@ -58,6 +57,8 @@
 
 int main() {
   std::cout << "Lasd Libraries 2025" << std::endl;
+
+
   int scelta = -1;
   while(scelta != 0)
   {
@@ -69,7 +70,9 @@ int main() {
     std::cout << "1)Test del Professore " << std::endl;
     std::cout << "2)Test n°1" << std::endl;
     std::cout << "3)Test n°2" << std::endl;
-    //std::cout << "4)Test n°3" << std::endl;
+    std::cout << "4)Test n°3 SetLst e SetVec" << std::endl;
+    std::cout << "5)Test n°4 SetLst e SetVec Estesi" << std::endl;
+    std::cout << "6)Test n°5 Esercizio 1B" << std::endl;
 
 
     std::cout << "0)Exit" << std::endl;
@@ -82,7 +85,12 @@ int main() {
       mytest2();
     if(scelta == 3)
       personalLasdTest();
-
+     if(scelta == 4)
+      testSetVecAndSetLst();
+    if(scelta == 5)
+      testSetVecAndSetLst_Extended();
+    if(scelta == 6)
+      myTestSimpleExercise1B();
 }
 return 0;
 }

@@ -205,7 +205,7 @@ bool SetLst<Data>::Insert(Data&& val) {
 // Remove
 template <typename Data>
 bool SetLst<Data>::Remove(const Data& val) {
-  if (this->head == nullptr) return false;
+  if (this->head == nullptr) throw std::length_error("SetLst::Remove - Elemento non trovato (lista vuota).");
   if (this->head->element == val) {
     typename List<Data>::Node* tmp = this->head;
     this->head = this->head->next;
@@ -219,7 +219,7 @@ bool SetLst<Data>::Remove(const Data& val) {
   while (prev->next != nullptr && prev->next->element != val) {
     prev = prev->next;
   }
-  if (prev->next == nullptr) return false;
+  if (prev->next == nullptr) throw std::length_error("SetLst::Remove - Elemento non trovato.");;
   typename List<Data>::Node* target = prev->next;
   prev->next = target->next;
   if (target == this->tail) this->tail = prev;

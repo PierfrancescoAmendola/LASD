@@ -1,10 +1,11 @@
-
 // #include "..."
 
 #include <iostream>
 
 #include <functional>
-
+#include <climits> // Per INT_MIN e INT_MAX
+#include <string>       // std::string
+#include <stdexcept>
 
 #include "../container/container.hpp"
 #include "../container/testable.hpp"
@@ -13,12 +14,15 @@
 #include "../container/linear.hpp"
 #include "../container/traversable.hpp"
 
-
 #include "../vector/vector.hpp"
-
 #include "../list/list.hpp"
 
+#include "../set/lst/setlst.hpp"
+#include "../set/vec/setvec.hpp"
 
+
+using namespace std;
+using namespace lasd;
 /* ************************************************************************** */
 // typedef int T;
 // typedef char E;
@@ -47,6 +51,173 @@ E TraversableContainerTest::Fold(FoldFun<E> f, E acc) {
 // void mytest(){
     
 // }
+
+
+
+// Macro di supporto per i test
+#define RUN_TEST(desc, expr) \
+    do { \
+        bool result = (expr); \
+        cout << "[TEST] " << desc << ": " << (result ? "PASSED ✅" : "FAILED ❌") << endl; \
+        totalTests++; \
+        if (result) passedTests++; \
+    } while(0)
+
+//Funzione mySimpleTest
+void myStestSetInt(lasd::Set<int>& set, uint& testnum, uint& testerr) {
+    uint loctestnum = 0, loctesterr = 0;
+    int totalTests = 0, passedTests = 0;
+    try {
+        cout << endl << "Begin of My Set<int> Test" << endl;
+
+        // Test su set vuoto
+        RUN_TEST("Set should be empty initially", set.Empty());
+        RUN_TEST("Set size should be 0 initially", set.Size() == 0);
+
+        // Inserimento elementi
+        set.Insert(10);
+        set.Insert(5);
+        set.Insert(15);
+        set.Insert(3);
+        set.Insert(7);
+        set.Insert(12);
+        set.Insert(17);
+
+        RUN_TEST("Set size should be 7 after insertions", set.Size() == 7);
+        RUN_TEST("Set should contain 10", set.Exists(10));
+        RUN_TEST("Set should not contain 20", !set.Exists(20));
+
+        // Min e Max
+        RUN_TEST("Set minimum should be 3", set.Min() == 3);
+        RUN_TEST("Set maximum should be 17", set.Max() == 17);
+
+        // Rimozione
+        set.Remove(10);
+        RUN_TEST("Set should not contain 10 after removal", !set.Exists(10));
+        RUN_TEST("Set size should be 6 after removal", set.Size() == 6);
+
+        // Predecessor e Successor
+        RUN_TEST("Predecessor of 7 should be 5", set.Predecessor(7) == 5);
+        try {
+            set.Predecessor(3);
+            cout << "[TEST] Predecessor of 3: FAILED ❌ (No exception thrown)\n";
+        } catch (const std::exception&) {
+            cout << "[TEST] Predecessor of 3: PASSED ✅ (Exception thrown)\n";
+            loctestnum++;
+        }
+
+        RUN_TEST("Successor of 7 should be 12", set.Successor(7) == 12);
+        try {
+            set.Successor(17);
+            cout << "[TEST] Successor of 17: FAILED ❌ (No exception thrown)\n";
+        } catch (const std::exception&) {
+            cout << "[TEST] Successor of 17: PASSED ✅ (Exception thrown)\n";
+            loctestnum++;
+        }
+
+        // Rimozione Min e Max
+        set.RemoveMin();
+        RUN_TEST("Set minimum should be 5 after removing min", set.Min() == 5);
+        set.RemoveMax();
+        RUN_TEST("Set maximum should be 15 after removing max", set.Max() == 15);
+
+        // Clear
+        set.Clear();
+        RUN_TEST("Set should be empty after clearing", set.Empty());
+        RUN_TEST("Set size should be 0 after clearing", set.Size() == 0);
+
+        cout << "End of My Set<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+    } catch (...) {
+        loctestnum++;
+        loctesterr++;
+        cout << "Unmanaged error!" << endl;
+    }
+    testnum += loctestnum;
+    testerr += loctesterr;
+}
+
+void myStestSetDouble(lasd::Set<double>& set, uint& testnum, uint& testerr) {
+    uint loctestnum = 0, loctesterr = 0;
+    int totalTests = 0, passedTests = 0;
+    try {
+        cout << endl << "Begin of My Set<double> Test" << endl;
+
+        // Inserimento
+        set.Insert(1.5);
+        set.Insert(2.5);
+        set.Insert(0.5);
+        set.Insert(3.5);
+
+        RUN_TEST("Set minimum should be 0.5", set.Min() == 0.5);
+        RUN_TEST("Set maximum should be 3.5", set.Max() == 3.5);
+        RUN_TEST("Set should contain 1.5", set.Exists(1.5));
+        RUN_TEST("Set should not contain 1.6", !set.Exists(1.6));
+
+        cout << "End of My Set<double> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+    } catch (...) {
+        loctestnum++;
+        loctesterr++;
+        cout << "Unmanaged error!" << endl;
+    }
+    testnum += loctestnum;
+    testerr += loctesterr;
+}
+
+void myStestSetString(lasd::Set<string>& set, uint& testnum, uint& testerr) {
+    uint loctestnum = 0, loctesterr = 0;
+    int totalTests = 0, passedTests = 0;
+    try {
+        cout << endl << "Begin of My Set<string> Test" << endl;
+
+        // Inserimento
+        set.Insert("apple");
+        set.Insert("banana");
+        set.Insert("cherry");
+        set.Insert("date");
+
+        RUN_TEST("Set minimum should be 'apple'", set.Min() == "apple");
+        RUN_TEST("Set maximum should be 'date'", set.Max() == "date");
+        RUN_TEST("Set should contain 'banana'", set.Exists("banana"));
+        RUN_TEST("Set should not contain 'grape'", !set.Exists("grape"));
+
+        cout << "End of My Set<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+    } catch (...) {
+        loctestnum++;
+        loctesterr++;
+        cout << "Unmanaged error!" << endl;
+    }
+    testnum += loctestnum;
+    testerr += loctesterr;
+}
+void myTestSetOperations(uint& testnum, uint& testerr) {
+        int totalTests = 0, passedTests = 0;
+
+    uint loctestnum = 0, loctesterr = 0;
+    try {
+        cout << endl << "Begin of My Set Operations Test" << endl;
+
+        lasd::SetVec<int> setvec1;
+        lasd::SetVec<int> setvec2;
+
+        setvec1.Insert(10);
+        setvec1.Insert(20);
+        setvec1.Insert(30);
+
+        setvec2.Insert(30);
+        setvec2.Insert(20);
+        setvec2.Insert(10);
+
+        RUN_TEST("SetVec1 should be equal to SetVec2", setvec1 == setvec2);
+
+        cout << "End of My Set Operations Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+    } catch (...) {
+        loctestnum++;
+        loctesterr++;
+        cout << "Unmanaged error!" << endl;
+    }
+    testnum += loctestnum;
+    testerr += loctesterr;
+}
 
 bool Empty(const lasd::Container & vector){
     return vector.Empty();
@@ -162,7 +333,6 @@ void personalLasdTest()
     checked = Empty(vecCopy);
     corretto = (checked == 1) ? "Correct!" : "Error!";
     std::cout << "CopiaArray svuotata: " << checked << " - " << corretto << std::endl; 
-    
     
 
     //List
@@ -390,14 +560,7 @@ void personalLasdTest()
 
 
 
-// Macro di supporto per i test
-#define RUN_TEST(desc, expr) \
-    do { \
-        bool result = (expr); \
-        cout << "[TEST] " << desc << ": " << (result ? "PASSED ✅" : "FAILED ❌") << endl; \
-        totalTests++; \
-        if (result) passedTests++; \
-    } while(0)
+
 
 void  mytest2() {
     int totalTests = 0, passedTests = 0;
@@ -512,5 +675,256 @@ void  mytest2() {
         cout << "❌ Some tests failed. Check above for details.\n";
 
 
+}
+
+void testSetVecAndSetLst() {
+    int totalTests = 0, passedTests = 0;
+
+    cout << "\n==============================\n";
+    cout << "     Testing SetVec & SetLst\n";
+    cout << "==============================\n";
+
+    // Test SetVec
+    cout << "\n--- Testing SetVec ---\n";
+    lasd::SetVec<int> setVec;
+
+    RUN_TEST("SetVec should be empty initially", setVec.Empty());
+    RUN_TEST("SetVec size should be 0 initially", setVec.Size() == 0);
+
+    setVec.Insert(5);
+    RUN_TEST("SetVec size should be 1 after inserting 5", setVec.Size() == 1);
+    RUN_TEST("SetVec should contain 5", setVec.Exists(5));
+
+    setVec.Insert(10);
+    setVec.Insert(15);
+    RUN_TEST("SetVec size should be 3 after inserting 10 and 15", setVec.Size() == 3);
+    RUN_TEST("SetVec should contain 10", setVec.Exists(10));
+    RUN_TEST("SetVec should contain 15", setVec.Exists(15));
+
+    setVec.Remove(10);
+    RUN_TEST("SetVec size should be 2 after removing 10", setVec.Size() == 2);
+    RUN_TEST("SetVec should not contain 10", !setVec.Exists(10));
+
+    try {
+        setVec.Remove(20);
+        cout << "[TEST] Removing non-existent element (20): FAILED ❌ (No exception thrown)\n";
+    } catch (const std::exception& e) {
+        cout << "[TEST] Removing non-existent element (20): PASSED ✅ (Exception: " << e.what() << ")\n";
+        passedTests++;
+    }
+    totalTests++;
+
+    setVec.Clear();
+    RUN_TEST("SetVec should be empty after clearing", setVec.Empty());
+    RUN_TEST("SetVec size should be 0 after clearing", setVec.Size() == 0);
+
+    // Test SetLst
+    cout << "\n--- Testing SetLst ---\n";
+    lasd::SetLst<int> setLst;
+
+    RUN_TEST("SetLst should be empty initially", setLst.Empty());
+    RUN_TEST("SetLst size should be 0 initially", setLst.Size() == 0);
+
+    setLst.Insert(5);
+    RUN_TEST("SetLst size should be 1 after inserting 5", setLst.Size() == 1);
+    RUN_TEST("SetLst should contain 5", setLst.Exists(5));
+
+    setLst.Insert(10);
+    setLst.Insert(15);
+    RUN_TEST("SetLst size should be 3 after inserting 10 and 15", setLst.Size() == 3);
+    RUN_TEST("SetLst should contain 10", setLst.Exists(10));
+    RUN_TEST("SetLst should contain 15", setLst.Exists(15));
+
+    setLst.Remove(10);
+    RUN_TEST("SetLst size should be 2 after removing 10", setLst.Size() == 2);
+    RUN_TEST("SetLst should not contain 10", !setLst.Exists(10));
+
+    try {
+        setLst.Remove(20);
+        cout << "[TEST] Removing non-existent element (20): FAILED ❌ (No exception thrown)\n";
+    } catch (const std::exception& e) {
+        cout << "[TEST] Removing non-existent element (20): PASSED ✅ (Exception: " << e.what() << ")\n";
+        passedTests++;
+    }
+    totalTests++;
+
+    setLst.Clear();
+    RUN_TEST("SetLst should be empty after clearing", setLst.Empty());
+    RUN_TEST("SetLst size should be 0 after clearing", setLst.Size() == 0);
+
+    // Final Summary
+    cout << "\n==============================\n";
+    cout << "       Test Summary\n";
+    cout << "==============================\n";
+    cout << "Tests passed: " << passedTests << " / " << totalTests << "\n";
+    if (passedTests == totalTests)
+        cout << "✅ All tests passed!\n";
+    else
+        cout << "❌ Some tests failed. Check above for details.\n";
+}
+
+void testSetVecAndSetLst_Extended() {
+    int totalTests = 0, passedTests = 0;
+
+    cout << "\n==============================\n";
+    cout << "     Extended Testing SetVec & SetLst\n";
+    cout << "==============================\n";
+
+    // Test SetVec
+    cout << "\n--- Extended Testing SetVec ---\n";
+    lasd::SetVec<int> setVec;
+
+    // Inserimento di valori duplicati
+    setVec.Insert(1);
+    RUN_TEST("SetVec should contain 1", setVec.Exists(1));
+    setVec.Insert(1);
+    RUN_TEST("SetVec size should still be 1 after inserting duplicate", setVec.Size() == 1);
+
+    // Inserimento di valori estremi
+    setVec.Insert(INT_MIN);
+    setVec.Insert(INT_MAX);
+    RUN_TEST("SetVec should contain INT_MIN", setVec.Exists(INT_MIN));
+    RUN_TEST("SetVec should contain INT_MAX", setVec.Exists(INT_MAX));
+
+    // Inserimento di grandi quantità di dati
+    for (int i = 2; i <= 1000; ++i) {
+        setVec.Insert(i);
+    }
+    RUN_TEST("SetVec size should be 1003 after inserting 1000 elements", setVec.Size() == 1003);
+
+    // Rimozione di elementi esistenti
+    setVec.Remove(500);
+    RUN_TEST("SetVec should not contain 500 after removal", !setVec.Exists(500));
+    RUN_TEST("SetVec size should be 1002 after removing 500", setVec.Size() == 1002);
+
+    // Rimozione di elementi non esistenti
+    try {
+        setVec.Remove(2000);
+        cout << "[TEST] Removing non-existent element (2000): FAILED ❌ (No exception thrown)\n";
+    } catch (const std::exception& e) {
+        cout << "[TEST] Removing non-existent element (2000): PASSED ✅ (Exception: " << e.what() << ")\n";
+        passedTests++;
+    }
+    totalTests++;
+
+    // Test di stress: Inserimento e rimozione ripetuti
+    for (int i = 0; i < 10000; ++i) {
+        setVec.Insert(i);
+        setVec.Remove(i);
+    }
+    RUN_TEST("SetVec size should remain unchanged after stress test", setVec.Size() == 1002);
+
+    // Test di confronto
+    lasd::SetVec<int> setVec2;
+    setVec2.Insert(1);
+    setVec2.Insert(INT_MIN);
+    setVec2.Insert(INT_MAX);
+    RUN_TEST("SetVec should be equal to setVec2", setVec == setVec2);
+
+    // Test di svuotamento
+    setVec.Clear();
+    RUN_TEST("SetVec should be empty after clearing", setVec.Empty());
+    RUN_TEST("SetVec size should be 0 after clearing", setVec.Size() == 0);
+
+    // Test SetLst
+    cout << "\n--- Extended Testing SetLst ---\n";
+    lasd::SetLst<int> setLst;
+
+    // Inserimento di valori duplicati
+    setLst.Insert(1);
+    RUN_TEST("SetLst should contain 1", setLst.Exists(1));
+    setLst.Insert(1);
+    RUN_TEST("SetLst size should still be 1 after inserting duplicate", setLst.Size() == 1);
+
+    // Inserimento di valori estremi
+    setLst.Insert(INT_MIN);
+    setLst.Insert(INT_MAX);
+    RUN_TEST("SetLst should contain INT_MIN", setLst.Exists(INT_MIN));
+    RUN_TEST("SetLst should contain INT_MAX", setLst.Exists(INT_MAX));
+
+    // Inserimento di grandi quantità di dati
+    for (int i = 2; i <= 1000; ++i) {
+        setLst.Insert(i);
+    }
+    RUN_TEST("SetLst size should be 1003 after inserting 1000 elements", setLst.Size() == 1003);
+
+    // Rimozione di elementi esistenti
+    setLst.Remove(500);
+    RUN_TEST("SetLst should not contain 500 after removal", !setLst.Exists(500));
+    RUN_TEST("SetLst size should be 1002 after removing 500", setLst.Size() == 1002);
+
+    // Rimozione di elementi non esistenti
+    try {
+        setLst.Remove(2000);
+        cout << "[TEST] Removing non-existent element (2000): FAILED ❌ (No exception thrown)\n";
+    } catch (const std::exception& e) {
+        cout << "[TEST] Removing non-existent element (2000): PASSED ✅ (Exception: " << e.what() << ")\n";
+        passedTests++;
+    }
+    totalTests++;
+
+    // Test di stress: Inserimento e rimozione ripetuti
+    for (int i = 0; i < 10000; ++i) {
+        setLst.Insert(i);
+        setLst.Remove(i);
+    }
+    RUN_TEST("SetLst size should remain unchanged after stress test", setLst.Size() == 1002);
+
+    // Test di confronto
+    lasd::SetLst<int> setLst2;
+    setLst2.Insert(1);
+    setLst2.Insert(INT_MIN);
+    setLst2.Insert(INT_MAX);
+    RUN_TEST("SetLst should be equal to setLst2", setLst == setLst2);
+
+    // Test di svuotamento
+    setLst.Clear();
+    RUN_TEST("SetLst should be empty after clearing", setLst.Empty());
+    RUN_TEST("SetLst size should be 0 after clearing", setLst.Size() == 0);
+
+    // Final Summary
+    cout << "\n==============================\n";
+    cout << "       Extended Test Summary\n";
+    cout << "==============================\n";
+    cout << "Tests passed: " << passedTests << " / " << totalTests << "\n";
+    if (passedTests == totalTests)
+        cout << "✅ All tests passed!\n";
+    else
+        cout << "❌ Some tests failed. Check above for details.\n";
+}
+
+
+
+
+void myTestSimpleExercise1B() {
+    uint testnum = 0, testerr = 0;
+    try {
+        cout << endl << "Begin of My Exercise 1B Test" << endl;
+
+        // Set<int> con SetVec
+        lasd::SetVec<int> setvec;
+        myStestSetInt(setvec, testnum, testerr);
+
+        // Set<int> con SetLst
+        lasd::SetLst<int> setlst;
+        myStestSetInt(setlst, testnum, testerr);
+
+        // Set<double> con SetVec
+        lasd::SetVec<double> setvecd;
+        myStestSetDouble(setvecd, testnum, testerr);
+
+        // Set<string> con SetLst
+        lasd::SetLst<string> setlsts;
+        myStestSetString(setlsts, testnum, testerr);
+
+        // Operazioni avanzate
+        myTestSetOperations(testnum, testerr);
+
+        cout << "End of My Exercise 1B Test! (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
+    } catch (...) {
+        testnum++;
+        testerr++;
+        cout << endl << "Unmanaged error! " << endl;
+    }
 }
 
