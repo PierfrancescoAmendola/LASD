@@ -26,6 +26,10 @@ protected:
   // using Container::???;
    using Container::size;
    Vector<Data> vec;
+   unsigned long head= 0;
+
+
+   unsigned long CircularIndex(unsigned long i) const noexcept;
 
   // ...
 
