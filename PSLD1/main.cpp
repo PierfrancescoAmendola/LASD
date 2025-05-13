@@ -66,10 +66,10 @@ int main() {
     std::cout << "" << std::endl;
     std::cout << "Scegli il test con cui mettere alla prova il tuo codice: " << std::endl;
     std::cout << "" << std::endl;
-    std::cout << "1)Test Professore " << std::endl;
-    std::cout << "2)Test numero 1 mio" << std::endl;
-    std::cout << "3)Test numero 2 mio" << std::endl;
-    std::cout << "4)Test numero 3 mio" << std::endl;
+    std::cout << "1)Test del Professore " << std::endl;
+    std::cout << "2)Test n°1" << std::endl;
+    std::cout << "3)Test n°2" << std::endl;
+    std::cout << "4)Test n°3" << std::endl;
 
 
     std::cout << "0)Exit" << std::endl;

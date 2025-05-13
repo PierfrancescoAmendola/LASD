@@ -110,7 +110,7 @@ void personalLasdTest()
     corretto = (numero == 2) ? "Correct!" : "Error!";
     std::cout << "Indice 0 (Array[4] {2, 3, 1, 4}): " << numero << " - " << corretto << std::endl;
 
- vec[1] = 3;
+    vec[1] = 3;
     numero = Indice(vec, 1);
     corretto = (numero == 3) ? "Correct!" : "Error!";
     std::cout << "Indice 1 (Array[4] {2, 3, 1, 4}): " << numero << " - " << corretto << std::endl;

@@ -8,9 +8,9 @@ namespace lasd
 
 // Specific constructor (Node)
 template<typename Data>
-List<Data>::Node::Node(Data && dat) noexcept
+List<Data>::Node::Node(Data && dato) noexcept
 {
-    std::swap(element, dat);
+    std::swap(element, dato);
 }
 
 /* ************************************************************************** */
@@ -85,8 +85,8 @@ template<typename Data>
 List<Data>::List(const TraversableContainer<Data> & con)
 {
     con.Traverse(
-                 [this](const Data & dat) {
-                     InsertAtBack(dat);
+                 [this](const Data & dato) {
+                     InsertAtBack(dato);
                  }
                  );
 }
@@ -95,8 +95,8 @@ template<typename Data>
 List<Data>::List(MappableContainer<Data> && con)
 {
     con.Map(
-            [this](Data & dat) {
-                InsertAtBack(std::move(dat));
+            [this](Data & dato) {
+                InsertAtBack(std::move(dato));
             }
             );
 }
