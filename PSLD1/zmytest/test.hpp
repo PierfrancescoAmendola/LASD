@@ -6,9 +6,10 @@
 
 #include <string>
 
-void mytest();
-void mytest2();
-void personalLasdTest();
+void personalLasdTest(); //test numero 1
+//void mytest(); //test numero 
+void mytest2(); //test numero 2
+
 
 
 /* ************************************************************************** */

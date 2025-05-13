@@ -69,18 +69,18 @@ int main() {
     std::cout << "1)Test del Professore " << std::endl;
     std::cout << "2)Test n°1" << std::endl;
     std::cout << "3)Test n°2" << std::endl;
-    std::cout << "4)Test n°3" << std::endl;
+    //std::cout << "4)Test n°3" << std::endl;
 
 
     std::cout << "0)Exit" << std::endl;
     std::cin  >> scelta;
     if(scelta == 1)
       lasdtest();
+    //if(scelta == 2)
+      //mytest();
     if(scelta == 2)
-      mytest();
-    if(scelta == 3)
       mytest2();
-    if(scelta == 4)
+    if(scelta == 3)
       personalLasdTest();
 
 }
