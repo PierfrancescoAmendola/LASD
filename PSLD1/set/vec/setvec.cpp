@@ -304,6 +304,7 @@ bool SetVec<Data>::Remove(const Data& valore) {
         }
     }
     // Lancia un'eccezione se l'elemento non viene trovato
+    return false; // Non lanciare un'eccezione, ma restituisci false
     throw std::length_error("Elemento non trovato nel SetVec.");
 }
 

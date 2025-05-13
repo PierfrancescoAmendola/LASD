@@ -59,14 +59,13 @@ E TraversableContainerTest::Fold(FoldFun<E> f, E acc) {
     do { \
         bool result = (expr); \
         cout << "[TEST] " << desc << ": " << (result ? "PASSED ✅" : "FAILED ❌") << endl; \
-        totalTests++; \
-        if (result) passedTests++; \
+        loctestnum++; \
+        if (!result) loctesterr++; \
     } while(0)
 
 //Funzione mySimpleTest
 void myStestSetInt(lasd::Set<int>& set, uint& testnum, uint& testerr) {
     uint loctestnum = 0, loctesterr = 0;
-    int totalTests = 0, passedTests = 0;
     try {
         cout << endl << "Begin of My Set<int> Test" << endl;
 
@@ -138,7 +137,6 @@ void myStestSetInt(lasd::Set<int>& set, uint& testnum, uint& testerr) {
 
 void myStestSetDouble(lasd::Set<double>& set, uint& testnum, uint& testerr) {
     uint loctestnum = 0, loctesterr = 0;
-    int totalTests = 0, passedTests = 0;
     try {
         cout << endl << "Begin of My Set<double> Test" << endl;
 
@@ -165,7 +163,6 @@ void myStestSetDouble(lasd::Set<double>& set, uint& testnum, uint& testerr) {
 
 void myStestSetString(lasd::Set<string>& set, uint& testnum, uint& testerr) {
     uint loctestnum = 0, loctesterr = 0;
-    int totalTests = 0, passedTests = 0;
     try {
         cout << endl << "Begin of My Set<string> Test" << endl;
 
@@ -190,7 +187,6 @@ void myStestSetString(lasd::Set<string>& set, uint& testnum, uint& testerr) {
     testerr += loctesterr;
 }
 void myTestSetOperations(uint& testnum, uint& testerr) {
-        int totalTests = 0, passedTests = 0;
 
     uint loctestnum = 0, loctesterr = 0;
     try {
@@ -560,6 +556,14 @@ void personalLasdTest()
 
 
 
+// Macro di supporto per i test
+#define RUN_TEST(desc, expr) \
+    do { \
+        bool result = (expr); \
+        cout << "[TEST] " << desc << ": " << (result ? "PASSED ✅" : "FAILED ❌") << endl; \
+        totalTests++; \
+        if (result) passedTests++; \
+    } while(0)
 
 
 void  mytest2() {
@@ -766,9 +770,9 @@ void testSetVecAndSetLst() {
 void testSetVecAndSetLst_Extended() {
     int totalTests = 0, passedTests = 0;
 
-    cout << "\n==============================\n";
+    cout << "\n==========================================\n";
     cout << "     Extended Testing SetVec & SetLst\n";
-    cout << "==============================\n";
+    cout << "==========================================\n";
 
     // Test SetVec
     cout << "\n--- Extended Testing SetVec ---\n";

@@ -67,12 +67,12 @@ int main() {
     std::cout << "" << std::endl;
     std::cout << "Scegli il test con cui mettere alla prova il tuo codice: " << std::endl;
     std::cout << "" << std::endl;
-    std::cout << "1)Test del Professore " << std::endl;
-    std::cout << "2)Test n°1" << std::endl;
-    std::cout << "3)Test n°2" << std::endl;
-    std::cout << "4)Test n°3 SetLst e SetVec" << std::endl;
-    std::cout << "5)Test n°4 SetLst e SetVec Estesi" << std::endl;
-    std::cout << "6)Test n°5 Esercizio 1B" << std::endl;
+    std::cout << "1)Test n°1 SimpleTest del Professore " << std::endl;
+    std::cout << "2)Test n°2 Vector Test" << std::endl;
+    std::cout << "3)Test n°3 List Test & Vector Test" << std::endl;
+    std::cout << "4)Test n°4 SetLst e SetVec" << std::endl;
+    std::cout << "5)Test n°5 SetLst e SetVec Estesi" << std::endl;
+    std::cout << "6)Test n°6 TestMioEsercizio 1B" << std::endl;
 
 
     std::cout << "0)Exit" << std::endl;
