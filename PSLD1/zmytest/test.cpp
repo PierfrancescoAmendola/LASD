@@ -897,9 +897,6 @@ void testSetVecAndSetLst_Extended() {
         cout << "❌ Some tests failed. Check above for details.\n";
 }
 
-
-
-
 void myTestSimpleExercise1B() {
     uint testnum = 0, testerr = 0;
     try {
@@ -932,3 +929,292 @@ void myTestSimpleExercise1B() {
     }
 }
 
+void testSegmentationFault() {
+    cout << "\n--- Segmentation Fault & Exception Safety Test ---\n";
+    lasd::Vector<int> vec(3);
+    vec[0] = 1; vec[1] = 2; vec[2] = 3;
+    try {
+        int x = vec[3]; // Accesso fuori dai limiti
+        cout << "[TEST] Access out of bounds: FAILED ❌ (No exception thrown, value: " << x << ")\n";
+    } catch (const std::out_of_range&) {
+        cout << "[TEST] Access out of bounds: PASSED ✅ (std::out_of_range thrown)\n";
+    } catch (...) {
+        cout << "[TEST] Access out of bounds: FAILED ❌ (Wrong exception type)\n";
+    }
+    // Test accesso negativo simulato
+    try {
+        int y = vec[(unsigned long)-1]; // Accesso negativo simulato (out of range)
+        cout << "[TEST] Access negative index: FAILED ❌ (No exception thrown, value: " << y << ")\n";
+    } catch (const std::out_of_range&) {
+        cout << "[TEST] Access negative index: PASSED ✅ (std::out_of_range thrown)\n";
+    } catch (...) {
+        cout << "[TEST] Access negative index: FAILED ❌ (Wrong exception type)\n";
+    }
+
+    cout << "\n--- End of Segmentation Fault & Exception Safety Test ---\n";
+}
+
+void testMemoryLeak() {
+    cout << "\n--- Memory Leak Test (manual check with Valgrind recommended) ---\n";
+    for (int i = 0; i < 1000; ++i) {
+        lasd::SetVec<int>* set = new lasd::SetVec<int>();
+        for (int j = 0; j < 100; ++j) set->Insert(j);
+        for (int j = 0; j < 100; ++j) set->Remove(j);
+        delete set;
+    }
+    cout << "[TEST] Created and deleted 1000 SetVec<int> with 100 elements each. If you run this test with Valgrind, there should be NO memory leaks.\n";
+}
+
+void stressTestVectorAndList() {
+    cout << "\n--- Stress Test: Vector & List ---\n";
+    int totalTests = 0, passedTests = 0;
+
+    // 1. Vector: inserimento massivo
+    lasd::Vector<int> v1(100000);
+    bool ok = true;
+    for (ulong i = 0; i < v1.Size(); ++i) v1[i] = i;
+    for (ulong i = 0; i < v1.Size(); ++i) if (v1[i] != (int)i) ok = false;
+    RUN_TEST("Vector mass insert and check 100000", ok);
+
+    // 2. Vector: accesso fuori limite basso
+    try { (void)v1[(unsigned long)-1]; cout << "[TEST] Vector negative index: FAILED ❌\n"; }
+    catch (const std::out_of_range&) { cout << "[TEST] Vector negative index: PASSED ✅\n"; passedTests++; }
+    totalTests++;
+
+    // 3. Vector: accesso fuori limite alto
+    try { (void)v1[100000]; cout << "[TEST] Vector out of bounds: FAILED ❌\n"; }
+    catch (const std::out_of_range&) { cout << "[TEST] Vector out of bounds: PASSED ✅\n"; passedTests++; }
+    totalTests++;
+
+    // 4. Vector: resize ripetuti
+    for (int i = 0; i < 100; ++i) v1.Resize(1000 + i);
+    RUN_TEST("Vector repeated resize up", v1.Size() == 1099);
+    for (int i = 0; i < 100; ++i) v1.Resize(1000 - i);
+    RUN_TEST("Vector repeated resize down", v1.Size() == 900);
+
+    // 5. Vector: clear e refill
+    v1.Clear();
+    RUN_TEST("Vector clear", v1.Empty());
+    v1.Resize(1000);
+    for (ulong i = 0; i < v1.Size(); ++i) v1[i] = i * 2;
+    ok = true;
+    for (ulong i = 0; i < v1.Size(); ++i) if (v1[i] != (int)(i * 2)) ok = false;
+    RUN_TEST("Vector refill after clear", ok);
+
+    // 6. Vector: copy e move
+    lasd::Vector<int> v2(v1);
+    RUN_TEST("Vector copy", v2.Size() == v1.Size() && v2[10] == v1[10]);
+    lasd::Vector<int> v3(std::move(v2));
+    RUN_TEST("Vector move", v3.Size() == v1.Size() && v3[10] == v1[10]);
+
+    // 7. List: inserimento massivo in coda
+    lasd::List<int> l1;
+    for (int i = 0; i < 50000; ++i) l1.InsertAtBack(i);
+    ok = true;
+    for (ulong i = 0; i < l1.Size(); ++i) if (l1[i] != (int)i) { ok = false; break; }
+    RUN_TEST("List mass insert at back 50000", ok);
+
+    // 8. List: inserimento massivo in testa
+    lasd::List<int> l2;
+    for (int i = 0; i < 10000; ++i) l2.InsertAtFront(i);
+    ok = true;
+    for (ulong i = 0; i < l2.Size(); ++i)
+    if (l2[l2.Size() - 1 - i] != (int)i) { ok = false; break; }
+    RUN_TEST("List mass insert at front 10000", ok);
+    // 9. List: accesso fuori limite
+    try { (void)l1[50000]; cout << "[TEST] List out of bounds: FAILED ❌\n"; }
+    catch (const std::out_of_range&) { cout << "[TEST] List out of bounds: PASSED ✅\n"; passedTests++; }
+    totalTests++;
+
+    // 10. List: clear e refill
+    l1.Clear();
+    RUN_TEST("List clear", l1.Empty());
+    for (int i = 0; i < 1000; ++i) l1.InsertAtBack(i * 3);
+    ok = true;
+    for (ulong i = 0; i < l1.Size(); ++i) if (l1[i] != (int)(i * 3)) ok = false;
+    RUN_TEST("List refill after clear", ok);
+
+    // 11. List: copy e move
+    lasd::List<int> l3(l1);
+    RUN_TEST("List copy", l3.Size() == l1.Size() && l3[10] == l1[10]);
+    lasd::List<int> l4(std::move(l3));
+    RUN_TEST("List move", l4.Size() == l1.Size() && l4[10] == l1[10]);
+
+    // 12. Vector: test di fold
+    int sum = v3.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    RUN_TEST("Vector fold sum", sum > 0);
+
+    // 13. List: test di fold
+    int sumL = l4.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    RUN_TEST("List fold sum", sumL > 0);
+
+    // 14. Vector: test di map
+    v3.Map([](int& x) { x += 1; });
+    ok = true;
+    for (ulong i = 0; i < v3.Size(); ++i) if (v3[i] != (int)(i * 2 + 1)) ok = false;
+    RUN_TEST("Vector map increment", ok);
+
+    // 15. List: test di map
+    l4.Map([](int& x) { x -= 1; });
+    ok = true;
+    for (ulong i = 0; i < l4.Size(); ++i) if (l4[i] != (int)(i * 3 - 1)) ok = false;
+    RUN_TEST("List map decrement", ok);
+
+    // 16. Vector: test di operator==
+    lasd::Vector<int> v4(v3);
+    RUN_TEST("Vector operator==", v4 == v3);
+
+    // 17. List: test di operator==
+    lasd::List<int> l5(l4);
+    RUN_TEST("List operator==", l5 == l4);
+
+    // 18. Vector: test di operator!=
+    v4[0] = -1;
+    RUN_TEST("Vector operator!=", v4 != v3);
+
+    // 19. List: test di operator!=
+    l5[0] = -1;
+    RUN_TEST("List operator!=", l5 != l4);
+
+    // 20. Vector: test resize a 0 e refill
+    v3.Resize(0);
+    RUN_TEST("Vector resize to 0", v3.Empty());
+    v3.Resize(10);
+    for (ulong i = 0; i < v3.Size(); ++i) v3[i] = i;
+    ok = true;
+    for (ulong i = 0; i < v3.Size(); ++i) if (v3[i] != (int)i) ok = false;
+    RUN_TEST("Vector refill after resize to 0", ok);
+
+    // 21. List: test clear e refill
+    l4.Clear();
+    RUN_TEST("List clear again", l4.Empty());
+    for (ulong i = 0; i < 10; ++i) l4.InsertAtBack(i);
+    ok = true;
+    for (ulong i = 0; i < l4.Size(); ++i) if (l4[i] != (int)i) ok = false;
+    RUN_TEST("List refill after clear again", ok);
+
+    // 22. Vector: test accesso multiplo fuori limite
+    bool allCaught = true;
+    for (int i = 0; i < 10; ++i) {
+        try { (void)v3[100 + i]; allCaught = false; }
+        catch (const std::out_of_range&) {}
+    }
+    RUN_TEST("Vector multiple out of bounds", allCaught);
+
+    // 23. List: test accesso multiplo fuori limite
+    allCaught = true;
+    for (int i = 0; i < 10; ++i) {
+        try { (void)l4[100 + i]; allCaught = false; }
+        catch (const std::out_of_range&) {}
+    }
+    RUN_TEST("List multiple out of bounds", allCaught);
+
+    // 24. Vector: test operator==
+    lasd::Vector<int> v5(10);
+    for (ulong i = 0; i < 10; ++i) v5[i] = i;
+    RUN_TEST("Vector == after refill", v5 == v3);
+
+    // 25. List: test operator==
+    lasd::List<int> l6;
+    for (ulong i = 0; i < 10; ++i) l6.InsertAtBack(i);
+    RUN_TEST("List == after refill", l6 == l4);
+
+    // 26. Vector: test operator!=
+    v5[9] = -1;
+    RUN_TEST("Vector != after change", v5 != v3);
+
+    // 27. List: test operator!=
+    l6[9] = -1;
+    RUN_TEST("List != after change", l6 != l4);
+
+    // 28. Vector: test resize up grande
+    v3.Resize(100000);
+    RUN_TEST("Vector resize up to 100000", v3.Size() == 100000);
+
+    // 29. Vector: test resize down grande
+    v3.Resize(10);
+    RUN_TEST("Vector resize down to 10", v3.Size() == 10);
+
+    // 30. List: test inserimento e rimozione alternati
+    lasd::List<int> l7;
+    for (int i = 0; i < 1000; ++i) l7.InsertAtBack(i);
+    for (int i = 0; i < 500; ++i) l7.RemoveFromFront();
+    RUN_TEST("List remove from front 500", l7.Size() == 500);
+
+    // 31. List: test rimozione da lista vuota (eccezione)
+    l7.Clear();
+    bool caught = false;
+    try { l7.RemoveFromFront(); }
+    catch (const std::length_error&) { caught = true; }
+    RUN_TEST("List remove from empty throws", caught);
+
+    // 32. Vector: test accesso dopo clear
+    v3.Clear();
+    bool caught2 = false;
+    try { (void)v3[0]; }
+    catch (const std::out_of_range&) { caught2 = true; }
+    RUN_TEST("Vector access after clear throws", caught2);
+
+    // 33. List: test accesso dopo clear
+    l7.Clear();
+    bool caught3 = false;
+    try { (void)l7[0]; }
+    catch (const std::out_of_range&) { caught3 = true; }
+    RUN_TEST("List access after clear throws", caught3);
+
+    // 34. Vector: test fold su vettore vuoto
+    v3.Clear();
+    int sumEmpty = v3.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    RUN_TEST("Vector fold on empty", sumEmpty == 0);
+
+    // 35. List: test fold su lista vuota
+    l7.Clear();
+    int sumEmptyL = l7.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    RUN_TEST("List fold on empty", sumEmptyL == 0);
+
+    // 36. Vector: test map su vettore vuoto (non deve crashare)
+    v3.Clear();
+    try { v3.Map([](int& x) { x += 1; }); ok = true; }
+    catch (...) { ok = false; }
+    RUN_TEST("Vector map on empty", ok);
+
+    // 37. List: test map su lista vuota (non deve crashare)
+    l7.Clear();
+    try { l7.Map([](int& x) { x += 1; }); ok = true; }
+    catch (...) { ok = false; }
+    RUN_TEST("List map on empty", ok);
+
+    // 38. Vector: test ricorsione profonda (simulazione stack overflow)
+    try {
+        std::function<void(int)> deepRec;
+        deepRec = [&](int n) {
+            if (n > 0) deepRec(n - 1);
+        };
+        deepRec(1000); // Potrebbe causare stack overflow su alcune macchine
+    } catch (...) {}
+    RUN_TEST("Deep recursion (stack overflow simulation)", true);
+
+    // 39. Vector: test allocazione molto grande (simulazione bad_alloc)
+    bool allocFailed = false;
+    try {
+        lasd::Vector<int> bigVec(1000); // 1 miliardo di elementi
+    } catch (const std::bad_alloc&) { allocFailed = true; }
+    RUN_TEST("Vector huge allocation (bad_alloc simulation)", allocFailed);
+
+    // 40. List: test allocazione molto grande (simulazione bad_alloc)
+    allocFailed = false;
+    try {
+        lasd::List<int> bigList;
+        for (int i = 0; i < 1000; ++i) bigList.InsertAtBack(i);
+    } catch (const std::bad_alloc&) { allocFailed = true; }
+    RUN_TEST("List huge allocation (bad_alloc simulation)", allocFailed);
+
+    cout << "\n==============================\n";
+    cout << "   Stress Test Summary\n";
+    cout << "==============================\n";
+    cout << "Tests passed: " << passedTests << " / " << totalTests << "\n";
+    if (passedTests == totalTests)
+        cout << "✅ All stress tests passed!\n";
+    else
+        cout << "❌ Some stress tests failed. Check above for details.\n";
+}

@@ -73,6 +73,10 @@ int main() {
     std::cout << "4)Test n°4 SetLst e SetVec" << std::endl;
     std::cout << "5)Test n°5 SetLst e SetVec Estesi" << std::endl;
     std::cout << "6)Test n°6 TestMioEsercizio 1B" << std::endl;
+    std::cout << "7)Test n°7 testSegmentationFault"<<std::endl;
+    std::cout << "8)Test n°8 testMemoryLeak"<<std::endl;
+    std::cout << "9)Test n°9 stressTestVectorAndList"<<std::endl;
+
 
 
     std::cout << "0)Exit" << std::endl;
@@ -91,6 +95,12 @@ int main() {
       testSetVecAndSetLst_Extended();
     if(scelta == 6)
       myTestSimpleExercise1B();
+    if(scelta ==7)
+      testSegmentationFault();
+    if(scelta ==8)
+      testMemoryLeak();
+    if (scelta == 9)
+      stressTestVectorAndList();
 }
 return 0;
 }

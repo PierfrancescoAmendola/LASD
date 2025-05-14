@@ -12,6 +12,9 @@ void mytest2(); //test numero 2
 void testSetVecAndSetLst();
 void testSetVecAndSetLst_Extended();
 void myTestSimpleExercise1B();
+void testSegmentationFault();
+void testMemoryLeak();
+void stressTestVectorAndList();
 
 
 /* ************************************************************************** */
