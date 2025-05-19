@@ -63,17 +63,11 @@ inline bool List<Data>::Node::operator!=(const Node& nod) const noexcept
 /* ************************************************************************** */
 // Specific member functions (Node)
 template <typename Data>
-typename List<Data>::Node * List<Data>::Node::Clone(Node * tail)
-{
-    if(next == nullptr)
-    {
-        return tail;
-    } else
-    {
-        Node * node = new Node(element);
-        node -> next = next -> Clone(tail);
-        return node;
-    }
+typename List<Data>::Node* List<Data>::Node::Clone(Node* tailptr) {
+    if (!next) return tailptr;
+    Node* nuovo = new Node(element);
+    nuovo->next = next->Clone(tailptr);
+    return nuovo;
 }
 
 
@@ -84,36 +78,36 @@ typename List<Data>::Node * List<Data>::Node::Clone(Node * tail)
 template<typename Data>
 List<Data>::List(const TraversableContainer<Data> & con)
 {
-    con.Traverse(
-                 [this](const Data & dato) {
-                     InsertAtBack(dato);
-                 }
-                 );
+    con.Traverse([this](const Data & dato) {InsertAtBack(dato);});
 }
 
 template<typename Data>
 List<Data>::List(MappableContainer<Data> && con)
 {
-    con.Map(
-            [this](Data & dato) {
-                InsertAtBack(std::move(dato));
-            }
-            );
+    con.Map([this](Data & dato) {InsertAtBack(std::move(dato));});
 }
 
 /* ************************************************************************** */
 
 // Copy constructor (List)
-template<typename Data>
-List<Data>::List(const List<Data> & lst)
-{
-    if (lst.tail != nullptr)
-    {
-        tail = new Node(*lst.tail);
-        head = lst.head->Clone(tail);
-        size = lst.size;
+template <typename Data>
+List<Data>::List(const List<Data>& other) {
+    if (other.head) {
+        Node* curr = other.head;
+        head = new Node(curr->element);
+        Node* thisCurr = head;
+        curr = curr->next;
+        while (curr) 
+        {
+            thisCurr->next = new Node(curr->element);
+            thisCurr = thisCurr->next;
+            curr = curr->next;
+        }
+        tail = thisCurr;
+        size = other.size;
     }
 }
+
 
 // Move constructor (List)
 template<typename Data>
@@ -131,53 +125,30 @@ template<typename Data>
 List<Data>::~List()
 {
     delete head;
+    //delete shifter;
 }
 
 /* ************************************************************************** */
 
 // Copy assignment (List)
-template<typename Data>
-List<Data> & List<Data>::operator=(const List<Data> & lst)
-{
-    if (size <= lst.size)
-    {
-        if (tail == nullptr)
-        {
-            List<Data> * tmplst = new List<Data>(lst);
-            std::swap(*tmplst, *this);
-            delete tmplst;
-        } else
-        {
-            Node * ocur = lst.head;
-            for (Node * ncur = head; ncur != nullptr; ncur = ncur->next, ocur = ocur->next)
-            {
-                ncur->element = ocur->element;
+template <typename Data>
+List<Data>& List<Data>::operator=(const List<Data>& other) {
+    if (this != &other) {
+        Clear();
+        if (other.head) {
+            Node* curr = other.head;
+            head = new Node(curr->element);
+            Node* thisCurr = head;
+            curr = curr->next;
+            while (curr) {
+                thisCurr->next = new Node(curr->element);
+                thisCurr = thisCurr->next;
+                curr = curr->next;
             }
-            if (ocur != nullptr)
-            {
-                Node * newtail = new Node(*lst.tail);
-                tail->next = ocur->Clone(newtail);
-                tail = newtail;
-            }
-        }
-    } else
-    {
-        if (lst.tail == nullptr)
-        {
-            delete head;
-            head = tail = nullptr;
-        } else
-        {
-            Node * ncur = head;
-            for (Node * ocur = lst.head; ocur != nullptr; ocur = ocur->next, tail = ncur, ncur = ncur->next)
-            {
-                ncur->element = ocur->element;
-            }
-            delete ncur;
-            tail->next = nullptr;
+            tail = thisCurr;
+            size = other.size;
         }
     }
-    size = lst.size;
     return *this;
 }
 
@@ -196,54 +167,43 @@ List<Data> & List<Data>::operator=(List<Data> && lst) noexcept
 
 // Comparison operators (List)
 
-template<typename Data>
-inline bool List<Data>::operator==(const List<Data>& lst) const noexcept
-{
-    // Controllo rapido sulla dimensione
-    if (size != lst.size) {return false;}
-    
-    // Entrambe le liste sono vuote
-    if (head == nullptr && lst.head == nullptr){return true;}
-    
-    // Una lista è vuota e l'altra no
-    if (head == nullptr || lst.head == nullptr) {return false;}
-    
-    // Confronto ricorsivo dei nodi
-    return *head == *lst.head;
-}
-
-template<typename Data>
-inline bool List<Data>::operator!=(const List<Data>& lst) const noexcept
-{
-    if (*this == lst)
-    {
-        return false;
+template <typename Data>
+bool List<Data>::operator==(const List<Data>& other) const noexcept {
+    if (size != other.size) return false;
+    Node* a = head;
+    Node* b = other.head;
+    while (a && b) {
+        if (!(a->element == b->element)) return false;
+        a = a->next;
+        b = b->next;
     }
     return true;
+}
+
+template <typename Data>
+bool List<Data>::operator!=(const List<Data>& other) const noexcept {
+    return !(*this == other);
 }
 /* ************************************************************************** */
 
 // Specific member functions (List)
 template <typename Data>
-void List<Data>::InsertAtFront(const Data &dato)
+void List<Data>::InsertAtFront(const Data& dato) 
 {
-  Node *temp = new Node(dato);
-  temp->next = head;
-  head = temp;
-  if (tail == nullptr)
-    tail = head;
-  ++size;
+    Node* nuovo = new Node(dato);
+    nuovo->next = head;
+    head = nuovo;
+    if (!tail) tail = head;
+    ++size;
 }
 
 template <typename Data>
-void List<Data>::InsertAtFront(Data &&dato)
-{
-  Node *temp = new Node(std::move(dato));
-  temp->next = head;
-  head = temp;
-  if (tail == nullptr)
-    tail = head;
-  ++size;
+void List<Data>::InsertAtFront(Data&& dato) {
+    Node* nuovo = new Node(std::move(dato));
+    nuovo->next = head;
+    head = nuovo;
+    if (!tail) tail = head;
+    ++size;
 }
 
 template<typename Data>
@@ -555,12 +515,16 @@ inline void List<Data>::PostOrderTraverse(TraverseFun fun) const {
 
 // Specific member functions (List) (inherited from ClearableContainer)
 
-template<typename Data>
-void List<Data>::Clear()
-{
-  delete head;
-  head = tail = nullptr;
-  size = 0;
+template <typename Data>
+void List<Data>::Clear() {
+    while (head) {
+        Node* temp = head;
+        head = head->next;
+        temp->next = nullptr;
+        delete temp;
+    }
+    tail = nullptr;
+    size = 0;
 }
 
 /* ************************************************************************** */
@@ -606,7 +570,6 @@ void List<Data>::PostOrderMap(MapFun fun, Node * current)
 }
 
 /* ************************************************************************** */
-
 
 
 

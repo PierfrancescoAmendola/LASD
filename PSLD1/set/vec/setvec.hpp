@@ -83,27 +83,27 @@ public:
   // Specific member functions (inherited from OrderedDictionaryContainer)
 
   // type Min(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-     Data& Min() const override;
+     const Data& Min() const override;
   // type MinNRemove(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
      Data MinNRemove() override;
   // type RemoveMin(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
      void RemoveMin () override;
   
   // type Max(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-     Data& Max() const override;
+     const Data& Max() const override;
   // type MaxNRemove(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
      Data MaxNRemove() override;
   // type RemoveMax(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
      void  RemoveMax() override;
 
   // type Predecessor(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-     Data& Predecessor(const Data&) const override;
+     const Data& Predecessor(const Data&) const override;
   // type PredecessorNRemove(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
      Data PredecessorNRemove(const Data&)  override;
   // type RemovePredecessor(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
      void  RemovePredecessor(const Data&)  override ;
   // type Successor(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-     Data& Successor(const Data&)  const override;
+     const Data& Successor(const Data&)  const override;
 
   // type SuccessorNRemove(argument) specifiers; // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
      Data SuccessorNRemove(const Data&)  override;
@@ -150,12 +150,22 @@ protected:
   // Auxiliary functions, if necessary!
 
   void Resize(unsigned long) override;
+  std::pair<bool, unsigned long> BinarySearch(const Data&) const noexcept;
+  /* Utility: porta il buffer in forma lineare (head == 0) */
+  void Unwrap();
+  void Rewrap();
+  unsigned long ShiftHole(unsigned long ) noexcept;
+
 };
 
 /* ************************************************************************** */
+
+
 
 }
 
 #include "setvec.cpp"
 
 #endif
+
+

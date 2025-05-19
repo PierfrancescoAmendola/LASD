@@ -1,0 +1,627 @@
+
+//
+//  list.cpp
+//  Progetto LASD 2025
+//
+//  Created by Pierfrancesco on 30/04/25.
+//
+namespace lasd
+{
+
+    /* ************************************************************************** */
+
+    // ...
+
+    // Specific constructor (Node)
+    template <typename Data>
+    List<Data>::Node::Node(Data &&dato) noexcept
+    {
+        std::swap(element, dato);
+    }
+
+    /* ************************************************************************** */
+
+    // Move constructor (Node)
+    template <typename Data>
+    List<Data>::Node::Node(Node &&nod) noexcept
+    {
+        std::swap(element, nod.element);
+        std::swap(next, nod.next);
+    }
+
+    /* ************************************************************************** */
+
+    // Destructor (Node)
+    template <typename Data>
+    List<Data>::Node::~Node()
+    {
+        delete next;
+    }
+
+    /* ************************************************************************** */
+
+    // Comparison operators (Node)
+    template <typename Data>
+    bool List<Data>::Node::operator==(const Node &nod) const noexcept
+    {
+        if (element != nod.element)
+        {
+            return false;
+        }
+
+        bool thisNextNull = (next == nullptr);
+        bool otherNextNull = (nod.next == nullptr);
+
+        if (thisNextNull != otherNextNull)
+        {
+            return false;
+        }
+
+        if (!thisNextNull && !otherNextNull)
+        {
+            return (*next == *nod.next);
+        }
+
+        return true;
+    }
+
+    template <typename Data>
+    inline bool List<Data>::Node::operator!=(const Node &nod) const noexcept
+    {
+        if (*this == nod)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /* ************************************************************************** */
+    // Specific member functions (Node)
+    template <typename Data>
+    typename List<Data>::Node *List<Data>::Node::Clone(Node *tailptr)
+    {
+        if (!next)
+            return tailptr;
+        Node *nuovo = new Node(element);
+        nuovo->next = next->Clone(tailptr);
+        return nuovo;
+    }
+
+    /* ************************************************************************** */
+
+    // Specific constructors (List)
+    template <typename Data>
+    List<Data>::List(const TraversableContainer<Data> &con)
+    {
+        con.Traverse([this](const Data &dato)
+                     { InsertAtBack(dato); });
+    }
+
+    template <typename Data>
+    List<Data>::List(MappableContainer<Data> &&con)
+    {
+        con.Map([this](Data &dato)
+                { InsertAtBack(std::move(dato)); });
+    }
+
+    /* ************************************************************************** */
+
+    // Copy constructor (List)
+    template <typename Data>
+    List<Data>::List(const List<Data> &other)
+    {
+        if (other.head)
+        {
+            Node *curr = other.head;
+            head = new Node(curr->element);
+            Node *thisCurr = head;
+            curr = curr->next;
+            while (curr)
+            {
+                thisCurr->next = new Node(curr->element);
+                thisCurr = thisCurr->next;
+                curr = curr->next;
+            }
+            tail = thisCurr;
+            size = other.size;
+        }
+    }
+
+    // Move constructor (List)
+    template <typename Data>
+    List<Data>::List(List<Data> &&lst) noexcept
+    {
+        std::swap(head, lst.head);
+        std::swap(tail, lst.tail);
+        std::swap(size, lst.size);
+    }
+
+    /* ************************************************************************** */
+
+    // Destructor (List)
+    template <typename Data>
+    List<Data>::~List()
+    {
+        delete head;
+        // delete shifter;
+    }
+
+    /* ************************************************************************** */
+
+    // Copy assignment (List)
+    template <typename Data>
+    List<Data> &List<Data>::operator=(const List<Data> &other)
+    {
+        if (this != &other)
+        {
+            Clear();
+            if (other.head)
+            {
+                Node *curr = other.head;
+                head = new Node(curr->element);
+                Node *thisCurr = head;
+                curr = curr->next;
+                while (curr)
+                {
+                    thisCurr->next = new Node(curr->element);
+                    thisCurr = thisCurr->next;
+                    curr = curr->next;
+                }
+                tail = thisCurr;
+                size = other.size;
+            }
+        }
+        return *this;
+    }
+
+    // Move assignment (List)
+    template <typename Data>
+    List<Data> &List<Data>::operator=(List<Data> &&lst) noexcept
+    {
+        std::swap(head, lst.head);
+        std::swap(tail, lst.tail);
+        std::swap(size, lst.size);
+        return *this;
+    }
+
+    /* ************************************************************************** */
+
+    // Comparison operators (List)
+
+    template <typename Data>
+    bool List<Data>::operator==(const List<Data> &other) const noexcept
+    {
+        if (size != other.size)
+            return false;
+        Node *a = head;
+        Node *b = other.head;
+        while (a && b)
+        {
+            if (!(a->element == b->element))
+                return false;
+            a = a->next;
+            b = b->next;
+        }
+        return true;
+    }
+
+    template <typename Data>
+    bool List<Data>::operator!=(const List<Data> &other) const noexcept
+    {
+        return !(*this == other);
+    }
+    /* ************************************************************************** */
+
+    // Specific member functions (List)
+    template <typename Data>
+    void List<Data>::InsertAtFront(const Data &dato)
+    {
+        Node *nuovo = new Node(dato);
+        nuovo->next = head;
+        head = nuovo;
+        if (!tail)
+            tail = head;
+        ++size;
+    }
+
+    template <typename Data>
+    void List<Data>::InsertAtFront(Data &&dato)
+    {
+        Node *nuovo = new Node(std::move(dato));
+        nuovo->next = head;
+        head = nuovo;
+        if (!tail)
+            tail = head;
+        ++size;
+    }
+
+    template <typename Data>
+    void List<Data>::RemoveFromFront()
+    {
+        if (head == nullptr)
+        {
+            throw std::length_error("Access to an empty list.");
+        }
+
+        Node *toDelete = head;
+
+        // Controlla se c'è un solo nodo usando next invece di head/tail
+        if (head->next == nullptr)
+        {
+            tail = nullptr; // Resetta tail prima di head
+            head = nullptr;
+        }
+        else
+        {
+            head = head->next;
+        }
+
+        // Isola il nodo prima della cancellazione
+        toDelete->next = nullptr;
+        delete toDelete;
+
+        --size; // Spostato dopo la cancellazione per differenziare l'ordine
+    }
+
+    template <typename Data>
+    Data List<Data>::FrontNRemove()
+    {
+        if (head == nullptr)
+        {
+            throw std::length_error("Access to an empty list.");
+        }
+
+        Node *victim = head;
+        Data extracted_data = std::move(victim->element); // Estrazione anticipata
+
+        // Controllo elemento singolo tramite next invece di head/tail
+        if (victim->next == nullptr)
+
+        {
+            tail = nullptr; // Reset tail prima di head
+            head = nullptr;
+        }
+        else
+        {
+            head = victim->next;
+        }
+
+        // Isolamento e pulizia
+        victim->next = nullptr;
+        delete victim;
+        --size; // Decremento post-eliminazione
+
+        return extracted_data; // Return per move semantics
+    }
+
+    template <typename Data>
+    void List<Data>::InsertAtBack(const Data &dato)
+    {
+        Node *newNode = new Node(dato);
+        newNode->next = nullptr; // Esplicita che è l'ultimo nodo
+
+        if (head == nullptr)
+        {
+            head = newNode;
+        }
+        else
+        {
+            Node *current = head;
+            while (current->next != nullptr)
+            {
+                current = current->next;
+            }
+            current->next = newNode;
+        }
+
+        tail = newNode;
+        size++;
+    }
+
+    template <typename Data>
+    void List<Data>::InsertAtBack(Data &&dato)
+    {
+        Node *new_node = new Node(std::move(dato));
+
+        // Gestione caso lista vuota
+        if (head == nullptr)
+        {
+            head = tail = new_node;
+        }
+        // Gestione caso lista non vuota
+        else
+        {
+            tail->next = new_node;
+            tail = new_node;
+        }
+
+        size++;
+    }
+
+    template <typename Data>
+    void List<Data>::RemoveFromBack()
+    {
+        if (head == nullptr)
+        {
+            throw std::length_error("Access to an empty list.");
+        }
+
+        Node *toDelete = tail;
+
+        // Caso con un solo nodo
+        if (head == tail)
+        {
+            head = tail = nullptr;
+        }
+        // Caso con più nodi
+        else
+        {
+            // Trova il penultimo nodo
+            Node *prev = head;
+            while (prev->next != tail)
+            {
+                prev = prev->next;
+            }
+
+            prev->next = nullptr; // Isola l'ultimo nodo
+            tail = prev;          // Aggiorna tail al penultimo
+        }
+
+        // Isola e cancella il nodo
+        toDelete->next = nullptr;
+        delete toDelete;
+
+        --size;
+    }
+
+    template <typename Data>
+    Data List<Data>::BackNRemove()
+    {
+        if (head == nullptr)
+        {
+            throw std::length_error("Access to an empty list.");
+        }
+
+        Node *victim = tail;
+        Data extracted_data = std::move(victim->element); // Estrazione dati prima della cancellazione
+
+        // Caso con un solo nodo
+        if (head == tail)
+        {
+            head = tail = nullptr;
+        }
+        // Caso con più nodi
+        else
+        {
+            // Trova il penultimo nodo
+            Node *prev = head;
+            while (prev->next != tail)
+            {
+                prev = prev->next;
+            }
+
+            prev->next = nullptr; // Isola l'ultimo nodo
+            tail = prev;          // Aggiorna tail al penultimo
+        }
+
+        // Isolamento e pulizia
+        victim->next = nullptr;
+        delete victim;
+        --size;
+
+        return extracted_data; // Return per move semantics
+    }
+
+    // Specific member functions (inherited from MutableLinearContainer)
+
+    template <typename Data>
+    Data &List<Data>::operator[](const unsigned long i)
+    {
+        if (i < size)
+        {
+            Node *current = head;
+            for (unsigned long j = 0; j < i; j++, current = current->next)
+            {
+            }
+            return current->element;
+        }
+        else
+        {
+            throw std::out_of_range("Accesso all'indice " + std::to_string(i) + "ma la dimensione Lista = " + std::to_string(size));
+        }
+    }
+
+    template <typename Data>
+    Data &List<Data>::Front()
+    {
+        if (head != nullptr)
+        {
+            return head->element;
+        }
+        else
+        {
+            throw std::length_error("Accesso ad una lista vuota4");
+        }
+    }
+
+    template <typename Data>
+    Data &List<Data>::Back()
+    {
+        if (tail != nullptr)
+        {
+            return tail->element;
+        }
+        else
+        {
+            throw std::length_error("Accesso ad una lista vuota6");
+        }
+    }
+
+    /* ************************************************************************ */
+
+    // Specific member functions (inherited from LinearContainer)
+    template <typename Data>
+    const Data &List<Data>::operator[](const unsigned long i) const
+    {
+        if (i < size)
+        {
+            Node *current = head;
+            for (unsigned long j = 0; j < i; j++, current = current->next)
+            {
+            }
+            return current->element;
+        }
+        else
+        {
+            throw std::out_of_range("Accesso all'indice " + std::to_string(i) + "ma la dimensione Lista = " + std::to_string(size));
+        }
+    }
+
+    template <typename Data>
+    const Data &List<Data>::Front() const
+    {
+        if (head != nullptr)
+        {
+            return head->element;
+        }
+        else
+        {
+            throw std::length_error("Accesso ad una lista vuota");
+        }
+    }
+
+    template <typename Data>
+    const Data &List<Data>::Back() const
+    {
+        if (tail != nullptr)
+        {
+            return tail->element;
+        }
+        else
+        {
+            throw std::length_error("Accesso ad una lista vuota");
+        }
+    }
+
+    /* ************************************************************************ */
+
+    // Specific member function (inherited from MappableContainer)
+    template <typename Data>
+    inline void List<Data>::Map(MapFun fun)
+    {
+        PreOrderMap(fun, head);
+    }
+
+    /* ************************************************************************ */
+
+    // Specific member function (inherited from PreOrderMappableContainer)
+    template <typename Data>
+    inline void List<Data>::PreOrderMap(MapFun fun)
+    {
+        PreOrderMap(fun, head);
+    }
+    // Specific member functions (List) (inherited from PostOrderMappableContainer)
+
+    template <typename Data>
+    inline void List<Data>::PostOrderMap(MapFun fun)
+    {
+        PostOrderMap(fun, head);
+    }
+
+    /* ************************************************************************** */
+
+    // Specific member functions (List) (inherited from TraversableContainer)
+
+    template <typename Data>
+    inline void List<Data>::Traverse(TraverseFun fun) const
+    {
+        PreOrderTraverse(fun, head);
+    }
+
+    /* ************************************************************************** */
+
+    // Specific member functions (List) (inherited from PreOrderTraversableContainer)
+
+    template <typename Data>
+    inline void List<Data>::PreOrderTraverse(TraverseFun fun) const
+    {
+        PreOrderTraverse(fun, head);
+    }
+
+    /* ************************************************************************** */
+
+    // Specific member functions (List) (inherited from PostOrderTraversableContainer)
+
+    template <typename Data>
+    inline void List<Data>::PostOrderTraverse(TraverseFun fun) const
+    {
+        PostOrderTraverse(fun, head);
+    }
+
+    /* ************************************************************************** */
+
+    // Specific member functions (List) (inherited from ClearableContainer)
+
+    template <typename Data>
+    void List<Data>::Clear()
+    {
+        while (head)
+        {
+            Node *temp = head;
+            head = head->next;
+            temp->next = nullptr;
+            delete temp;
+        }
+        tail = nullptr;
+        size = 0;
+    }
+
+    /* ************************************************************************** */
+
+    // Auxiliary member functions (List) (for TraversableContainer)
+
+    template <typename Data>
+    void List<Data>::PreOrderTraverse(TraverseFun fun, const Node *current) const
+    {
+        //; inizializzazione vuota perchè già effettuata
+        for (; current != nullptr; current = current->next)
+        {
+            fun(current->element);
+        }
+    }
+
+    template <typename Data>
+    void List<Data>::PostOrderTraverse(TraverseFun fun, const Node *current) const
+    {
+        if (current != nullptr)
+        {
+            PostOrderTraverse(fun, current->next);
+            fun(current->element);
+        }
+    }
+
+    /* ************************************************************************** */
+    // Auxiliary member functions (List) (for MappableContainer)
+
+    template <typename Data>
+    void List<Data>::PreOrderMap(MapFun fun, Node *current)
+    {
+        for (; current != nullptr; current = current->next)
+        {
+            fun(current->element);
+        }
+    }
+
+    template <typename Data>
+    void List<Data>::PostOrderMap(MapFun fun, Node *current)
+    {
+        if (current != nullptr)
+        {
+            PostOrderMap(fun, current->next);
+            fun(current->element);
+        }
+    }
+
+    /* ************************************************************************** */
+
+}
