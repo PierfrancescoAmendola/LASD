@@ -842,6 +842,7 @@ void SetVec<Data>::Resize(unsigned long newSize) {
     head = newHead;
 }
 
+
 /* ************************************************************************** */
 
 }
