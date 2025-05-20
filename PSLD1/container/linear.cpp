@@ -37,6 +37,7 @@ bool LinearContainer<Data>::operator!=(const LinearContainer<Data>& diverso) con
 template <typename Data>
 const Data& LinearContainer<Data>::Front() const
 {
+    if (size == 0) throw std::length_error("Container is empty"); //Controlla se il container è vuoto
     return (*this)[0]; //Restituisce il primo elemento
 }
 
@@ -44,6 +45,7 @@ const Data& LinearContainer<Data>::Front() const
 template <typename Data>
 const Data& LinearContainer<Data>::Back() const
 {
+    if (size == 0) throw std::length_error("Container is empty"); //Controlla se il container è vuoto
     return (*this)[size - 1]; //Restituisce l'ultimo elemento
 }
 
@@ -77,12 +79,14 @@ inline void LinearContainer<Data>::PostOrderTraverse(TraverseFun fun) const
 template <typename Data>
 inline Data& MutableLinearContainer<Data>::Front()
 {
+    if (size == 0) throw std::length_error("Container is empty"); //Controlla se il container è vuoto
     return (*this)[0]; //Restituisce il primo elemento
 }
 
 template <typename Data>
 inline Data& MutableLinearContainer<Data>::Back()
 {
+    if (size == 0) throw std::length_error("Container is empty"); //Controlla se il container è vuoto
     return (*this)[size - 1]; //Restituisce l'ultimo elemento
 }
 
