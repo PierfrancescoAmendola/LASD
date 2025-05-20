@@ -28,6 +28,8 @@ protected:
    Vector<Data> vec;
    unsigned long head= 0;
 
+   unsigned long numelm=0;
+   Data *elements = nullptr;
 
    unsigned long CircularIndex(unsigned long i) const noexcept;
 
@@ -150,12 +152,13 @@ protected:
   // Auxiliary functions, if necessary!
 
   void Resize(unsigned long) override;
-  std::pair<bool, unsigned long> BinarySearch(const Data&) const noexcept;
-  /* Utility: porta il buffer in forma lineare (head == 0) */
-  void Unwrap();
-  void Rewrap();
-  unsigned long ShiftHole(unsigned long ) noexcept;
 
+   unsigned long BinarySearch(const Data&) const noexcept;
+   // void ShiftLeftToHead(unsigned long) noexcept;
+   // void ShiftRightToHead(unsigned long) noexcept;
+   // void ShiftRightToTail(unsigned long) noexcept;
+   // void CheckEmpty() const;
+   // unsigned long ToRelativeIndex(unsigned long) const noexcept;
 };
 
 /* ************************************************************************** */

@@ -123,8 +123,7 @@ namespace lasd
 
       for (unsigned long i = size; i > logicalIndex; i--)
       {
-        Vector<Data>::elements[physicalIndex(i)] =
-            Vector<Data>::elements[physicalIndex(i - 1)];
+        Vector<Data>::elements[physicalIndex(i)] = Vector<Data>::elements[physicalIndex(i - 1)];
       }
     }
 

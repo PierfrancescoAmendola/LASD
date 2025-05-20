@@ -410,19 +410,37 @@
 
 // }
 
+
 namespace lasd {
 
 /* ************************************************************************** */
 
-// Funzione ausiliaria per calcolare l'indice circolare
+/* Auxiliary function for circular indexing */
 template <typename Data>
 unsigned long SetVec<Data>::CircularIndex(unsigned long index) const noexcept {
     return (head + index) % vec.Size();
 }
 
-/* ************************************************************************** */
+/* Binary search to find insertion point (returns absolute index) */
+template <typename Data>
+unsigned long SetVec<Data>::BinarySearch(const Data& data) const noexcept  {
+    if (size == 0) {
+        return head;
+    }
+    unsigned long left = 0;
+    unsigned long right = size;
+    while (left < right) {
+        unsigned long mid = left + (right - left) / 2;
+        if (vec[(head + mid) % vec.Size()] < data) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return (head + left) % vec.Size();
+}
 
-// Default constructor
+/* Default constructor */
 template <typename Data>
 SetVec<Data>::SetVec() {
     vec.Resize(4); // Capacità iniziale arbitraria
@@ -430,7 +448,7 @@ SetVec<Data>::SetVec() {
     head = 0;
 }
 
-// Costruttore da TraversableContainer
+/* Specific constructors */
 template <typename Data>
 SetVec<Data>::SetVec(const TraversableContainer<Data>& container) : SetVec() {
     container.Traverse([this](const Data& dato) {
@@ -438,7 +456,6 @@ SetVec<Data>::SetVec(const TraversableContainer<Data>& container) : SetVec() {
     });
 }
 
-// Costruttore da MappableContainer (move)
 template <typename Data>
 SetVec<Data>::SetVec(MappableContainer<Data>& container) : SetVec() {
     container.Map([this](const Data& val) {
@@ -446,13 +463,13 @@ SetVec<Data>::SetVec(MappableContainer<Data>& container) : SetVec() {
     });
 }
 
-// Copy constructor
+/* Copy constructor */
 template <typename Data>
 SetVec<Data>::SetVec(const SetVec& other) : vec(other.vec), head(other.head) {
-    size = other.size; // Assegno size nel corpo del costruttore
+    size = other.size;
 }
 
-// Move constructor
+/* Move constructor */
 template <typename Data>
 SetVec<Data>::SetVec(SetVec&& other) noexcept {
     std::swap(vec, other.vec);
@@ -460,17 +477,13 @@ SetVec<Data>::SetVec(SetVec&& other) noexcept {
     std::swap(head, other.head);
 }
 
-/* ************************************************************************** */
-
-// Distruttore
+/* Destructor */
 template <typename Data>
 SetVec<Data>::~SetVec() {
     Clear();
 }
 
-/* ************************************************************************** */
-
-// Copy assignment
+/* Copy assignment */
 template <typename Data>
 SetVec<Data>& SetVec<Data>::operator=(const SetVec& other) {
     if (this != &other) {
@@ -482,7 +495,7 @@ SetVec<Data>& SetVec<Data>::operator=(const SetVec& other) {
     return *this;
 }
 
-// Move assignment
+/* Move assignment */
 template <typename Data>
 SetVec<Data>& SetVec<Data>::operator=(SetVec&& other) {
     if (this != &other) {
@@ -493,14 +506,12 @@ SetVec<Data>& SetVec<Data>::operator=(SetVec&& other) {
     return *this;
 }
 
-/* ************************************************************************** */
-
-// Comparison operators
+/* Comparison operators */
 template <typename Data>
 bool SetVec<Data>::operator==(const SetVec& other) const noexcept {
     if (size != other.size) return false;
     for (unsigned long i = 0; i < size; ++i) {
-        if (!other.Exists(vec[CircularIndex(i)])) return false;
+        if (vec[CircularIndex(i)] != other.vec[other.CircularIndex(i)]) return false;
     }
     return true;
 }
@@ -510,329 +521,327 @@ bool SetVec<Data>::operator!=(const SetVec& other) const noexcept {
     return !(*this == other);
 }
 
-/* ************************************************************************** */
-
-// Specific member functions (inherited from OrderedDictionaryContainer)
-
-// Min
-template<typename Data>
+/* Specific member functions (OrderedDictionaryContainer) */
+template <typename Data>
 const Data& SetVec<Data>::Min() const {
-  if (size == 0)
-    throw std::length_error("Min on empty set");
-  // perché il vettore è sempre ordinato
-  return const_cast<Data&>(vec[CircularIndex(0)]);
+    if (size == 0) throw std::length_error("Set is empty");
+    return vec[head];
 }
 
-
-
-// MinNRemove
 template <typename Data>
 Data SetVec<Data>::MinNRemove() {
-    const Data min = Min();
-    Data temp = min;
-    Remove(min);
-    return temp;
+    if (size == 0) throw std::length_error("Set is empty");
+    Data result = std::move(vec[head]);
+    head = (head + 1) % vec.Size();
+    --size;
+    return result;
 }
 
-// RemoveMin
 template <typename Data>
 void SetVec<Data>::RemoveMin() {
-    Remove(Min());
+    if (size == 0) throw std::length_error("Set is empty");
+    head = (head + 1) % vec.Size();
+    --size;
 }
 
-// Max
-template<typename Data>
+template <typename Data>
 const Data& SetVec<Data>::Max() const {
-  if (size == 0)
-    throw std::length_error("Max on empty set");
-  // ultimo elemento logico
-  return const_cast<Data&>(vec[CircularIndex(size - 1)]);
+    if (size == 0) throw std::length_error("Set is empty");
+    return vec[CircularIndex(size - 1)];
 }
 
-
-// MaxNRemove
 template <typename Data>
 Data SetVec<Data>::MaxNRemove() {
-    const Data max = Max();
-    Data temp = max;
-    Remove(max);
-    return temp;
+    if (size == 0) throw std::length_error("Set is empty");
+    Data result = std::move(vec[CircularIndex(size - 1)]);
+    --size;
+    return result;
 }
 
-// RemoveMax
 template <typename Data>
 void SetVec<Data>::RemoveMax() {
-    Remove(Max());
+    if (size == 0) throw std::length_error("Set is empty");
+    --size;
 }
-
-// Predecessor
-template<typename Data>
-const Data& SetVec<Data>::Predecessor(const Data& val) const {
-  if (size == 0)
-    throw std::length_error("Predecessor on empty set");
-
-  auto [found, pos] = BinarySearch(val);
-  // se l’hai trovato in pos == 0, non ha predecessore
-  // se non l’hai trovato, pos è il punto d’inserimento: il predecessore è in pos-1,
-  // ma se pos==0 allora non c’è
-  if (pos == 0)
-    throw std::length_error("Predecessor not found");
-
-  return const_cast<Data&>( vec[CircularIndex(pos - 1)] );
-}
-
-
-// PredecessorNRemove
-template <typename Data>
-Data SetVec<Data>::PredecessorNRemove(const Data& valore) {
-    const Data& pred = Predecessor(valore);
-    Data temp = pred;
-    Remove(pred);
-    return temp;
-}
-
-// RemovePredecessor
-template <typename Data>
-void SetVec<Data>::RemovePredecessor(const Data& valore) {
-    Remove(Predecessor(valore));
-}
-
-// Successor
-template<typename Data>
-const Data& SetVec<Data>::Successor(const Data& val) const {
-  if (size == 0)
-    throw std::length_error("Successor on empty set");
-
-  auto [found, pos] = BinarySearch(val);
-  // se trovato, il successore è in pos+1; altrimenti è in pos
-  unsigned long succPos = found ? pos + 1 : pos;
-  if (succPos >= size)
-    throw std::length_error("Successor not found");
-
-  return const_cast<Data&>( vec[CircularIndex(succPos)] );
-}
-
-// SuccessorNRemove
-template <typename Data>
-Data SetVec<Data>::SuccessorNRemove(const Data& valore) {
-    const Data& succ = Successor(valore);
-    Data temp = succ;
-    Remove(succ);
-    return temp;
-}
-
-// RemoveSuccessor
-template <typename Data>
-void SetVec<Data>::RemoveSuccessor(const Data& valore) {
-    Remove(Successor(valore));
-}
-
-/* ************************************************************************** */
-
-// Specific member functions (inherited from DictionaryContainer)
 
 template <typename Data>
-bool SetVec<Data>::Insert(const Data& valore) {
-  if (Exists(valore)) return false;
+const Data& SetVec<Data>::Predecessor(const Data& value) const {
+    if (size == 0) throw std::length_error("Set is empty");
 
-  // Ridimensiona se necessario (come prima)…
-  if (size == vec.Size()) {
-    Vector<Data> newVec(vec.Size() * 2);
-    for (unsigned long i = 0; i < size; ++i)
-      newVec[i] = std::move(vec[CircularIndex(i)]);
-    vec = std::move(newVec);
-    head = 0;
-  }
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
 
-  // Trova la posizione ordinata di inserimento
-  unsigned long pos = size;
-  for (unsigned long i = 0; i < size; ++i)
-    if (vec[CircularIndex(i)] > valore) { pos = i; break; }
+    if (pos == 0)
+        throw std::length_error("No predecessor found");
 
-  // Calcola quanti elementi spostare a sinistra o a destra
-  unsigned long distLeft  = pos;           // quante posizioni prima di pos
-  unsigned long distRight = size - pos;    // quante dopo
-
-  if (distRight <= distLeft) {
-    // SHIFT A DESTRA come prima, ma senza toccare head
-    for (unsigned long i = size; i > pos; --i)
-      vec[CircularIndex(i)] = std::move(vec[CircularIndex(i - 1)]);
-    vec[CircularIndex(pos)] = valore;
-  }
-  else {
-    // SHIFT A SINISTRA: sposto head indietro di 1 e incollo tutti tra 0 e pos-1
-    head = (head + vec.Size() - 1) % vec.Size();
-    for (unsigned long i = 0; i < pos; ++i)
-      vec[CircularIndex(i)] = std::move(vec[CircularIndex(i + 1)]);
-    vec[CircularIndex(pos)] = valore;
-  }
-
-  ++size;
-  return true;
+    return vec[CircularIndex(pos - 1)];
 }
 
 
 template <typename Data>
-bool SetVec<Data>::Insert(Data&& valore) {
-    if (Exists(valore)) return false;
+Data SetVec<Data>::PredecessorNRemove(const Data& value) {
+    if (size == 0) throw std::length_error("Set is empty");
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
+    if (pos == 0) throw std::length_error("No predecessor found");
+    pos--;
+    Data result = std::move(vec[CircularIndex(pos)]);
+    for (unsigned long i = pos; i < size - 1; ++i) {
+        vec[CircularIndex(i)] = std::move(vec[CircularIndex(i + 1)]);
+    }
+    --size;
+    return result;
+}
+
+template <typename Data>
+void SetVec<Data>::RemovePredecessor(const Data& value) {
+    if (size == 0) throw std::length_error("Set is empty");
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
+    if (pos == 0) throw std::length_error("No predecessor found");
+    pos--;
+    for (unsigned long i = pos; i < size - 1; ++i) {
+        vec[CircularIndex(i)] = std::move(vec[CircularIndex(i + 1)]);
+    }
+    --size;
+}
+
+template <typename Data>
+const Data& SetVec<Data>::Successor(const Data& value) const {
+    if (size == 0) throw std::length_error("Set is empty");
+
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
+
+    // Se il valore è uguale a quello trovato, il successore è il successivo
+    if (pos < size && vec[CircularIndex(pos)] == value) {
+        if (pos + 1 >= size)
+            throw std::length_error("No successor found");
+        return vec[CircularIndex(pos + 1)];
+    }
+
+    // Altrimenti il successore è il valore trovato in BinarySearch
+    if (pos >= size)
+        throw std::length_error("No successor found");
+    return vec[CircularIndex(pos)];
+}
+
+
+template <typename Data>
+Data SetVec<Data>::SuccessorNRemove(const Data& value) {
+    if (size == 0) throw std::length_error("Set is empty");
+
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
+
+    // Se il valore è presente, il successore è l'elemento successivo
+    if (pos < size && vec[CircularIndex(pos)] == value) {
+        pos++;
+    }
+
+    // Verifica se esiste un successore
+    if (pos >= size) throw std::length_error("No successor found");
+
+    // Rimuovi il successore
+    Data result = std::move(vec[CircularIndex(pos)]);
+
+    // Shift efficiente
+    if (pos <= size / 2) {
+        // Shift verso destra (verso head)
+        for (unsigned long i = pos; i > 0; --i) {
+            vec[CircularIndex(i)] = std::move(vec[CircularIndex(i - 1)]);
+        }
+        vec[head] = Data{}; // Pulisce la vecchia posizione di head
+        head = (head + 1) % vec.Size();
+    } else {
+        // Shift verso sinistra (verso tail)
+        for (unsigned long i = pos; i < size - 1; ++i) {
+            vec[CircularIndex(i)] = std::move(vec[CircularIndex(i + 1)]);
+        }
+    }
+
+    --size;
 
     // Ridimensiona se necessario
-    if (size == vec.Size()) {
-        Vector<Data> newVec(vec.Size() * 2);
-        for (unsigned long i = 0; i < size; ++i)
-            newVec[i] = std::move(vec[CircularIndex(i)]);
-        vec = std::move(newVec);
-        head = 0;
+    if (size < vec.Size() / 4 && vec.Size() > 10) {
+        Resize(vec.Size() / 2);
     }
 
-    // Trova la posizione ordinata di inserimento
-    unsigned long pos = size;
-    for (unsigned long i = 0; i < size; ++i) {
-        if (vec[CircularIndex(i)] > valore) { pos = i; break; }
+    return result;
+}
+
+/* RemoveSuccessor */
+template <typename Data>
+void SetVec<Data>::RemoveSuccessor(const Data& value) {
+    if (size == 0) throw std::length_error("Set is empty");
+
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
+
+    // Se il valore è presente, il successore è l'elemento successivo
+    if (pos < size && vec[CircularIndex(pos)] == value) {
+        pos++;
     }
 
-    // Calcola spostamenti
-    unsigned long distLeft  = pos;
-    unsigned long distRight = size - pos;
+    // Verifica se esiste un successore
+    if (pos >= size) throw std::length_error("No successor found");
 
-    if (distRight <= distLeft) {
-        // sposto a destra
-        for (unsigned long i = size; i > pos; --i)
+    // Shift efficiente
+    if (pos <= size / 2) {
+        // Shift verso destra (verso head)
+        for (unsigned long i = pos; i > 0; --i) {
             vec[CircularIndex(i)] = std::move(vec[CircularIndex(i - 1)]);
-        vec[CircularIndex(pos)] = std::move(valore);
-    }
-    else {
-        // sposto a sinistra ruotando head
-        head = (head + vec.Size() - 1) % vec.Size();
-        for (unsigned long i = 0; i < pos; ++i)
+        }
+        vec[head] = Data{}; // Pulisce la vecchia posizione di head
+        head = (head + 1) % vec.Size();
+    } else {
+        // Shift verso sinistra (verso tail)
+        for (unsigned long i = pos; i < size - 1; ++i) {
             vec[CircularIndex(i)] = std::move(vec[CircularIndex(i + 1)]);
-        vec[CircularIndex(pos)] = std::move(valore);
+        }
     }
 
+    --size;
+
+    // Ridimensiona se necessario
+    if (size < vec.Size() / 4 && vec.Size() > 10) {
+        Resize(vec.Size() / 2);
+    }
+}
+
+
+/* Specific member functions (DictionaryContainer) */
+template <typename Data>
+bool SetVec<Data>::Insert(const Data& value) {
+    if (size == vec.Size()) Resize(vec.Size() * 2);
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
+    if (pos > 0 && vec[CircularIndex(pos - 1)] == value) return false; // Duplicate
+
+    if (size == 0) {
+        vec[head] = value;
+        ++size;
+        return true;
+    }
+
+    if (pos <= size / 2) {
+        // Shift left towards head
+        head = (head == 0) ? vec.Size() - 1 : head - 1;
+        for (unsigned long i = 0; i < pos; ++i) {
+            vec[CircularIndex(i)] = std::move(vec[CircularIndex(i + 1)]);
+        }
+        vec[CircularIndex(pos)] = value;
+    } else {
+        // Shift right towards tail
+        for (unsigned long i = size; i > pos; --i) {
+            vec[CircularIndex(i)] = std::move(vec[CircularIndex(i - 1)]);
+        }
+        vec[CircularIndex(pos)] = value;
+    }
     ++size;
     return true;
 }
 
+template <typename Data>
+bool SetVec<Data>::Insert(Data&& value) {
+    if (size == vec.Size()) Resize(vec.Size() * 2);
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
+    if (pos > 0 && vec[CircularIndex(pos - 1)] == value) return false; // Duplicate
 
+    if (size == 0) {
+        vec[head] = std::move(value);
+        ++size;
+        return true;
+    }
 
+    if (pos <= size / 2) {
+        // Shift left towards head
+        head = (head == 0) ? vec.Size() - 1 : head - 1;
+        for (unsigned long i = 0; i < pos; ++i) {
+            vec[CircularIndex(i)] = std::move(vec[CircularIndex(i + 1)]);
+        }
+        vec[CircularIndex(pos)] = std::move(value);
+    } else {
+        // Shift right towards tail
+        for (unsigned long i = size; i > pos; --i) {
+            vec[CircularIndex(i)] = std::move(vec[CircularIndex(i - 1)]);
+        }
+        vec[CircularIndex(pos)] = std::move(value);
+    }
+    ++size;
+    return true;
+}
 
 template <typename Data>
-bool SetVec<Data>::Remove(const Data& valore) {
-  // Trova l’indice logico i
-  unsigned long i;
-  for (i = 0; i < size; ++i)
-    if (vec[CircularIndex(i)] == valore)
-      break;
-  if (i == size) return false;
+bool SetVec<Data>::Remove(const Data& value) {
+    if (size == 0) return false; // Nothing to remove
 
-  unsigned long distLeft  = i;           // spostare a sinistra di i
-  unsigned long distRight = size - 1 - i; // spostare a destra di (size-1-i)
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size(); // Correct calculation
 
-  if (distRight <= distLeft) {
-    // SHIFT A SINISTRA verso la posizione i
-    for (unsigned long j = i; j < size - 1; ++j)
-      vec[CircularIndex(j)] = std::move(vec[CircularIndex(j + 1)]);
-    // head non cambia
-  }
-  else {
-    // SHIFT A DESTRA: sposto head in avanti di 1, e copro il vuoto
-    head = (head + 1) % vec.Size();
-    for (long j = i; j > 0; --j)
-      vec[CircularIndex(j)] = std::move(vec[CircularIndex(j - 1)]);
-  }
+    // Check if the value is at the position
+    if (vec[CircularIndex(pos)] != value) return false;
 
-  --size;
-  // Normalizza head in modo che il primo elemento logico sia a index 0
-  head = CircularIndex(0);
-  return true;
+    // Shift elements depending on the position
+    if (pos <= size / 2) {
+        // Shift right towards head
+        for (unsigned long i = pos; i > 0; --i) {
+            vec[CircularIndex(i)] = std::move(vec[CircularIndex(i - 1)]);
+        }
+        vec[head] = Data{}; // Clear old head position
+        head = (head + 1) % vec.Size(); // Update head
+    } else {
+        // Shift left towards tail
+        for (unsigned long i = pos; i < size - 1; ++i) {
+            vec[CircularIndex(i)] = std::move(vec[CircularIndex(i + 1)]);
+        }
+    }
+    --size;
+
+    // Shrink the vector if necessary
+    if (size < vec.Size() / 4 && vec.Size() > 10) Resize(vec.Size() / 2);
+
+    return true;
 }
 
 
-
-/* ************************************************************************** */
-
-// Specific member functions (inherited from LinearContainer)
-
+/* Specific member functions (LinearContainer) */
 template <typename Data>
-const Data& SetVec<Data>::operator[](unsigned long i) const {
-    if (i >= size) throw std::out_of_range("Index out of range");
-    return vec[CircularIndex(i)];
+const Data& SetVec<Data>::operator[](unsigned long index) const {
+    if (index >= size) throw std::out_of_range("Index out of range");
+    return vec[CircularIndex(index)];
 }
 
-/* ************************************************************************** */
-
-// Specific member function (inherited from TestableContainer)
-
+/* Specific member function (TestableContainer) */
 template <typename Data>
-bool SetVec<Data>::Exists(const Data& valore) const noexcept {
-    auto [found, pos] = BinarySearch(valore);
-    return found;
+bool SetVec<Data>::Exists(const Data& value) const noexcept {
+    unsigned long abs_pos = BinarySearch(value);
+    unsigned long pos = (abs_pos - head + vec.Size()) % vec.Size();
+    return (pos < size && vec[CircularIndex(pos)] == value);
 }
 
-
-/* ************************************************************************** */
-
-// Specific member function (inherited from ClearableContainer)
-
+/* Specific member function (ClearableContainer) */
 template <typename Data>
 void SetVec<Data>::Clear() {
     vec.Clear();
-    vec.Resize(4); // Reimposta capacità iniziale
     size = 0;
     head = 0;
+    vec.Resize(4); // Coerente con il costruttore di default
 }
 
-/* ************************************************************************** */
-
-// Specific member function (inherited from ResizableContainer)
-
+/* Auxiliary function for resizing */
 template <typename Data>
 void SetVec<Data>::Resize(unsigned long newSize) {
-    if (newSize == 0) {
-        Clear();
-        return;
-    }
-    if (newSize < size) {
-        size = newSize; // Tronca gli elementi
-    }
     Vector<Data> newVec(newSize);
-    unsigned long copySize = std::min(size, newSize);
-    for (unsigned long i = 0; i < copySize; ++i) {
-        newVec[i] = std::move(vec[CircularIndex(i)]);
+    unsigned long newHead = 0;
+    for (unsigned long i = 0; i < size; ++i) {
+        newVec[newHead + i] = std::move(vec[CircularIndex(i)]);
     }
     vec = std::move(newVec);
-    head = 0;
-    size = copySize;
+    head = newHead;
 }
 
 /* ************************************************************************** */
-
-template <typename Data>
-std::pair<bool, unsigned long> SetVec<Data>::BinarySearch(const Data& valore) const noexcept{
-    if (size == 0) return {false, 0};
-
-    long left = 0;
-    long right = static_cast<long>(size) - 1;
-
-    while (left <= right) {
-        long mid = left + (right - left) / 2;
-        const Data& midVal = vec[CircularIndex(mid)];
-
-        if (midVal == valore) {
-            return {true, static_cast<unsigned long>(mid)};
-        }
-        else if (midVal < valore) {
-            left = mid + 1;
-        }
-        else {
-            right = mid - 1;
-        }
-    }
-
-    // Non trovato: left è la posizione dove si dovrebbe inserire
-    return {false, static_cast<unsigned long>(left)};
-}
-
-
 
 }

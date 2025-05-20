@@ -1,0 +1,1 @@
+g++.exe -g C:\Users\correra\Desktop\Salvatore\bluetooth\LASD\Lib1\main.cpp -o C:\Users\correra\Desktop\Salvatore\bluetooth\LASD\Lib1\main\main.exe
