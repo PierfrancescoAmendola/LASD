@@ -1,3 +1,10 @@
+//
+//  list.cpp
+//  Progetto LASD 2025
+//
+//  Created by Pierfrancesco on 30/04/25.
+//
+
 
 // namespace lasd
 // {
@@ -596,9 +603,14 @@ List<Data>::Node::Node(Node&& nod) noexcept {
 /* ************************************************************************** */
 
 // Destructor (Node)
+// template<typename Data>
+// List<Data>::Node::~Node() {
+//     delete next;
+// }
+
 template<typename Data>
 List<Data>::Node::~Node() {
-    delete next;
+    next = nullptr; // Prevent recursive deletion; List::DeleteList handles cleanup
 }
 
 /* ************************************************************************** */
