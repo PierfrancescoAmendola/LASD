@@ -77,45 +77,31 @@ int main()
     std::cout << "Scegli il test con cui mettere alla prova il tuo codice: " << std::endl;
     std::cout << "" << std::endl;
     std::cout << "1)Test n°1 SimpleTest del Professore " << std::endl;
-    std::cout << "2)Test n°2 Vector Test" << std::endl;
-    std::cout << "3)Test n°3 List Test & Vector Test" << std::endl;
-    std::cout << "4)Test n°4 SetLst e SetVec" << std::endl;
-    std::cout << "5)Test n°5 SetLst e SetVec Estesi" << std::endl;
-    std::cout << "6)Test n°6 TestMioEsercizio 1B" << std::endl;
-    std::cout << "7)Test n°7 testSegmentationFault" << std::endl;
-    std::cout << "8)Test n°8 testMarco" << std::endl;
-    std::cout << "9)Test n°9 stressTestVectorAndList" << std::endl;
-    std::cout << "10)Test n°10 mySetVecExtendedTests" << std::endl;
-    std::cout << "11)Test n°11 SetVec" << std::endl;
-    std::cout << "12)Test n°12 SetList" << std::endl;
+    std::cout << "3)Test n°2 List Test & Vector Test" << std::endl;
+    std::cout << "6)Test n°3 TestMioEsercizio 1B" << std::endl;
+    std::cout << "8)Test n°4 testMarcoSetVec" << std::endl;
+    std::cout << "9)Test n°5 stressTestVectorAndList" << std::endl;
+    std::cout << "10)Test n°6 mySetVecExtendedTests" << std::endl;
+    std::cout << "11)Test n°7 SetVec" << std::endl;
+    std::cout << "12)Test n°8 SetList" << std::endl;
 
     std::cout << "0)Exit" << std::endl;
     std::cin >> scelta;
     if (scelta == 1)
       lasdtest();
-    // if(scelta == 2)
-    // mytest();
     if (scelta == 2)
-      mytest2();
-    if (scelta == 3)
       personalLasdTest();
-    if (scelta == 4)
-      testSetVecAndSetLst();
-    if (scelta == 5)
-      testSetVecAndSetLst_Extended();
-    if (scelta == 6)
+    if (scelta == 3)
       myTestSimpleExercise1B();
-    if (scelta == 7)
-      testSegmentationFault();
-    if (scelta == 8)
+    if (scelta == 4)
       TestMarco();
-    if (scelta == 9)
+    if (scelta == 5)
       stressTestVectorAndList();
-    if (scelta == 10)
+    if (scelta == 6)
       mySetVecExtendedTests(testnum, testerr);
-    if (scelta == 11)
+    if (scelta == 7)
       testSetVec();
-    if (scelta == 12)
+    if (scelta == 8)
       testSetLst();
   }
   return 0;
