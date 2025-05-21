@@ -2,11 +2,12 @@
 
 #include <iostream>
 
+#include <cassert> //da eliminare perchè serve solo per assert
+
 #include <functional>
 #include <climits> // Per INT_MIN e INT_MAX
-#include <string>       // std::string
+#include <string>  // std::string
 #include <stdexcept>
-
 
 #include "../container/container.hpp"
 #include "../container/testable.hpp"
@@ -20,7 +21,6 @@
 
 #include "../set/lst/setlst.hpp"
 #include "../set/vec/setvec.hpp"
-
 
 using namespace std;
 using namespace lasd;
@@ -39,7 +39,7 @@ class TraversableContainerTest: virtual public lasd::TraversableContainer<T>
 {
 public:
     E Fold(FoldFun<E>, E);
-    
+
 };
 
 E TraversableContainerTest::Fold(FoldFun<E> f, E acc) {
@@ -50,25 +50,28 @@ E TraversableContainerTest::Fold(FoldFun<E> f, E acc) {
 
 */
 // void mytest(){
-    
+
 // }
 
-
-
 // Macro di supporto per i test
-#define RUN_TEST(desc, expr) \
-    do { \
-        bool result = (expr); \
+#define RUN_TEST(desc, expr)                                                               \
+    do                                                                                     \
+    {                                                                                      \
+        bool result = (expr);                                                              \
         cout << "[TEST] " << desc << ": " << (result ? "PASSED ✅" : "FAILED ❌") << endl; \
-        loctestnum++; \
-        if (!result) loctesterr++; \
-    } while(0)
+        loctestnum++;                                                                      \
+        if (!result)                                                                       \
+            loctesterr++;                                                                  \
+    } while (0)
 
-//Funzione mySimpleTest
-void myStestSetInt(lasd::Set<int>& set, uint& testnum, uint& testerr) {
+// Funzione mySimpleTest
+void myStestSetInt(lasd::Set<int> &set, uint &testnum, uint &testerr)
+{
     uint loctestnum = 0, loctesterr = 0;
-    try {
-        cout << endl << "Begin of My Set<int> Test" << endl;
+    try
+    {
+        cout << endl
+             << "Begin of My Set<int> Test" << endl;
 
         // Test su set vuoto
         RUN_TEST("Set should be empty initially", set.Empty());
@@ -98,19 +101,25 @@ void myStestSetInt(lasd::Set<int>& set, uint& testnum, uint& testerr) {
 
         // Predecessor e Successor
         RUN_TEST("Predecessor of 7 should be 5", set.Predecessor(7) == 5);
-        try {
+        try
+        {
             set.Predecessor(3);
             cout << "[TEST] Predecessor of 3: FAILED ❌ (No exception thrown)\n";
-        } catch (const std::exception&) {
+        }
+        catch (const std::exception &)
+        {
             cout << "[TEST] Predecessor of 3: PASSED ✅ (Exception thrown)\n";
             loctestnum++;
         }
 
         RUN_TEST("Successor of 7 should be 12", set.Successor(7) == 12);
-        try {
+        try
+        {
             set.Successor(17);
             cout << "[TEST] Successor of 17: FAILED ❌ (No exception thrown)\n";
-        } catch (const std::exception&) {
+        }
+        catch (const std::exception &)
+        {
             cout << "[TEST] Successor of 17: PASSED ✅ (Exception thrown)\n";
             loctestnum++;
         }
@@ -127,7 +136,9 @@ void myStestSetInt(lasd::Set<int>& set, uint& testnum, uint& testerr) {
         RUN_TEST("Set size should be 0 after clearing", set.Size() == 0);
 
         cout << "End of My Set<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
-    } catch (...) {
+    }
+    catch (...)
+    {
         loctestnum++;
         loctesterr++;
         cout << "Unmanaged error!" << endl;
@@ -136,10 +147,13 @@ void myStestSetInt(lasd::Set<int>& set, uint& testnum, uint& testerr) {
     testerr += loctesterr;
 }
 
-void myStestSetDouble(lasd::Set<double>& set, uint& testnum, uint& testerr) {
+void myStestSetDouble(lasd::Set<double> &set, uint &testnum, uint &testerr)
+{
     uint loctestnum = 0, loctesterr = 0;
-    try {
-        cout << endl << "Begin of My Set<double> Test" << endl;
+    try
+    {
+        cout << endl
+             << "Begin of My Set<double> Test" << endl;
 
         // Inserimento
         set.Insert(1.5);
@@ -153,7 +167,9 @@ void myStestSetDouble(lasd::Set<double>& set, uint& testnum, uint& testerr) {
         RUN_TEST("Set should not contain 1.6", !set.Exists(1.6));
 
         cout << "End of My Set<double> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
-    } catch (...) {
+    }
+    catch (...)
+    {
         loctestnum++;
         loctesterr++;
         cout << "Unmanaged error!" << endl;
@@ -162,10 +178,13 @@ void myStestSetDouble(lasd::Set<double>& set, uint& testnum, uint& testerr) {
     testerr += loctesterr;
 }
 
-void myStestSetString(lasd::Set<string>& set, uint& testnum, uint& testerr) {
+void myStestSetString(lasd::Set<string> &set, uint &testnum, uint &testerr)
+{
     uint loctestnum = 0, loctesterr = 0;
-    try {
-        cout << endl << "Begin of My Set<string> Test" << endl;
+    try
+    {
+        cout << endl
+             << "Begin of My Set<string> Test" << endl;
 
         // Inserimento
         set.Insert("apple");
@@ -179,7 +198,9 @@ void myStestSetString(lasd::Set<string>& set, uint& testnum, uint& testerr) {
         RUN_TEST("Set should not contain 'grape'", !set.Exists("grape"));
 
         cout << "End of My Set<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
-    } catch (...) {
+    }
+    catch (...)
+    {
         loctestnum++;
         loctesterr++;
         cout << "Unmanaged error!" << endl;
@@ -187,11 +208,14 @@ void myStestSetString(lasd::Set<string>& set, uint& testnum, uint& testerr) {
     testnum += loctestnum;
     testerr += loctesterr;
 }
-void myTestSetOperations(uint& testnum, uint& testerr) {
+void myTestSetOperations(uint &testnum, uint &testerr)
+{
 
     uint loctestnum = 0, loctesterr = 0;
-    try {
-        cout << endl << "Begin of My Set Operations Test" << endl;
+    try
+    {
+        cout << endl
+             << "Begin of My Set Operations Test" << endl;
 
         lasd::SetVec<int> setvec1;
         lasd::SetVec<int> setvec2;
@@ -207,7 +231,9 @@ void myTestSetOperations(uint& testnum, uint& testerr) {
         RUN_TEST("SetVec1 should be equal to SetVec2", setvec1 == setvec2);
 
         cout << "End of My Set Operations Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
-    } catch (...) {
+    }
+    catch (...)
+    {
         loctestnum++;
         loctesterr++;
         cout << "Unmanaged error!" << endl;
@@ -216,44 +242,53 @@ void myTestSetOperations(uint& testnum, uint& testerr) {
     testerr += loctesterr;
 }
 
-bool Empty(const lasd::Container & vector){
+bool Empty(const lasd::Container &vector)
+{
     return vector.Empty();
 }
 
-unsigned long Size(const lasd::Container & vector){
+unsigned long Size(const lasd::Container &vector)
+{
     return vector.Size();
 }
 
 template <typename Data>
-unsigned long Indice(const lasd::Vector<Data> & vector, int i){
+unsigned long Indice(const lasd::Vector<Data> &vector, int i)
+{
     return vector.operator[](i);
 }
 
 template <typename Data>
-unsigned long Primo(const lasd::Vector<Data> & vector){
+unsigned long Primo(const lasd::Vector<Data> &vector)
+{
     return vector.Front();
 }
 
 template <typename Data>
-unsigned long Ultimo(const lasd::Vector<Data> & vector){
+unsigned long Ultimo(const lasd::Vector<Data> &vector)
+{
     return vector.Back();
 }
 
 template <typename Data>
-unsigned long Indice(const lasd::List<Data> & list, int i){
+unsigned long Indice(const lasd::List<Data> &list, int i)
+{
     return list.operator[](i);
 }
 
-void personalLasdTest() 
+void personalLasdTest()
 {
     bool checked;
     unsigned long numero;
     std::string corretto;
 
-    std::cout << std::endl << "~*~#~*~ Personal LASD Test ~*~#~*~ " << std::endl;
-  
-    //Vector
-    std::cout << std::endl << "~~~~~ VECTOR TEST ~~~~~" << std::endl << std::endl;
+    std::cout << std::endl
+              << "~*~#~*~ Personal LASD Test ~*~#~*~ " << std::endl;
+
+    // Vector
+    std::cout << std::endl
+              << "~~~~~ VECTOR TEST ~~~~~" << std::endl
+              << std::endl;
 
     lasd::Vector<int> vec(10);
     checked = Empty(vec);
@@ -300,7 +335,7 @@ void personalLasdTest()
     numero = Ultimo(vec);
     corretto = (numero == 4) ? "Correct!" : "Error!";
     std::cout << "Ultimo elemento (Array[4] {2, 3, 1, 4}): " << numero << " - " << corretto << std::endl;
-    
+
     lasd::Vector<int> vecCopy = vec.operator=(vec);
     numero = Indice(vecCopy, 0);
     corretto = (numero == 2) ? "Correct!" : "Error!";
@@ -329,11 +364,13 @@ void personalLasdTest()
     vecCopy.Clear();
     checked = Empty(vecCopy);
     corretto = (checked == 1) ? "Correct!" : "Error!";
-    std::cout << "CopiaArray svuotata: " << checked << " - " << corretto << std::endl; 
-    
+    std::cout << "CopiaArray svuotata: " << checked << " - " << corretto << std::endl;
 
-    //List
-    std::cout << std::endl << std::endl << "~~~~~ LIST TEST ~~~~~" << std::endl << std::endl;
+    // List
+    std::cout << std::endl
+              << std::endl
+              << "~~~~~ LIST TEST ~~~~~" << std::endl
+              << std::endl;
 
     lasd::List<int> lst;
     checked = Empty(lst);
@@ -373,39 +410,47 @@ void personalLasdTest()
     checked = Empty(lst);
     corretto = (checked == 1) ? "Correct!" : "Error!";
     std::cout << "Lista svuotata: " << checked << " - " << corretto << std::endl;
-    
+
     lstCopy.Clear();
     checked = Empty(lstCopy);
     corretto = (checked == 1) ? "Correct!" : "Error!";
     std::cout << "CopiaLista svuotata: " << checked << " - " << corretto << std::endl;
 
-    try {
-    numero = lst.Front();
-    std::cout << "Front (Lista vuota): " << numero << " - " << corretto << std::endl;
-    } catch(const std::length_error& exc) {  // Modificato qui
-    std::cout << "Front (Lista vuota): Lista vuota" << std::endl;
-    } catch(const std::exception& exc) {     // Modificato anche qui
-    std::cout << std::endl << "Wrong exception: " << exc.what() << "!" << std::endl;
+    try
+    {
+        numero = lst.Front();
+        std::cout << "Front (Lista vuota): " << numero << " - " << corretto << std::endl;
+    }
+    catch (const std::length_error &exc)
+    { // Modificato qui
+        std::cout << "Front (Lista vuota): Lista vuota" << std::endl;
+    }
+    catch (const std::exception &exc)
+    { // Modificato anche qui
+        std::cout << std::endl
+                  << "Wrong exception: " << exc.what() << "!" << std::endl;
     }
 
-    try {
-    numero = lst.Back();
-    std::cout << "Back (Lista vuota): " << numero << " - " << corretto << std::endl;
-    } catch(const std::length_error& exc) {  // Modificato qui
-    std::cout << "Back (Lista vuota): Lista vuota" << std::endl;
-    } catch(const std::exception& exc) {     // Modificato anche qui
-    std::cout << std::endl << "Wrong exception: " << exc.what() << "!" << std::endl;
+    try
+    {
+        numero = lst.Back();
+        std::cout << "Back (Lista vuota): " << numero << " - " << corretto << std::endl;
+    }
+    catch (const std::length_error &exc)
+    { // Modificato qui
+        std::cout << "Back (Lista vuota): Lista vuota" << std::endl;
+    }
+    catch (const std::exception &exc)
+    { // Modificato anche qui
+        std::cout << std::endl
+                  << "Wrong exception: " << exc.what() << "!" << std::endl;
     }
 
-
-        
-    std::cout << std::endl << "Fine Personal LASD Test" << std::endl;
+    std::cout << std::endl
+              << "Fine Personal LASD Test" << std::endl;
 }
 
-
-
-
-// void mytest() 
+// void mytest()
 // {
 //   // ...
 //     cout << endl << "Welcome To My Tests:" << endl<<endl;
@@ -461,11 +506,10 @@ void personalLasdTest()
 //         lasd::Vector<string> vectString;
 //         cout << "vectString should be empty: " << vectString.Empty() << endl;
 //         cout << "vectString size should be 0: " << vectString.Size() << endl;
-        
-//         vectString.Resize(3);
-        
-//         cout << "vectString size should be 3: " << vectString.Size() << endl;
 
+//         vectString.Resize(3);
+
+//         cout << "vectString size should be 3: " << vectString.Size() << endl;
 
 //         cout << "First element of vectString (empty string): " << vectString.Front() << endl;
 
@@ -510,11 +554,10 @@ void personalLasdTest()
 //         lasd::SortableVector<float> vectFloat;
 //         cout << "vectFloat should be empty: " << vectFloat.Empty() << endl;
 //         cout << "vectFloat size should be 0: " << vectFloat.Size() << endl;
-        
-//         vectFloat.Resize(4);
-        
-//         cout << "vectFloat size should be 4: " << vectFloat.Size() << endl;
 
+//         vectFloat.Resize(4);
+
+//         cout << "vectFloat size should be 4: " << vectFloat.Size() << endl;
 
 //         lasd::SortableVector<float> vectCopyFloat(vectFloat);
 //         cout << "vectCopyFloat size should be 4: " << vectCopyFloat.Size() << endl;
@@ -555,19 +598,19 @@ void personalLasdTest()
 //         cout << "Product of elements in the vectFloat: " << product1Float << endl;
 // }
 
-
-
 // Macro di supporto per i test
-#define RUN_TEST(desc, expr) \
-    do { \
-        bool result = (expr); \
+#define RUN_TEST(desc, expr)                                                               \
+    do                                                                                     \
+    {                                                                                      \
+        bool result = (expr);                                                              \
         cout << "[TEST] " << desc << ": " << (result ? "PASSED ✅" : "FAILED ❌") << endl; \
-        totalTests++; \
-        if (result) passedTests++; \
-    } while(0)
+        totalTests++;                                                                      \
+        if (result)                                                                        \
+            passedTests++;                                                                 \
+    } while (0)
 
-
-void  mytest2() {
+void mytest2()
+{
     int totalTests = 0, passedTests = 0;
 
     cout << "\n==============================\n";
@@ -592,22 +635,27 @@ void  mytest2() {
     cout << "\nCreating vector for fold/map test...\n";
     lasd::Vector<int> vectorForTest(5);
     cout << "Inserting values: 1, 2, 3, 4, 5\n";
-    for (int i = 0; i < 5; ++i) vectorForTest[i] = i + 1;
+    for (int i = 0; i < 5; ++i)
+        vectorForTest[i] = i + 1;
     RUN_TEST("2 should be in vector", vectorForTest.Exists(2));
     RUN_TEST("vector size should be 5", vectorForTest.Size() == 5);
 
     cout << "Folding with sum...\n";
-    int sum1 = vectorForTest.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    int sum1 = vectorForTest.Fold<int>([](const int &acc, const int &elem)
+                                       { return acc + elem; }, 0);
     cout << "Sum: " << sum1 << "\n";
 
     cout << "Folding with product...\n";
-    int prod1 = vectorForTest.Fold<int>([](const int& acc, const int& elem) { return acc * elem; }, 1);
+    int prod1 = vectorForTest.Fold<int>([](const int &acc, const int &elem)
+                                        { return acc * elem; }, 1);
     cout << "Product: " << prod1 << "\n";
 
     cout << "Mapping (doubling values)...\n";
-    vectorForTest.Map([](int& x) { x *= 2; });
+    vectorForTest.Map([](int &x)
+                      { x *= 2; });
     cout << "Values after map: ";
-    for (ulong i = 0; i < vectorForTest.Size(); ++i) cout << vectorForTest[i] << " ";
+    for (ulong i = 0; i < vectorForTest.Size(); ++i)
+        cout << vectorForTest[i] << " ";
     cout << "\n";
 
     cout << "\n--- Vector Tests: Strings ---\n";
@@ -633,13 +681,16 @@ void  mytest2() {
     RUN_TEST("'world' should exist", vectorForTestString.Exists("world"));
 
     cout << "Folding with concatenation...\n";
-    string concat = vectorForTestString.Fold<string>([](const string& acc, const string& elem) { return acc + elem; }, "");
+    string concat = vectorForTestString.Fold<string>([](const string &acc, const string &elem)
+                                                     { return acc + elem; }, "");
     cout << "Concatenated: " << concat << "\n";
 
     cout << "Mapping (append 'abc')...\n";
-    vectorForTestString.Map([](string& x) { x += "abc"; });
+    vectorForTestString.Map([](string &x)
+                            { x += "abc"; });
     cout << "Values after map: ";
-    for (ulong i = 0; i < vectorForTestString.Size(); ++i) cout << vectorForTestString[i] << " ";
+    for (ulong i = 0; i < vectorForTestString.Size(); ++i)
+        cout << vectorForTestString[i] << " ";
     cout << "\n";
 
     cout << "\n--- Vector Tests: Floats ---\n";
@@ -658,15 +709,18 @@ void  mytest2() {
 
     lasd::Vector<float> vectorForTestFloat(4);
     float values[] = {1.5, 2.5, 3.5, 4.5};
-    for (int i = 0; i < 4; ++i) vectorForTestFloat[i] = values[i];
+    for (int i = 0; i < 4; ++i)
+        vectorForTestFloat[i] = values[i];
 
     cout << "Front: " << vectorForTestFloat.Front() << ", Back: " << vectorForTestFloat.Back() << "\n";
     RUN_TEST("2.5 should be in vector", vectorForTestFloat.Exists(2.5));
 
-    float sumF = vectorForTestFloat.Fold<float>([](const float& acc, const float& e) { return acc + e; }, 0.0);
+    float sumF = vectorForTestFloat.Fold<float>([](const float &acc, const float &e)
+                                                { return acc + e; }, 0.0);
     cout << "Sum: " << sumF << "\n";
 
-    float prodF = vectorForTestFloat.Fold<float>([](const float& acc, const float& e) { return acc * e; }, 1.0);
+    float prodF = vectorForTestFloat.Fold<float>([](const float &acc, const float &e)
+                                                 { return acc * e; }, 1.0);
     cout << "Product: " << prodF << "\n";
 
     // Sommario finale
@@ -678,11 +732,10 @@ void  mytest2() {
         cout << "✅ All tests passed!\n";
     else
         cout << "❌ Some tests failed. Check above for details.\n";
-
-
 }
 
-void testSetVecAndSetLst() {
+void testSetVecAndSetLst()
+{
     int totalTests = 0, passedTests = 0;
 
     cout << "\n==============================\n";
@@ -710,10 +763,13 @@ void testSetVecAndSetLst() {
     RUN_TEST("SetVec size should be 2 after removing 10", setVec.Size() == 2);
     RUN_TEST("SetVec should not contain 10", !setVec.Exists(10));
 
-    try {
+    try
+    {
         setVec.Remove(20);
         cout << "[TEST] Removing non-existent element (20): FAILED ❌ (No exception thrown)\n";
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         cout << "[TEST] Removing non-existent element (20): PASSED ✅ (Exception: " << e.what() << ")\n";
         passedTests++;
     }
@@ -744,10 +800,13 @@ void testSetVecAndSetLst() {
     RUN_TEST("SetLst size should be 2 after removing 10", setLst.Size() == 2);
     RUN_TEST("SetLst should not contain 10", !setLst.Exists(10));
 
-    try {
+    try
+    {
         setLst.Remove(20);
         cout << "[TEST] Removing non-existent element (20): FAILED ❌ (No exception thrown)\n";
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         cout << "[TEST] Removing non-existent element (20): PASSED ✅ (Exception: " << e.what() << ")\n";
         passedTests++;
     }
@@ -768,7 +827,8 @@ void testSetVecAndSetLst() {
         cout << "❌ Some tests failed. Check above for details.\n";
 }
 
-void testSetVecAndSetLst_Extended() {
+void testSetVecAndSetLst_Extended()
+{
     int totalTests = 0, passedTests = 0;
 
     cout << "\n==========================================\n";
@@ -792,7 +852,8 @@ void testSetVecAndSetLst_Extended() {
     RUN_TEST("SetVec should contain INT_MAX", setVec.Exists(INT_MAX));
 
     // Inserimento di grandi quantità di dati
-    for (int i = 2; i <= 1000; ++i) {
+    for (int i = 2; i <= 1000; ++i)
+    {
         setVec.Insert(i);
     }
     RUN_TEST("SetVec size should be 1003 after inserting 1000 elements", setVec.Size() == 1003);
@@ -803,17 +864,21 @@ void testSetVecAndSetLst_Extended() {
     RUN_TEST("SetVec size should be 1002 after removing 500", setVec.Size() == 1002);
 
     // Rimozione di elementi non esistenti
-    try {
+    try
+    {
         setVec.Remove(2000);
         cout << "[TEST] Removing non-existent element (2000): FAILED ❌ (No exception thrown)\n";
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         cout << "[TEST] Removing non-existent element (2000): PASSED ✅ (Exception: " << e.what() << ")\n";
         passedTests++;
     }
     totalTests++;
 
     // Test di stress: Inserimento e rimozione ripetuti
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 10000; ++i)
+    {
         setVec.Insert(i);
         setVec.Remove(i);
     }
@@ -848,7 +913,8 @@ void testSetVecAndSetLst_Extended() {
     RUN_TEST("SetLst should contain INT_MAX", setLst.Exists(INT_MAX));
 
     // Inserimento di grandi quantità di dati
-    for (int i = 2; i <= 1000; ++i) {
+    for (int i = 2; i <= 1000; ++i)
+    {
         setLst.Insert(i);
     }
     RUN_TEST("SetLst size should be 1003 after inserting 1000 elements", setLst.Size() == 1003);
@@ -859,17 +925,21 @@ void testSetVecAndSetLst_Extended() {
     RUN_TEST("SetLst size should be 1002 after removing 500", setLst.Size() == 1002);
 
     // Rimozione di elementi non esistenti
-    try {
+    try
+    {
         setLst.Remove(2000);
         cout << "[TEST] Removing non-existent element (2000): FAILED ❌ (No exception thrown)\n";
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         cout << "[TEST] Removing non-existent element (2000): PASSED ✅ (Exception: " << e.what() << ")\n";
         passedTests++;
     }
     totalTests++;
 
     // Test di stress: Inserimento e rimozione ripetuti
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 10000; ++i)
+    {
         setLst.Insert(i);
         setLst.Remove(i);
     }
@@ -898,10 +968,13 @@ void testSetVecAndSetLst_Extended() {
         cout << "❌ Some tests failed. Check above for details.\n";
 }
 
-void myTestSimpleExercise1B() {
+void myTestSimpleExercise1B()
+{
     uint testnum = 0, testerr = 0;
-    try {
-        cout << endl << "Begin of My Exercise 1B Test" << endl;
+    try
+    {
+        cout << endl
+             << "Begin of My Exercise 1B Test" << endl;
 
         // Set<int> con SetVec
         lasd::SetVec<int> setvec;
@@ -923,83 +996,128 @@ void myTestSimpleExercise1B() {
         myTestSetOperations(testnum, testerr);
 
         cout << "End of My Exercise 1B Test! (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
-    } catch (...) {
+    }
+    catch (...)
+    {
         testnum++;
         testerr++;
-        cout << endl << "Unmanaged error! " << endl;
+        cout << endl
+             << "Unmanaged error! " << endl;
     }
 }
 
-void testSegmentationFault() {
+void testSegmentationFault()
+{
     cout << "\n--- Segmentation Fault & Exception Safety Test ---\n";
     lasd::Vector<int> vec(3);
-    vec[0] = 1; vec[1] = 2; vec[2] = 3;
-    try {
+    vec[0] = 1;
+    vec[1] = 2;
+    vec[2] = 3;
+    try
+    {
         int x = vec[3]; // Accesso fuori dai limiti
         cout << "[TEST] Access out of bounds: FAILED ❌ (No exception thrown, value: " << x << ")\n";
-    } catch (const std::out_of_range&) {
+    }
+    catch (const std::out_of_range &)
+    {
         cout << "[TEST] Access out of bounds: PASSED ✅ (std::out_of_range thrown)\n";
-    } catch (...) {
+    }
+    catch (...)
+    {
         cout << "[TEST] Access out of bounds: FAILED ❌ (Wrong exception type)\n";
     }
     // Test accesso negativo simulato
-    try {
+    try
+    {
         int y = vec[(unsigned long)-1]; // Accesso negativo simulato (out of range)
         cout << "[TEST] Access negative index: FAILED ❌ (No exception thrown, value: " << y << ")\n";
-    } catch (const std::out_of_range&) {
+    }
+    catch (const std::out_of_range &)
+    {
         cout << "[TEST] Access negative index: PASSED ✅ (std::out_of_range thrown)\n";
-    } catch (...) {
+    }
+    catch (...)
+    {
         cout << "[TEST] Access negative index: FAILED ❌ (Wrong exception type)\n";
     }
 
     cout << "\n--- End of Segmentation Fault & Exception Safety Test ---\n";
 }
 
-void testMemoryLeak() {
+void testMemoryLeak()
+{
     cout << "\n--- Memory Leak Test (manual check with Valgrind recommended) ---\n";
-    for (int i = 0; i < 1000; ++i) {
-        lasd::SetVec<int>* set = new lasd::SetVec<int>();
-        for (int j = 0; j < 100; ++j) set->Insert(j);
-        for (int j = 0; j < 100; ++j) set->Remove(j);
+    for (int i = 0; i < 1000; ++i)
+    {
+        lasd::SetVec<int> *set = new lasd::SetVec<int>();
+        for (int j = 0; j < 100; ++j)
+            set->Insert(j);
+        for (int j = 0; j < 100; ++j)
+            set->Remove(j);
         delete set;
     }
     cout << "[TEST] Created and deleted 1000 SetVec<int> with 100 elements each. If you run this test with Valgrind, there should be NO memory leaks.\n";
 }
 
-void stressTestVectorAndList() {
+void stressTestVectorAndList()
+{
     cout << "\n--- Stress Test: Vector & List ---\n";
     int totalTests = 0, passedTests = 0;
 
     // 1. Vector: inserimento massivo
     lasd::Vector<int> v1(100000);
     bool ok = true;
-    for (ulong i = 0; i < v1.Size(); ++i) v1[i] = i;
-    for (ulong i = 0; i < v1.Size(); ++i) if (v1[i] != (int)i) ok = false;
+    for (ulong i = 0; i < v1.Size(); ++i)
+        v1[i] = i;
+    for (ulong i = 0; i < v1.Size(); ++i)
+        if (v1[i] != (int)i)
+            ok = false;
     RUN_TEST("Vector mass insert and check 100000", ok);
 
     // 2. Vector: accesso fuori limite basso
-    try { (void)v1[(unsigned long)-1]; cout << "[TEST] Vector negative index: FAILED ❌\n"; }
-    catch (const std::out_of_range&) { cout << "[TEST] Vector negative index: PASSED ✅\n"; passedTests++; }
+    try
+    {
+        (void)v1[(unsigned long)-1];
+        cout << "[TEST] Vector negative index: FAILED ❌\n";
+    }
+    catch (const std::out_of_range &)
+    {
+        cout << "[TEST] Vector negative index: PASSED ✅\n";
+        passedTests++;
+    }
     totalTests++;
 
     // 3. Vector: accesso fuori limite alto
-    try { (void)v1[100000]; cout << "[TEST] Vector out of bounds: FAILED ❌\n"; }
-    catch (const std::out_of_range&) { cout << "[TEST] Vector out of bounds: PASSED ✅\n"; passedTests++; }
+    try
+    {
+        (void)v1[100000];
+        cout << "[TEST] Vector out of bounds: FAILED ❌\n";
+    }
+    catch (const std::out_of_range &)
+    {
+        cout << "[TEST] Vector out of bounds: PASSED ✅\n";
+        passedTests++;
+    }
     totalTests++;
 
     // 4. Vector: resize ripetuti
-    for (int i = 0; i < 100; ++i) v1.Resize(1000 + i);
+    for (int i = 0; i < 100; ++i)
+        v1.Resize(1000 + i);
     RUN_TEST("Vector repeated resize up", v1.Size() == 1099);
-    for (int i = 0; i < 100; ++i) v1.Resize(1000 - i);
+    for (int i = 0; i < 100; ++i)
+        v1.Resize(1000 - i);
     RUN_TEST("Vector repeated resize down", v1.Size() == 901); // <-- 901, non 900
 
     // 5. Vector: clear e refill
     v1.Clear();
     RUN_TEST("Vector clear", v1.Empty());
     v1.Resize(1000);
-    for (ulong i = 0; i < v1.Size(); ++i) v1[i] = i * 2;
+    for (ulong i = 0; i < v1.Size(); ++i)
+        v1[i] = i * 2;
     ok = true;
-    for (ulong i = 0; i < v1.Size(); ++i) if (v1[i] != (int)(i * 2)) ok = false;
+    for (ulong i = 0; i < v1.Size(); ++i)
+        if (v1[i] != (int)(i * 2))
+            ok = false;
     RUN_TEST("Vector refill after clear", ok);
 
     // 6. Vector: copy e move
@@ -1010,29 +1128,51 @@ void stressTestVectorAndList() {
 
     // 7. List: inserimento massivo in coda
     lasd::List<int> l1;
-    for (int i = 0; i < 50000; ++i) l1.InsertAtBack(i);
+    for (int i = 0; i < 50000; ++i)
+        l1.InsertAtBack(i);
     ok = true;
-    for (ulong i = 0; i < l1.Size(); ++i) if (l1[i] != (int)i) { ok = false; break; }
+    for (ulong i = 0; i < l1.Size(); ++i)
+        if (l1[i] != (int)i)
+        {
+            ok = false;
+            break;
+        }
     RUN_TEST("List mass insert at back 50000", ok);
 
     // 8. List: inserimento massivo in testa
     lasd::List<int> l2;
-    for (int i = 0; i < 10000; ++i) l2.InsertAtFront(i);
+    for (int i = 0; i < 10000; ++i)
+        l2.InsertAtFront(i);
     ok = true;
     for (ulong i = 0; i < l2.Size(); ++i)
-    if (l2[l2.Size() - 1 - i] != (int)i) { ok = false; break; }
+        if (l2[l2.Size() - 1 - i] != (int)i)
+        {
+            ok = false;
+            break;
+        }
     RUN_TEST("List mass insert at front 10000", ok);
     // 9. List: accesso fuori limite
-    try { (void)l1[50000]; cout << "[TEST] List out of bounds: FAILED ❌\n"; }
-    catch (const std::out_of_range&) { cout << "[TEST] List out of bounds: PASSED ✅\n"; passedTests++; }
+    try
+    {
+        (void)l1[50000];
+        cout << "[TEST] List out of bounds: FAILED ❌\n";
+    }
+    catch (const std::out_of_range &)
+    {
+        cout << "[TEST] List out of bounds: PASSED ✅\n";
+        passedTests++;
+    }
     totalTests++;
 
     // 10. List: clear e refill
     l1.Clear();
     RUN_TEST("List clear", l1.Empty());
-    for (int i = 0; i < 1000; ++i) l1.InsertAtBack(i * 3);
+    for (int i = 0; i < 1000; ++i)
+        l1.InsertAtBack(i * 3);
     ok = true;
-    for (ulong i = 0; i < l1.Size(); ++i) if (l1[i] != (int)(i * 3)) ok = false;
+    for (ulong i = 0; i < l1.Size(); ++i)
+        if (l1[i] != (int)(i * 3))
+            ok = false;
     RUN_TEST("List refill after clear", ok);
 
     // 11. List: copy e move
@@ -1042,23 +1182,31 @@ void stressTestVectorAndList() {
     RUN_TEST("List move", l4.Size() == l1.Size() && l4[10] == l1[10]);
 
     // 12. Vector: test di fold
-    int sum = v3.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    int sum = v3.Fold<int>([](const int &acc, const int &elem)
+                           { return acc + elem; }, 0);
     RUN_TEST("Vector fold sum", sum > 0);
 
     // 13. List: test di fold
-    int sumL = l4.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    int sumL = l4.Fold<int>([](const int &acc, const int &elem)
+                            { return acc + elem; }, 0);
     RUN_TEST("List fold sum", sumL > 0);
 
     // 14. Vector: test di map
-    v3.Map([](int& x) { x += 1; });
+    v3.Map([](int &x)
+           { x += 1; });
     ok = true;
-    for (ulong i = 0; i < v3.Size(); ++i) if (v3[i] != (int)(i * 2 + 1)) ok = false;
+    for (ulong i = 0; i < v3.Size(); ++i)
+        if (v3[i] != (int)(i * 2 + 1))
+            ok = false;
     RUN_TEST("Vector map increment", ok);
 
     // 15. List: test di map
-    l4.Map([](int& x) { x -= 1; });
+    l4.Map([](int &x)
+           { x -= 1; });
     ok = true;
-    for (ulong i = 0; i < l4.Size(); ++i) if (l4[i] != (int)(i * 3 - 1)) ok = false;
+    for (ulong i = 0; i < l4.Size(); ++i)
+        if (l4[i] != (int)(i * 3 - 1))
+            ok = false;
     RUN_TEST("List map decrement", ok);
 
     // 16. Vector: test di operator==
@@ -1081,43 +1229,65 @@ void stressTestVectorAndList() {
     v3.Resize(0);
     RUN_TEST("Vector resize to 0", v3.Empty());
     v3.Resize(10);
-    for (ulong i = 0; i < v3.Size(); ++i) v3[i] = i;
+    for (ulong i = 0; i < v3.Size(); ++i)
+        v3[i] = i;
     ok = true;
-    for (ulong i = 0; i < v3.Size(); ++i) if (v3[i] != (int)i) ok = false;
+    for (ulong i = 0; i < v3.Size(); ++i)
+        if (v3[i] != (int)i)
+            ok = false;
     RUN_TEST("Vector refill after resize to 0", ok);
 
     // 21. List: test clear e refill
     l4.Clear();
     RUN_TEST("List clear again", l4.Empty());
-    for (ulong i = 0; i < 10; ++i) l4.InsertAtBack(i);
+    for (ulong i = 0; i < 10; ++i)
+        l4.InsertAtBack(i);
     ok = true;
-    for (ulong i = 0; i < l4.Size(); ++i) if (l4[i] != (int)i) ok = false;
+    for (ulong i = 0; i < l4.Size(); ++i)
+        if (l4[i] != (int)i)
+            ok = false;
     RUN_TEST("List refill after clear again", ok);
 
     // 22. Vector: test accesso multiplo fuori limite
     bool allCaught = true;
-    for (int i = 0; i < 10; ++i) {
-        try { (void)v3[100 + i]; allCaught = false; }
-        catch (const std::out_of_range&) {}
+    for (int i = 0; i < 10; ++i)
+    {
+        try
+        {
+            (void)v3[100 + i];
+            allCaught = false;
+        }
+        catch (const std::out_of_range &)
+        {
+        }
     }
     RUN_TEST("Vector multiple out of bounds", allCaught);
 
     // 23. List: test accesso multiplo fuori limite
     allCaught = true;
-    for (int i = 0; i < 10; ++i) {
-        try { (void)l4[100 + i]; allCaught = false; }
-        catch (const std::out_of_range&) {}
+    for (int i = 0; i < 10; ++i)
+    {
+        try
+        {
+            (void)l4[100 + i];
+            allCaught = false;
+        }
+        catch (const std::out_of_range &)
+        {
+        }
     }
     RUN_TEST("List multiple out of bounds", allCaught);
 
     // 24. Vector: test operator==
     lasd::Vector<int> v5(10);
-    for (ulong i = 0; i < 10; ++i) v5[i] = i;
+    for (ulong i = 0; i < 10; ++i)
+        v5[i] = i;
     RUN_TEST("Vector == after refill", v5 == v3);
 
     // 25. List: test operator==
     lasd::List<int> l6;
-    for (ulong i = 0; i < 10; ++i) l6.InsertAtBack(i);
+    for (ulong i = 0; i < 10; ++i)
+        l6.InsertAtBack(i);
     RUN_TEST("List == after refill", l6 == l4);
 
     // 26. Vector: test operator!=
@@ -1138,76 +1308,131 @@ void stressTestVectorAndList() {
 
     // 30. List: test inserimento e rimozione alternati
     lasd::List<int> l7;
-    for (int i = 0; i < 1000; ++i) l7.InsertAtBack(i);
-    for (int i = 0; i < 500; ++i) l7.RemoveFromFront();
+    for (int i = 0; i < 1000; ++i)
+        l7.InsertAtBack(i);
+    for (int i = 0; i < 500; ++i)
+        l7.RemoveFromFront();
     RUN_TEST("List remove from front 500", l7.Size() == 500);
 
     // 31. List: test rimozione da lista vuota (eccezione)
     l7.Clear();
     bool caught = false;
-    try { l7.RemoveFromFront(); }
-    catch (const std::length_error&) { caught = true; }
+    try
+    {
+        l7.RemoveFromFront();
+    }
+    catch (const std::length_error &)
+    {
+        caught = true;
+    }
     RUN_TEST("List remove from empty throws", caught);
 
     // 32. Vector: test accesso dopo clear
     v3.Clear();
     bool caught2 = false;
-    try { (void)v3[0]; }
-    catch (const std::out_of_range&) { caught2 = true; }
+    try
+    {
+        (void)v3[0];
+    }
+    catch (const std::out_of_range &)
+    {
+        caught2 = true;
+    }
     RUN_TEST("Vector access after clear throws", caught2);
 
     // 33. List: test accesso dopo clear
     l7.Clear();
     bool caught3 = false;
-    try { (void)l7[0]; }
-    catch (const std::out_of_range&) { caught3 = true; }
+    try
+    {
+        (void)l7[0];
+    }
+    catch (const std::out_of_range &)
+    {
+        caught3 = true;
+    }
     RUN_TEST("List access after clear throws", caught3);
 
     // 34. Vector: test fold su vettore vuoto
     v3.Clear();
-    int sumEmpty = v3.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    int sumEmpty = v3.Fold<int>([](const int &acc, const int &elem)
+                                { return acc + elem; }, 0);
     RUN_TEST("Vector fold on empty", sumEmpty == 0);
 
     // 35. List: test fold su lista vuota
     l7.Clear();
-    int sumEmptyL = l7.Fold<int>([](const int& acc, const int& elem) { return acc + elem; }, 0);
+    int sumEmptyL = l7.Fold<int>([](const int &acc, const int &elem)
+                                 { return acc + elem; }, 0);
     RUN_TEST("List fold on empty", sumEmptyL == 0);
 
     // 36. Vector: test map su vettore vuoto (non deve crashare)
     v3.Clear();
-    try { v3.Map([](int& x) { x += 1; }); ok = true; }
-    catch (...) { ok = false; }
+    try
+    {
+        v3.Map([](int &x)
+               { x += 1; });
+        ok = true;
+    }
+    catch (...)
+    {
+        ok = false;
+    }
     RUN_TEST("Vector map on empty", ok);
 
     // 37. List: test map su lista vuota (non deve crashare)
     l7.Clear();
-    try { l7.Map([](int& x) { x += 1; }); ok = true; }
-    catch (...) { ok = false; }
+    try
+    {
+        l7.Map([](int &x)
+               { x += 1; });
+        ok = true;
+    }
+    catch (...)
+    {
+        ok = false;
+    }
     RUN_TEST("List map on empty", ok);
 
     // 38. Vector: test ricorsione profonda (simulazione stack overflow)
-    try {
+    try
+    {
         std::function<void(int)> deepRec;
-        deepRec = [&](int n) {
-            if (n > 0) deepRec(n - 1);
+        deepRec = [&](int n)
+        {
+            if (n > 0)
+                deepRec(n - 1);
         };
         deepRec(1000); // Potrebbe causare stack overflow su alcune macchine
-    } catch (...) {}
+    }
+    catch (...)
+    {
+    }
     RUN_TEST("Deep recursion (stack overflow simulation)", true);
 
     // 39. Vector: test allocazione molto grande (simulazione bad_alloc)
     bool allocFailed = false;
-    try {
+    try
+    {
         lasd::Vector<int> bigVec(100); // 1 miliardo di elementi
-    } catch (const std::bad_alloc&) { allocFailed = true; }
+    }
+    catch (const std::bad_alloc &)
+    {
+        allocFailed = true;
+    }
     RUN_TEST("Vector huge allocation (bad_alloc simulation)", allocFailed);
 
     // 40. List: test allocazione molto grande (simulazione bad_alloc)
     allocFailed = false;
-    try {
+    try
+    {
         lasd::List<int> bigList;
-        for (int i = 0; i < 100; ++i) bigList.InsertAtBack(i);
-    } catch (const std::bad_alloc&) { allocFailed = true; }
+        for (int i = 0; i < 100; ++i)
+            bigList.InsertAtBack(i);
+    }
+    catch (const std::bad_alloc &)
+    {
+        allocFailed = true;
+    }
     RUN_TEST("List huge allocation (bad_alloc simulation)", allocFailed);
 
     cout << "\n==============================\n";
@@ -1220,15 +1445,19 @@ void stressTestVectorAndList() {
         cout << "❌ Some stress tests failed. Check above for details.\n";
 }
 
-#define RUN_TEST(desc, expr) \
-    do { \
-        bool result = (expr); \
+#define RUN_TEST(desc, expr)                                                                       \
+    do                                                                                             \
+    {                                                                                              \
+        bool result = (expr);                                                                      \
         cout << "[TEST] " << desc << ": " << (result ? "PASSED \u2705" : "FAILED \u274C") << endl; \
-        testnum++; \
-        if (!result) testerr++; \
-    } while(0)
+        testnum++;                                                                                 \
+        if (!result)                                                                               \
+            testerr++;                                                                             \
+    } while (0)
 
-void mySetVecExtendedTests(uint& testnum, uint& testerr) {
+void mySetVecExtendedTests(uint &testnum, uint &testerr)
+{
+
     uint localTestNum = 0, localTestErr = 0;
 
     cout << "\n===== Extended SetVec Tests =====\n";
@@ -1256,10 +1485,13 @@ void mySetVecExtendedTests(uint& testnum, uint& testerr) {
 
     // Test accesso out-of-range
     bool caught = false;
-    try {
+    try
+    {
         int val = set[10];
         (void)val;
-    } catch (const std::out_of_range&) {
+    }
+    catch (const std::out_of_range &)
+    {
         caught = true;
     }
     RUN_TEST("Access out-of-range index should throw", caught);
@@ -1293,3 +1525,3052 @@ void mySetVecExtendedTests(uint& testnum, uint& testerr) {
     testerr += localTestErr;
 } // end
 
+/* ************************************************************************** */
+
+
+void testSetLst()
+{
+    std::cout << "Testing SetLst..." << std::endl;
+    lasd::SetLst<int> setLst;
+
+    // Previous tests for Default Constructor, Insert, Exists, Remove, Min were provided.
+    // Continuing from Test 11 of Max...
+
+    // 6. Test Max (15 cases, continuing from Test 11)
+    {
+        // Test 11: Max with single negative (already started)
+        setLst.Insert(-100);
+        assert(setLst.Max() == -100);
+        // Test 12: Max after multiple inserts
+        setLst.Insert(-50);
+        setLst.Insert(0);
+        assert(setLst.Max() == 0);
+        // Test 13: Max after min remove
+        setLst.Clear();
+        setLst.Insert(10);
+        setLst.Insert(20);
+        setLst.Remove(10);
+        assert(setLst.Max() == 20);
+        // Test 14: Max with large value
+        setLst.Clear();
+        setLst.Insert(1000);
+        setLst.Insert(500);
+        assert(setLst.Max() == 1000);
+        // Test 15: Max after multiple inserts
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        assert(setLst.Max() == 1000);
+        setLst.Clear();
+    }
+
+    // 7. Test MinNRemove (15 cases)
+    {
+        // Test 1: MinNRemove on empty set (exception)
+        try
+        {
+            setLst.MinNRemove();
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 2: MinNRemove with one element
+        setLst.Insert(10);
+        assert(setLst.MinNRemove() == 10);
+        // Test 3: Size after MinNRemove
+        assert(setLst.Size() == 0);
+        // Test 4: MinNRemove with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(10);
+        setLst.Insert(15);
+        assert(setLst.MinNRemove() == 5);
+        // Test 5: Size after MinNRemove
+        assert(setLst.Size() == 2);
+        // Test 6: MinNRemove with negative values
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.MinNRemove() == -10);
+        // Test 7: MinNRemove after multiple inserts
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10 - 50);
+        assert(setLst.MinNRemove() == -50);
+        // Test 8: MinNRemove after min removal
+        assert(setLst.MinNRemove() == -40);
+        // Test 9: Size after multiple MinNRemove
+        assert(setLst.Size() == 8);
+        // Test 10: MinNRemove with large set
+        setLst.Clear();
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        for (int i = 0; i < 15; ++i)
+            setLst.MinNRemove();
+        assert(setLst.Size() == 5);
+        // Test 11: MinNRemove with single negative
+        setLst.Clear();
+        setLst.Insert(-100);
+        assert(setLst.MinNRemove() == -100);
+        // Test 12: MinNRemove after clear
+        try
+        {
+            setLst.MinNRemove();
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 13: MinNRemove with large negative
+        setLst.Insert(-1000);
+        setLst.Insert(-500);
+        assert(setLst.MinNRemove() == -1000);
+        // Test 14: MinNRemove with one element left
+        assert(setLst.MinNRemove() == -500);
+        assert(setLst.Size() == 0);
+        // Test 15: MinNRemove after reinsert
+        setLst.Insert(25);
+        setLst.Insert(50);
+        assert(setLst.MinNRemove() == 25);
+        setLst.Clear();
+    }
+
+    // 8. Test MaxNRemove (15 cases)
+    {
+        // Test 1: MaxNRemove on empty set (exception)
+        try
+        {
+            setLst.MaxNRemove();
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 2: MaxNRemove with one element
+        setLst.Insert(10);
+        assert(setLst.MaxNRemove() == 10);
+        // Test 3: Size after MaxNRemove
+        assert(setLst.Size() == 0);
+        // Test 4: MaxNRemove with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(10);
+        setLst.Insert(15);
+        assert(setLst.MaxNRemove() == 15);
+        // Test 5: Size after MaxNRemove
+        assert(setLst.Size() == 2);
+        // Test 6: MaxNRemove with negative values
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.MaxNRemove() == 0);
+        // Test 7: MaxNRemove after multiple inserts
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10 - 50);
+        assert(setLst.MaxNRemove() == 40);
+        // Test 8: MaxNRemove after max removal
+        assert(setLst.MaxNRemove() == 30);
+        // Test 9: Size after multiple MaxNRemove
+        assert(setLst.Size() == 8);
+        // Test 10: MaxNRemove with large set
+        setLst.Clear();
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        for (int i = 0; i < 15; ++i)
+            setLst.MaxNRemove();
+        assert(setLst.Size() == 5);
+        // Test 11: MaxNRemove with single negative
+        setLst.Clear();
+        setLst.Insert(-100);
+        assert(setLst.MaxNRemove() == -100);
+        // Test 12: MaxNRemove after clear
+        try
+        {
+            setLst.MaxNRemove();
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 13: MaxNRemove with large value
+        setLst.Insert(1000);
+        setLst.Insert(500);
+        assert(setLst.MaxNRemove() == 1000);
+        // Test 14: MaxNRemove with one element left
+        assert(setLst.MaxNRemove() == 500);
+        assert(setLst.Size() == 0);
+        // Test 15: MaxNRemove after reinsert
+        setLst.Insert(25);
+        setLst.Insert(50);
+        assert(setLst.MaxNRemove() == 50);
+        setLst.Clear();
+    }
+
+    // 9. Test Predecessor (15 cases)
+    {
+        // Test 1: Predecessor on empty set (exception)
+        try
+        {
+            setLst.Predecessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 2: Predecessor with one element (exception)
+        setLst.Insert(10);
+        try
+        {
+            setLst.Predecessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 3: Predecessor with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(15);
+        assert(setLst.Predecessor(15) == 10);
+        // Test 4: Predecessor of min (exception)
+        try
+        {
+            setLst.Predecessor(5);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 5: Predecessor of non-existent larger value
+        assert(setLst.Predecessor(20) == 15);
+        // Test 6: Predecessor with negative values
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.Predecessor(0) == -10);
+        // Test 7: Predecessor with large set
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10);
+        assert(setLst.Predecessor(50) == 40);
+        // Test 8: Predecessor of value between elements
+        assert(setLst.Predecessor(45) == 40);
+        // Test 9: Predecessor after remove
+        setLst.Remove(40);
+        assert(setLst.Predecessor(50) == 30);
+        // Test 10: Predecessor with single element
+        setLst.Clear();
+        setLst.Insert(10);
+        try
+        {
+            setLst.Predecessor(5);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 11: Predecessor with negative non-existent
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.Predecessor(-5) == -10);
+        // Test 12: Predecessor after clear
+        setLst.Clear();
+        try
+        {
+            setLst.Predecessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 13: Predecessor with large negative
+        setLst.Insert(-100);
+        setLst.Insert(-50);
+        assert(setLst.Predecessor(-50) == -100);
+        // Test 14: Predecessor after multiple inserts
+        setLst.Insert(-75);
+        assert(setLst.Predecessor(-50) == -75);
+        // Test 15: Predecessor of max in large set
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10);
+        assert(setLst.Predecessor(90) == 80);
+        setLst.Clear();
+    }
+
+    // 10. Test Successor (15 cases)
+    {
+        // Test 1: Successor on empty set (exception)
+        try
+        {
+            setLst.Successor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 2: Successor with one element (exception)
+        setLst.Insert(10);
+        try
+        {
+            setLst.Successor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 3: Successor with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(15);
+        assert(setLst.Successor(5) == 10);
+        // Test 4: Successor of max (exception)
+        try
+        {
+            setLst.Successor(15);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 5: Successor of non-existent smaller value
+        assert(setLst.Successor(0) == 5);
+        // Test 6: Successor with negative values
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.Successor(-10) == 0);
+        // Test 7: Successor with large set
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10);
+        assert(setLst.Successor(40) == 50);
+        // Test 8: Successor of value between elements
+        assert(setLst.Successor(45) == 50);
+        // Test 9: Successor after remove
+        setLst.Remove(50);
+        assert(setLst.Successor(40) == 60);
+        // Test 10: Successor with single element
+        setLst.Clear();
+        setLst.Insert(10);
+        try
+        {
+            setLst.Successor(15);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 11: Successor with negative non-existent
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.Successor(-15) == -10);
+        // Test 12: Successor after clear
+        setLst.Clear();
+        try
+        {
+            setLst.Successor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 13: Successor with large value
+        setLst.Insert(500);
+        setLst.Insert(1000);
+        assert(setLst.Successor(500) == 1000);
+        // Test 14: Successor after multiple inserts
+        setLst.Insert(750);
+        assert(setLst.Successor(500) == 750);
+        // Test 15: Successor of min in large set
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10);
+        assert(setLst.Successor(0) == 10);
+        setLst.Clear();
+    }
+
+    // 11. Test PredecessorNRemove (15 cases)
+    {
+        // Test 1: PredecessorNRemove on empty set (exception)
+        try
+        {
+            setLst.PredecessorNRemove(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 2: PredecessorNRemove with one element (exception)
+        setLst.Insert(10);
+        try
+        {
+            setLst.PredecessorNRemove(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 3: PredecessorNRemove with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(15);
+        assert(setLst.PredecessorNRemove(15) == 10);
+        // Test 4: Size after PredecessorNRemove
+        assert(setLst.Size() == 2);
+        // Test 5: PredecessorNRemove of min (exception)
+        try
+        {
+            setLst.PredecessorNRemove(5);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 6: PredecessorNRemove of non-existent
+        assert(setLst.PredecessorNRemove(20) == 15);
+        // Test 7: PredecessorNRemove with negative values
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.PredecessorNRemove(0) == -10);
+        // Test 8: PredecessorNRemove with large set
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10);
+        assert(setLst.PredecessorNRemove(50) == 40);
+        // Test 9: Size after PredecessorNRemove
+        assert(setLst.Size() == 9);
+        // Test 10: PredecessorNRemove with large set
+        setLst.Clear();
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        for (int i = 0; i < 15; ++i)
+            setLst.PredecessorNRemove((19 - i) * 10);
+        assert(setLst.Size() == 5);
+        // Test 11: PredecessorNRemove with single element
+        setLst.Clear();
+        setLst.Insert(10);
+        try
+        {
+            setLst.PredecessorNRemove(5);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 12: PredecessorNRemove with negative non-existent
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.PredecessorNRemove(-5) == -10);
+        // Test 13: PredecessorNRemove after clear
+        setLst.Clear();
+        try
+        {
+            setLst.PredecessorNRemove(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 14: PredecessorNRemove with large negative
+        setLst.Insert(-100);
+        setLst.Insert(-50);
+        assert(setLst.PredecessorNRemove(-50) == -100);
+        // Test 15: PredecessorNRemove after multiple inserts
+        setLst.Insert(-75);
+        assert(setLst.PredecessorNRemove(-50) == -75);
+        setLst.Clear();
+    }
+
+    // 12. Test SuccessorNRemove (15 cases)
+    {
+        // Test 1: SuccessorNRemove on empty set (exception)
+        try
+        {
+            setLst.SuccessorNRemove(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 2: SuccessorNRemove with one element (exception)
+        setLst.Insert(10);
+        try
+        {
+            setLst.SuccessorNRemove(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 3: SuccessorNRemove with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(15);
+        assert(setLst.SuccessorNRemove(5) == 10);
+        // Test 4: Size after SuccessorNRemove
+        assert(setLst.Size() == 2);
+        // Test 5: SuccessorNRemove of max (exception)
+        try
+        {
+            setLst.SuccessorNRemove(15);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 6: SuccessorNRemove of non-existent
+        assert(setLst.SuccessorNRemove(0) == 5);
+        // Test 7: SuccessorNRemove with negative values
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.SuccessorNRemove(-10) == 0);
+        // Test 8: SuccessorNRemove with large set
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10);
+        assert(setLst.SuccessorNRemove(40) == 50);
+        // Test 9: Size after SuccessorNRemove
+        assert(setLst.Size() == 9);
+        // Test 10: SuccessorNRemove with large set
+        setLst.Clear();
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        for (int i = 0; i < 15; ++i)
+            setLst.SuccessorNRemove(i * 10);
+        assert(setLst.Size() == 5);
+        // Test 11: SuccessorNRemove with single element
+        setLst.Clear();
+        setLst.Insert(10);
+        try
+        {
+            setLst.SuccessorNRemove(15);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 12: SuccessorNRemove with negative non-existent
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        assert(setLst.SuccessorNRemove(-15) == -10);
+        // Test 13: SuccessorNRemove after clear
+        setLst.Clear();
+        try
+        {
+            setLst.SuccessorNRemove(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 14: SuccessorNRemove with large value
+        setLst.Insert(500);
+        setLst.Insert(1000);
+        assert(setLst.SuccessorNRemove(500) == 1000);
+        // Test 15: SuccessorNRemove after multiple inserts
+        setLst.Insert(750);
+        assert(setLst.SuccessorNRemove(500) == 750);
+        setLst.Clear();
+    }
+
+    // 13. Test RemovePredecessor (15 cases)
+    {
+        // Test 1: RemovePredecessor on empty set (exception)
+        try
+        {
+            setLst.RemovePredecessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 2: RemovePredecessor with one element (exception)
+        setLst.Insert(10);
+        try
+        {
+            setLst.RemovePredecessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 3: RemovePredecessor with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(15);
+        setLst.RemovePredecessor(15);
+        assert(!setLst.Exists(10));
+        // Test 4: Size after RemovePredecessor
+        assert(setLst.Size() == 2);
+        // Test 5: RemovePredecessor of min (exception)
+        try
+        {
+            setLst.RemovePredecessor(5);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 6: RemovePredecessor of non-existent
+        setLst.RemovePredecessor(20);
+        assert(!setLst.Exists(15));
+        // Test 7: RemovePredecessor with negative values
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        setLst.RemovePredecessor(0);
+        assert(!setLst.Exists(-10));
+        // Test 8: RemovePredecessor with large set
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10);
+        setLst.RemovePredecessor(50);
+        assert(!setLst.Exists(40));
+        // Test 9: Size after RemovePredecessor
+        assert(setLst.Size() == 9);
+        // Test 10: RemovePredecessor with large set
+        setLst.Clear();
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        for (int i = 0; i < 15; ++i)
+            setLst.RemovePredecessor((19 - i) * 10);
+        assert(setLst.Size() == 5);
+        // Test 11: RemovePredecessor with single element
+        setLst.Clear();
+        setLst.Insert(10);
+        try
+        {
+            setLst.RemovePredecessor(5);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 12: RemovePredecessor with negative non-existent
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        setLst.RemovePredecessor(-5);
+        assert(!setLst.Exists(-10));
+        // Test 13: RemovePredecessor after clear
+        setLst.Clear();
+        try
+        {
+            setLst.RemovePredecessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 14: RemovePredecessor with large negative
+        setLst.Insert(-100);
+        setLst.Insert(-50);
+        setLst.RemovePredecessor(-50);
+        assert(!setLst.Exists(-100));
+        // Test 15: RemovePredecessor after multiple inserts
+        setLst.Insert(-75);
+        setLst.RemovePredecessor(-50);
+        assert(!setLst.Exists(-75));
+        setLst.Clear();
+    }
+
+    // 14. Test RemoveSuccessor (15 cases)
+    {
+        // Test 1: RemoveSuccessor on empty set (exception)
+        try
+        {
+            setLst.RemoveSuccessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 2: RemoveSuccessor with one element (exception)
+        setLst.Insert(10);
+        try
+        {
+            setLst.RemoveSuccessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 3: RemoveSuccessor with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(15);
+        setLst.RemoveSuccessor(5);
+        assert(!setLst.Exists(10));
+        // Test 4: Size after RemoveSuccessor
+        assert(setLst.Size() == 2);
+        // Test 5: RemoveSuccessor of max (exception)
+        try
+        {
+            setLst.RemoveSuccessor(15);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 6: RemoveSuccessor of non-existent
+        setLst.RemoveSuccessor(0);
+        assert(!setLst.Exists(5));
+        // Test 7: RemoveSuccessor with negative values
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        setLst.RemoveSuccessor(-10);
+        assert(!setLst.Exists(0));
+        // Test 8: RemoveSuccessor with large set
+        setLst.Clear();
+        for (int i = 0; i < 10; ++i)
+            setLst.Insert(i * 10);
+        setLst.RemoveSuccessor(40);
+        assert(!setLst.Exists(50));
+        // Test 9: Size after RemoveSuccessor
+        assert(setLst.Size() == 9);
+        // Test 10: RemoveSuccessor with large set
+        setLst.Clear();
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        for (int i = 0; i < 15; ++i)
+            setLst.RemoveSuccessor(i * 10);
+        assert(setLst.Size() == 5);
+        // Test 11: RemoveSuccessor with single element
+        setLst.Clear();
+        setLst.Insert(10);
+        try
+        {
+            setLst.RemoveSuccessor(15);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 12: RemoveSuccessor with negative non-existent
+        setLst.Clear();
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        setLst.RemoveSuccessor(-15);
+        assert(!setLst.Exists(-10));
+        // Test 13: RemoveSuccessor after clear
+        setLst.Clear();
+        try
+        {
+            setLst.RemoveSuccessor(10);
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 14: RemoveSuccessor with large value
+        setLst.Insert(500);
+        setLst.Insert(1000);
+        setLst.RemoveSuccessor(500);
+        assert(!setLst.Exists(1000));
+        // Test 15: RemoveSuccessor after multiple inserts
+        setLst.Insert(750);
+        setLst.RemoveSuccessor(500);
+        assert(!setLst.Exists(750));
+        setLst.Clear();
+    }
+
+    // 15. Test Clear (15 cases)
+    {
+        // Test 1: Clear empty set
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        // Test 2: Clear with one element
+        setLst.Insert(10);
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        // Test 3: Clear with multiple elements
+        setLst.Insert(5);
+        setLst.Insert(10);
+        setLst.Insert(15);
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        // Test 4: Exists after clear
+        assert(!setLst.Exists(10));
+        // Test 5: Min after clear (exception)
+        try
+        {
+            setLst.Min();
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 6: Max after clear (exception)
+        try
+        {
+            setLst.Max();
+            assert(false);
+        }
+        catch (std::length_error &)
+        {
+            assert(true);
+        }
+        // Test 7: Clear large set
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        // Test 8: Insert after clear
+        setLst.Insert(25);
+        assert(setLst.Size() == 1);
+        // Test 9: Clear after multiple inserts
+        setLst.Clear();
+        for (int i = 0; i < 20; ++i)
+            setLst.Insert(i * 10);
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        // Test 10: Clear with negative values
+        setLst.Insert(-10);
+        setLst.Insert(0);
+        setLst.Clear();
+        assert(!setLst.Exists(-10));
+        // Test 11: Clear multiple times
+        setLst.Insert(10);
+        setLst.Clear();
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        // Test 12: Exists after clear
+        setLst.Insert(10);
+        setLst.Clear();
+        assert(!setLst.Exists(10));
+        // Test 13: Clear after remove
+        setLst.Insert(10);
+        setLst.Remove(10);
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        // Test 14: Clear after MinNRemove
+        setLst.Insert(10);
+        setLst.MinNRemove();
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        // Test 15: Clear after MaxNRemove
+        setLst.Insert(10);
+        setLst.MaxNRemove();
+        setLst.Clear();
+        assert(setLst.Size() == 0);
+        setLst.Clear();
+    }
+
+    // 16. Test Operator== (15 cases)
+    {
+        lasd::SetLst<int> other;
+        // Test 1: Empty sets equal
+        assert(setLst == other);
+        // Test 2: Empty vs non-empty
+        setLst.Insert(10);
+        assert(!(setLst == other));
+        // Test 3: Same single element
+        other.Insert(10);
+        assert(setLst == other);
+        // Test 4: Same multiple elements
+        setLst.Insert(20);
+        other.Insert(20);
+        assert(setLst == other);
+        // Test 5: Different sizes
+        setLst.Insert(30);
+        assert(!(setLst == other));
+        // Test 6: Same size, different elements
+        other.Insert(25);
+        assert(!(setLst == other));
+        // Test 7: Equal after clear
+        setLst.Clear();
+        other.Clear();
+        assert(setLst == other);
+        // Test 8: Equal with negative values
+        setLst.Insert(-10);
+        other.Insert(-10);
+        assert(setLst == other);
+        // Test 9: Equal large sets
+        setLst.Clear();
+        other.Clear();
+        for (int i = 0; i < 10; ++i)
+        {
+            setLst.Insert(i * 10);
+            other.Insert(i * 10);
+        }
+        assert(setLst == other);
+        // Test 10: Different after remove
+        setLst.Remove(50);
+        assert(!(setLst == other));
+        // Test 11: Equal after reinsert
+        other.Remove(50);
+        assert(setLst == other);
+        // Test 12: Equal with single element
+        setLst.Clear();
+        other.Clear();
+        setLst.Insert(0);
+        other.Insert(0);
+        assert(setLst == other);
+        // Test 13: Different after clear
+        setLst.Clear();
+        assert(!(setLst == other));
+        // Test 14: Equal after multiple inserts
+        other.Clear();
+        setLst.Insert(10);
+        setLst.Insert(20);
+        other.Insert(10);
+        other.Insert(20);
+        assert(setLst == other);
+        // Test 15: Different with negative values
+        setLst.Insert(-10);
+        assert(!(setLst == other));
+        setLst.Clear();
+        other.Clear();
+    }
+
+    // 17. Test Operator!= (15 cases)
+    {
+        lasd::SetLst<int> other;
+        // Test 1: Empty sets not different
+        assert(!(setLst != other));
+        // Test 2: Empty vs non-empty
+        setLst.Insert(10);
+        assert(setLst != other);
+        // Test 3: Same single element
+        other.Insert(10);
+        assert(!(setLst != other));
+        // Test 4: Same multiple elements
+        setLst.Insert(20);
+        other.Insert(20);
+        assert(!(setLst != other));
+        // Test 5: Different sizes
+        setLst.Insert(30);
+        assert(setLst != other);
+        // Test 6: Same size, different elements
+        other.Insert(25);
+        assert(setLst != other);
+        // Test 7: Not different after clear
+        setLst.Clear();
+        other.Clear();
+        assert(!(setLst != other));
+        // Test 8: Not different with negative values
+        setLst.Insert(-10);
+        other.Insert(-10);
+        assert(!(setLst != other));
+        // Test 9: Not different large sets
+        setLst.Clear();
+        other.Clear();
+        for (int i = 0; i < 10; ++i)
+        {
+            setLst.Insert(i * 10);
+            other.Insert(i * 10);
+        }
+        assert(!(setLst != other));
+        // Test 10: Different after remove
+        setLst.Remove(50);
+        assert(setLst != other);
+        // Test 11: Not different after reinsert
+        other.Remove(50);
+        assert(!(setLst != other));
+        // Test 12: Not different with single element
+        setLst.Clear();
+        other.Clear();
+        setLst.Insert(0);
+        other.Insert(0);
+        assert(!(setLst != other));
+        // Test 13: Different after clear
+        setLst.Clear();
+        assert(setLst != other);
+        // Test 14: Not different after multiple inserts
+        other.Clear();
+        setLst.Insert(10);
+        setLst.Insert(20);
+        other.Insert(10);
+        other.Insert(20);
+        assert(!(setLst != other));
+        // Test 15: Different with negative values
+        setLst.Insert(-10);
+        assert(setLst != other);
+        setLst.Clear();
+        other.Clear();
+    }
+
+    // ... (previous test cases unchanged)
+
+    // 18. Test Move Constructor (15 cases)
+    {
+        // Test 1: Move empty set
+        lasd::SetLst<int> setLst2{lasd::SetLst<int>{}}; // Use braces to avoid vexing parse
+        assert(setLst2.Size() == 0);
+        // Test 2: Move set with one element
+        lasd::SetLst<int> temp;
+        temp.Insert(10);
+        lasd::SetLst<int> setLst3(std::move(temp));
+        assert(setLst3.Size() == 1);
+        assert(setLst3.Exists(10));
+        // Test 3: Move set with multiple elements
+        temp.Insert(5);
+        temp.Insert(10);
+        temp.Insert(15);
+        lasd::SetLst<int> setLst4(std::move(temp));
+        assert(setLst4.Size() == 3);
+        assert(setLst4.Exists(5));
+        // Test 4: Moved set is empty
+        assert(temp.Size() == 0);
+        // Test 5: Move with negative values
+        temp.Clear();
+        temp.Insert(-10);
+        temp.Insert(0);
+        lasd::SetLst<int> setLst5(std::move(temp));
+        assert(setLst5.Exists(-10));
+        // Test 6: Move large set
+        temp.Clear();
+        for (int i = 0; i < 10; ++i)
+            temp.Insert(i * 10);
+        lasd::SetLst<int> setLst6(std::move(temp));
+        assert(setLst6.Size() == 10);
+        assert(setLst6.Exists(90));
+        // Test 7: Move after MinNRemove
+        temp.Clear();
+        temp.Insert(10);
+        temp.Insert(20);
+        temp.MinNRemove();
+        lasd::SetLst<int> setLst7(std::move(temp));
+        assert(setLst7.Exists(20));
+        // Test 8: Move after MaxNRemove
+        temp.Clear();
+        temp.Insert(10);
+        temp.Insert(20);
+        temp.MaxNRemove();
+        lasd::SetLst<int> setLst8(std::move(temp));
+        assert(setLst8.Exists(10));
+        // Test 9: Move after clear
+        temp.Clear();
+        lasd::SetLst<int> setLst9(std::move(temp));
+        assert(setLst9.Size() == 0);
+        // Test 10: Move with single negative
+        temp.Insert(-100);
+        lasd::SetLst<int> setLst10(std::move(temp));
+        assert(setLst10.Exists(-100));
+        // Test 11: Move after multiple inserts
+        temp.Insert(-50);
+        temp.Insert(0);
+        temp.Insert(50);
+        lasd::SetLst<int> setLst11(std::move(temp));
+        assert(setLst11.Size() == 3);
+        // Test 12: Move after multiple inserts
+        temp.Clear();
+        for (int i = 0; i < 20; ++i)
+            temp.Insert(i * 10);
+        lasd::SetLst<int> setLst12(std::move(temp));
+        assert(setLst12.Exists(190));
+        // Test 13: Move and check original
+        assert(temp.Size() == 0);
+        // Test 14: Move after remove
+        temp.Insert(10);
+        temp.Insert(20);
+        temp.Remove(10);
+        lasd::SetLst<int> setLst13(std::move(temp));
+        assert(setLst13.Exists(20));
+        // Test 15: Move and modify moved
+        setLst13.Insert(30);
+        assert(setLst13.Size() == 2);
+        setLst.Clear();
+    }
+
+    // 19. Test Move Assignment (15 cases)
+    {
+        lasd::SetLst<int> other;
+        // Test 1: Move assign empty to empty
+        setLst = std::move(other);
+        assert(setLst.Size() == 0);
+        // Test 2: Move assign non-empty to empty
+        other.Insert(10);
+        setLst = std::move(other);
+        assert(setLst.Size() == 1);
+        assert(setLst.Exists(10));
+        // Test 3: Move assign with multiple elements
+        other.Insert(5);
+        other.Insert(10);
+        other.Insert(15);
+        setLst = std::move(other);
+        assert(setLst.Size() == 3);
+        assert(setLst.Exists(5));
+        // Test 4: Original is empty
+        assert(other.Size() == 0);
+        // Test 5: Move assign with negative values
+        other.Clear();
+        other.Insert(-10);
+        other.Insert(0);
+        setLst = std::move(other);
+        assert(setLst.Exists(-10));
+        // Test 6: Move assign large set
+        other.Clear();
+        for (int i = 0; i < 10; ++i)
+            other.Insert(i * 10);
+        setLst = std::move(other);
+        assert(setLst.Size() == 10);
+        assert(setLst.Exists(90));
+        // Test 7: Move assign after MinNRemove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.MinNRemove();
+        setLst = std::move(other);
+        assert(setLst.Exists(20));
+        // Test 8: Move assign after MaxNRemove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.MaxNRemove();
+        setLst = std::move(other);
+        assert(setLst.Exists(10));
+        // Test 9: Move assign empty to non-empty
+        other.Clear();
+        setLst = std::move(other);
+        assert(setLst.Size() == 0);
+        // Test 10: Move assign with single negative
+        other.Insert(-100);
+        setLst = std::move(other);
+        assert(setLst.Exists(-100));
+        // Test 11: Move assign after multiple inserts
+        other.Insert(-50);
+        other.Insert(0);
+        other.Insert(50);
+        setLst = std::move(other);
+        assert(setLst.Size() == 3);
+        // Test 12: Move assign after multiple inserts
+        other.Clear();
+        for (int i = 0; i < 20; ++i)
+            other.Insert(i * 10);
+        setLst = std::move(other);
+        assert(setLst.Exists(190));
+        // Test 13: Move assign non-empty to non-empty
+        lasd::SetLst<int> temp;
+        temp.Insert(100);
+        temp.Insert(200);
+        setLst = std::move(temp);
+        assert(setLst.Size() == 2);
+        assert(setLst.Exists(100) && setLst.Exists(200));
+        assert(temp.Size() == 0);
+        // Test 14: Move assign after remove
+        other.Insert(10);
+        other.Insert(20);
+        other.Remove(10);
+        setLst = std::move(other);
+        assert(setLst.Exists(20));
+        // Test 15: Move assign and check original
+        assert(other.Size() == 0);
+        setLst.Clear();
+    }
+
+    // 20. Test Copy Assignment (15 cases)
+    {
+        lasd::SetLst<int> other;
+        // Test 1: Assign empty to empty
+        setLst = other;
+        assert(setLst.Size() == 0);
+        // Test 2: Assign non-empty to empty
+        other.Insert(10);
+        setLst = other;
+        assert(setLst.Size() == 1);
+        assert(setLst.Exists(10));
+        // Test 3: Assign with multiple elements
+        other.Insert(5);
+        other.Insert(15);
+        setLst = other;
+        assert(setLst.Size() == 3);
+        assert(setLst.Exists(5));
+        // Test 4: Independence of assignment
+        other.Remove(10);
+        assert(setLst.Exists(10));
+        // Test 5: Assign with negative values
+        other.Clear();
+        other.Insert(-10);
+        other.Insert(0);
+        setLst = other;
+        assert(setLst.Exists(-10));
+        // Test 6: Assign large set
+        other.Clear();
+        for (int i = 0; i < 10; ++i)
+            other.Insert(i * 10);
+        setLst = other;
+        assert(setLst.Size() == 10);
+        assert(setLst.Exists(90));
+        // Test 7: Assign after MinNRemove
+        other.MinNRemove();
+        setLst = other;
+        assert(setLst.Exists(10));
+        // Test 8: Assign after MaxNRemove
+        other.MaxNRemove();
+        setLst = other;
+        assert(setLst.Exists(80));
+        // Test 9: Assign empty to non-empty
+        other.Clear();
+        setLst = other;
+        assert(setLst.Size() == 0);
+        // Test 10: Assign with single negative
+        other.Insert(-100);
+        setLst = other;
+        assert(setLst.Exists(-100));
+        // Test 11: Assign after multiple inserts
+        other.Insert(-50);
+        other.Insert(0);
+        setLst = other;
+        assert(setLst.Size() == 3);
+        // Test 12: Assign after multiple inserts
+        other.Clear();
+        for (int i = 0; i < 20; ++i)
+            other.Insert(i * 10);
+        setLst = other;
+        assert(setLst.Exists(190));
+        // Test 13: Self-assignment
+        setLst = setLst;
+        assert(setLst.Size() == 20);
+        // Test 14: Assign after remove
+        other.Remove(100);
+        setLst = other;
+        assert(setLst.Exists(110));
+        // Test 15: Assign and modify original
+        other.Clear();
+        assert(setLst.Size() == 19);
+        setLst.Clear();
+    }
+
+    // 21. Test Move Assignment (15 cases)
+    {
+        lasd::SetLst<int> other;
+        // Test 1: Move assign empty to empty
+        setLst = std::move(other);
+        assert(setLst.Size() == 0);
+        // Test 2: Move assign non-empty to empty
+        other.Insert(10);
+        setLst = std::move(other);
+        assert(setLst.Size() == 1);
+        assert(setLst.Exists(10));
+        // Test 3: Move assign with multiple elements
+        other.Insert(5);
+        other.Insert(10);
+        other.Insert(15);
+        setLst = std::move(other);
+        assert(setLst.Size() == 3);
+        assert(setLst.Exists(5));
+        // Test 4: Original is empty
+        assert(other.Size() == 0);
+        // Test 5: Move assign with negative values
+        other.Clear();
+        other.Insert(-10);
+        other.Insert(0);
+        setLst = std::move(other);
+        assert(setLst.Exists(-10));
+        // Test 6: Move assign large set
+        other.Clear();
+        for (int i = 0; i < 10; ++i)
+            other.Insert(i * 10);
+        setLst = std::move(other);
+        assert(setLst.Size() == 10);
+        assert(setLst.Exists(90));
+        // Test 7: Move assign after MinNRemove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.MinNRemove();
+        setLst = std::move(other);
+        assert(setLst.Exists(20));
+        // Test 8: Move assign after MaxNRemove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.MaxNRemove();
+        setLst = std::move(other);
+        assert(setLst.Exists(10));
+        // Test 9: Move assign empty to non-empty
+        other.Clear();
+        setLst = std::move(other);
+        assert(setLst.Size() == 0);
+        // Test 10: Move assign with single negative
+        other.Insert(-100);
+        setLst = std::move(other);
+        assert(setLst.Exists(-100));
+        // Test 11: Move assign after multiple inserts
+        other.Insert(-50);
+        other.Insert(0);
+        other.Insert(50);
+        setLst = std::move(other);
+        assert(setLst.Size() == 3);
+        // Test 12: Move assign after multiple inserts
+        other.Clear();
+        for (int i = 0; i < 20; ++i)
+            other.Insert(i * 10);
+        setLst = std::move(other);
+        assert(setLst.Exists(190));
+        // Test 13: Self-assignment
+        lasd::SetLst<int> temp;
+        temp.Insert(100);
+        temp.Insert(200);
+        setLst = std::move(temp);
+        assert(setLst.Size() == 2);
+        assert(setLst.Exists(100) && setLst.Exists(200));
+        assert(temp.Size() == 0);
+        // Test 14: Move assign after remove
+        other.Insert(10);
+        other.Insert(20);
+        other.Remove(10);
+        setLst = std::move(other);
+        assert(setLst.Exists(20));
+        // Test 15: Move assign and check original
+        assert(other.Size() == 0);
+        setLst.Clear();
+    }
+
+    std::cout << "SetLst tests passed!" << std::endl;
+}
+
+// ... (remaining test cases unchanged)
+
+
+
+
+
+void testSetVec()
+{
+    std::cout << "Testing SetVec..." << std::endl;
+    lasd::SetVec<int> setVec;
+
+    // 1. Test Default Constructor (5 cases)
+    {
+        // Test 1: Size of empty set
+        assert(setVec.Size() == 0);
+        // Test 2: Exists on empty set
+        assert(!setVec.Exists(10));
+        // Test 3: Min on empty set (exception)
+        try {
+            setVec.Min();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 4: Max on empty set (exception)
+        try {
+            setVec.Max();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 5: Operator[] on empty set (exception)
+        try {
+            setVec[0];
+            assert(false);
+        } catch (std::out_of_range&) {
+            assert(true);
+        }
+    }
+
+    // 2. Test Insert (16 cases)
+    {
+        // Test 1: Insert single element
+        assert(setVec.Insert(10));
+        assert(setVec.Size() == 1);
+        // Test 2: Insert duplicate
+        assert(!setVec.Insert(10));
+        assert(setVec.Size() == 1);
+        // Test 3: Insert multiple elements
+        assert(setVec.Insert(5));
+        assert(setVec.Insert(15));
+        assert(setVec.Size() == 3);
+        // Test 4: Insert negative value
+        assert(setVec.Insert(-10));
+        assert(setVec.Size() == 4);
+        // Test 5: Insert zero
+        assert(setVec.Insert(0));
+        assert(setVec.Size() == 5);
+        // Test 6: Insert large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            assert(setVec.Insert(i * 10));
+        }
+        assert(setVec.Size() == 20);
+        // Test 7: Insert after clear
+        setVec.Clear();
+        assert(setVec.Insert(25));
+        assert(setVec.Size() == 1);
+        // Test 8: Insert non-duplicate after duplicate attempt
+        assert(!setVec.Insert(25));
+        assert(setVec.Insert(50));
+        assert(setVec.Size() == 2);
+        // Test 9: Insert with move
+        int value = 75;
+        assert(setVec.Insert(std::move(value)));
+        assert(setVec.Size() == 3);
+        // Test 10: Insert large negative
+        assert(setVec.Insert(-100));
+        assert(setVec.Size() == 4);
+        // Test 11: Insert after multiple inserts
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            assert(setVec.Insert(i * 10 - 50));
+        }
+        assert(setVec.Size() == 10);
+        // Test 12: Insert with resize
+        for (int i = 0; i < 10; ++i) {
+            assert(setVec.Insert(i * 100 + 50));
+        }
+        assert(setVec.Size() == 20);
+        // Test 13: Insert duplicate in large set
+        assert(!setVec.Insert(0));
+        assert(setVec.Size() == 20);
+        // Test 14: Insert after remove
+        setVec.Remove(0);
+        assert(setVec.Insert(0));
+        assert(setVec.Size() == 20);
+        // Test 15: Insert with negative duplicates
+        assert(!setVec.Insert(-50));
+        assert(setVec.Size() == 20);
+        // Test 16: Verify elements are sorted
+        for (unsigned long i = 1; i < setVec.Size(); ++i) {
+            assert(setVec[i - 1] < setVec[i]);
+        }
+        setVec.Clear();
+    }
+    // 3. Test Exists (15 cases)
+    {
+        // Test 1: Exists on empty set
+        assert(!setVec.Exists(10));
+        // Test 2: Exists with one element
+        setVec.Insert(10);
+        assert(setVec.Exists(10));
+        // Test 3: Exists with non-existent element
+        assert(!setVec.Exists(20));
+        // Test 4: Exists with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec.Exists(5));
+        // Test 5: Exists with negative value
+        setVec.Insert(-10);
+        assert(setVec.Exists(-10));
+        // Test 6: Exists after clear
+        setVec.Clear();
+        assert(!setVec.Exists(10));
+        // Test 7: Exists in large set
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Exists(50));
+        // Test 8: Exists for non-existent in large set
+        assert(!setVec.Exists(55));
+        // Test 9: Exists after remove
+        setVec.Remove(50);
+        assert(!setVec.Exists(50));
+        // Test 10: Exists with negative non-existent
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(!setVec.Exists(-5));
+        // Test 11: Exists after multiple inserts
+        setVec.Clear();
+        for (int i = 0; i < 5; ++i) {
+            setVec.Insert(i * 10 - 20);
+        }
+        assert(setVec.Exists(-10));
+        // Test 12: Exists after clear and reinsert
+        setVec.Clear();
+        setVec.Insert(25);
+        assert(setVec.Exists(25));
+        // Test 13: Exists with large value
+        setVec.Insert(1000);
+        assert(setVec.Exists(1000));
+        // Test 14: Exists after multiple removes
+        setVec.Remove(25);
+        assert(!setVec.Exists(25));
+        // Test 15: Exists with single element
+        setVec.Clear();
+        setVec.Insert(0);
+        assert(setVec.Exists(0));
+        setVec.Clear();
+    }
+
+    // 4. Test Remove (15 cases)
+    {
+        // Test 1: Remove from empty set
+        assert(!setVec.Remove(10));
+        // Test 2: Remove single element
+        setVec.Insert(10);
+        assert(setVec.Remove(10));
+        assert(setVec.Size() == 0);
+        // Test 3: Remove non-existent
+        setVec.Insert(10);
+        assert(!setVec.Remove(20));
+        // Test 4: Remove with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec.Remove(10));
+        assert(setVec.Size() == 2);
+        // Test 5: Remove negative value
+        setVec.Clear();
+        setVec.Insert(-10);
+        assert(setVec.Remove(-10));
+        // Test 6: Remove from large set
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Remove(50));
+        assert(setVec.Size() == 9);
+        // Test 7: Remove after clear
+        setVec.Clear();
+        assert(!setVec.Remove(10));
+        // Test 8: Remove min
+        setVec.Insert(10);
+        setVec.Insert(20);
+        assert(setVec.Remove(10));
+        assert(setVec.Size() == 1);
+        // Test 9: Remove max
+        setVec.Insert(30);
+        assert(setVec.Remove(30));
+        assert(setVec.Size() == 1);
+        // Test 10: Remove with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.Remove(-10));
+        // Test 11: Remove all elements
+        setVec.Clear();
+        for (int i = 0; i < 5; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 5; ++i) {
+            assert(setVec.Remove(i * 10));
+        }
+        assert(setVec.Size() == 0);
+        // Test 12: Remove after resize
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Remove(100));
+        assert(setVec.Size() == 19);
+        assert(!setVec.Exists(100));
+        // Test 13: Remove non-existent in large set
+        assert(!setVec.Remove(100));
+        // Test 14: Remove with single element
+        setVec.Clear();
+        setVec.Insert(10);
+        assert(setVec.Remove(10));
+        assert(setVec.Size() == 0);
+        // Test 15: Remove after multiple inserts
+        setVec.Insert(10);
+        setVec.Insert(20);
+        assert(setVec.Remove(20));
+        assert(setVec.Size() == 1);
+        setVec.Clear();
+    }
+
+    // 5. Test Min (15 cases)
+    {
+        // Test 1: Min on empty set (exception)
+        try {
+            setVec.Min();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: Min with one element
+        setVec.Insert(10);
+        assert(setVec.Min() == 10);
+        // Test 3: Min with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec.Min() == 5);
+        // Test 4: Min with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.Min() == -10);
+        // Test 5: Min after remove
+        setVec.Clear();
+        setVec.Insert(10);
+        setVec.Insert(20);
+        setVec.Remove(10);
+        assert(setVec.Min() == 20);
+        // Test 6: Min with large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Min() == 0);
+        // Test 7: Min after clear
+        setVec.Clear();
+        try {
+            setVec.Min();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 8: Min with single negative
+        setVec.Insert(-100);
+        assert(setVec.Min() == -100);
+        // Test 9: Min after multiple inserts
+        setVec.Clear();
+        setVec.Insert(-100);
+        setVec.Insert(-50);
+        setVec.Insert(0);
+        assert(setVec.Min() == -100);
+        // Test 10: Min with large negative
+        setVec.Clear();
+        setVec.Insert(-1000);
+        setVec.Insert(-500);
+        assert(setVec.Min() == -1000);
+        // Test 11: Min after MinNRemove
+        setVec.Clear();
+        setVec.Insert(10);
+        setVec.Insert(20);
+        setVec.MinNRemove();
+        assert(setVec.Min() == 20);
+        // Test 12: Min after multiple removes
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 5; ++i) {
+            setVec.Remove(i * 10);
+        }
+        assert(setVec.Min() == 50);
+        // Test 13: Min with single element
+        setVec.Clear();
+        setVec.Insert(0);
+        assert(setVec.Min() == 0);
+        // Test 14: Min after reinsert
+        setVec.Clear();
+        setVec.Insert(25);
+        setVec.Insert(50);
+        assert(setVec.Min() == 25);
+        // Test 15: Min after large set insert
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10 - 100);
+        }
+        assert(setVec.Min() == -100);
+        setVec.Clear();
+    }
+
+    // 6. Test Max (15 cases)
+    {
+        // Test 1: Max on empty set (exception)
+        try {
+            setVec.Max();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: Max with one element
+        setVec.Insert(10);
+        assert(setVec.Max() == 10);
+        // Test 3: Max with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec.Max() == 15);
+        // Test 4: Max with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.Max() == 0);
+        // Test 5: Max after remove
+        setVec.Clear();
+        setVec.Insert(10);
+        setVec.Insert(20);
+        setVec.Remove(20);
+        assert(setVec.Max() == 10);
+        // Test 6: Max with large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Max() == 190);
+        // Test 7: Max after clear
+        setVec.Clear();
+        try {
+            setVec.Max();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 8: Max with single negative
+        setVec.Insert(-100);
+        assert(setVec.Max() == -100);
+        // Test 9: Max after multiple inserts
+        setVec.Insert(-50);
+        setVec.Insert(0);
+        assert(setVec.Max() == 0);
+        // Test 10: Max with large value
+        setVec.Clear();
+        setVec.Insert(1000);
+        setVec.Insert(500);
+        assert(setVec.Max() == 1000);
+        // Test 11: Max after MaxNRemove
+        setVec.Clear();
+        setVec.Insert(10);
+        setVec.Insert(20);
+        setVec.MaxNRemove();
+        assert(setVec.Max() == 10);
+        // Test 12: Max after multiple removes
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 5; i < 10; ++i) {
+            setVec.Remove(i * 10);
+        }
+        assert(setVec.Max() == 40);
+        // Test 13: Max with single element
+        setVec.Clear();
+        setVec.Insert(0);
+        assert(setVec.Max() == 0);
+        // Test 14: Max after reinsert
+        setVec.Clear();
+        setVec.Insert(25);
+        setVec.Insert(50);
+        assert(setVec.Max() == 50);
+        // Test 15: Max after large set insert
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10 - 100);
+        }
+        assert(setVec.Max() == 90);
+        setVec.Clear();
+    }
+
+    // 7. Test MinNRemove (15 cases)
+    {
+        // Test 1: MinNRemove on empty set (exception)
+        try {
+            setVec.MinNRemove();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: MinNRemove with one element
+        setVec.Insert(10);
+        assert(setVec.MinNRemove() == 10);
+        // Test 3: Size after MinNRemove
+        assert(setVec.Size() == 0);
+        // Test 4: MinNRemove with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(10);
+        setVec.Insert(15);
+        assert(setVec.MinNRemove() == 5);
+        // Test 5: Size after MinNRemove
+        assert(setVec.Size() == 2);
+        // Test 6: MinNRemove with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.MinNRemove() == -10);
+        // Test 7: MinNRemove after multiple inserts
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10 - 50);
+        }
+        assert(setVec.MinNRemove() == -50);
+        // Test 8: MinNRemove after min removal
+        assert(setVec.MinNRemove() == -40);
+        // Test 9: Size after multiple MinNRemove
+        assert(setVec.Size() == 8);
+        // Test 10: MinNRemove with large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 15; ++i) {
+            setVec.MinNRemove();
+        }
+        assert(setVec.Size() == 5);
+        // Test 11: MinNRemove with single negative
+        setVec.Clear();
+        setVec.Insert(-100);
+        assert(setVec.MinNRemove() == -100);
+        // Test 12: MinNRemove after clear
+        try {
+            setVec.MinNRemove();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 13: MinNRemove with large negative
+        setVec.Insert(-1000);
+        setVec.Insert(-500);
+        assert(setVec.MinNRemove() == -1000);
+        // Test 14: MinNRemove with one element left
+        assert(setVec.MinNRemove() == -500);
+        assert(setVec.Size() == 0);
+        // Test 15: MinNRemove after reinsert
+        setVec.Insert(25);
+        setVec.Insert(50);
+        assert(setVec.MinNRemove() == 25);
+        setVec.Clear();
+    }
+
+    // 8. Test MaxNRemove (15 cases)
+    {
+        // Test 1: MaxNRemove on empty set (exception)
+        try {
+            setVec.MaxNRemove();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: MaxNRemove with one element
+        setVec.Insert(10);
+        assert(setVec.MaxNRemove() == 10);
+        // Test 3: Size after MaxNRemove
+        assert(setVec.Size() == 0);
+        // Test 4: MaxNRemove with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(10);
+        setVec.Insert(15);
+        assert(setVec.MaxNRemove() == 15);
+        // Test 5: Size after MaxNRemove
+        assert(setVec.Size() == 2);
+        // Test 6: MaxNRemove with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.MaxNRemove() == 0);
+        // Test 7: MaxNRemove after multiple inserts
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10 - 50);
+        }
+        assert(setVec.MaxNRemove() == 40);
+        // Test 8: MaxNRemove after max removal
+        assert(setVec.MaxNRemove() == 30);
+        // Test 9: Size after multiple MaxNRemove
+        assert(setVec.Size() == 8);
+        // Test 10: MaxNRemove with large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 15; ++i) {
+            setVec.MaxNRemove();
+        }
+        assert(setVec.Size() == 5);
+        // Test 11: MaxNRemove with single negative
+        setVec.Clear();
+        setVec.Insert(-100);
+        assert(setVec.MaxNRemove() == -100);
+        // Test 12: MaxNRemove after clear
+        try {
+            setVec.MaxNRemove();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 13: MaxNRemove with large value
+        setVec.Insert(1000);
+        setVec.Insert(500);
+        assert(setVec.MaxNRemove() == 1000);
+        // Test 14: MaxNRemove with one element left
+        assert(setVec.MaxNRemove() == 500);
+        assert(setVec.Size() == 0);
+        // Test 15: MaxNRemove after reinsert
+        setVec.Insert(25);
+        setVec.Insert(50);
+        assert(setVec.MaxNRemove() == 50);
+        setVec.Clear();
+    }
+
+    // 9. Test Predecessor (15 cases)
+    {
+        // Test 1: Predecessor on empty set (exception)
+        try {
+            setVec.Predecessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: Predecessor with one element (exception)
+        setVec.Insert(10);
+        try {
+            setVec.Predecessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 3: Predecessor with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec.Predecessor(15) == 10);
+        // Test 4: Predecessor of min (exception)
+        try {
+            setVec.Predecessor(5);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 5: Predecessor of non-existent larger value
+        assert(setVec.Predecessor(20) == 15);
+        // Test 6: Predecessor with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.Predecessor(0) == -10);
+        // Test 7: Predecessor with large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Predecessor(50) == 40);
+        // Test 8: Predecessor of value between elements
+        assert(setVec.Predecessor(45) == 40);
+        // Test 9: Predecessor after remove
+        setVec.Remove(40);
+        assert(setVec.Predecessor(50) == 30);
+        // Test 10: Predecessor with single element
+        setVec.Clear();
+        setVec.Insert(10);
+        try {
+            setVec.Predecessor(5);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 11: Predecessor with negative non-existent
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.Predecessor(-5) == -10);
+        // Test 12: Predecessor after clear
+        setVec.Clear();
+        try {
+            setVec.Predecessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 13: Predecessor with large negative
+        setVec.Insert(-100);
+        setVec.Insert(-50);
+        assert(setVec.Predecessor(-50) == -100);
+        // Test 14: Predecessor after multiple inserts
+        setVec.Insert(-75);
+        assert(setVec.Predecessor(-50) == -75);
+        // Test 15: Predecessor of max in large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Predecessor(90) == 80);
+        setVec.Clear();
+    }
+
+    // 10. Test Successor (15 cases)
+    {
+        // Test 1: Successor on empty set (exception)
+        try {
+            setVec.Successor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: Successor with one element (exception)
+        setVec.Insert(10);
+        try {
+            setVec.Successor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 3: Successor with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec.Successor(5) == 10);
+        // Test 4: Successor of max (exception)
+        try {
+            setVec.Successor(15);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 5: Successor of non-existent smaller value
+        assert(setVec.Successor(0) == 5);
+        // Test 6: Successor with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.Successor(-10) == 0);
+        // Test 7: Successor with large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Successor(40) == 50);
+        // Test 8: Successor of value between elements
+        assert(setVec.Successor(45) == 50);
+        // Test 9: Successor after remove
+        setVec.Remove(50);
+        assert(setVec.Successor(40) == 60);
+        // Test 10: Successor with single element
+        setVec.Clear();
+        setVec.Insert(10);
+        try {
+            setVec.Successor(15);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 11: Successor with negative non-existent
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.Successor(-15) == -10);
+        // Test 12: Successor after clear
+        setVec.Clear();
+        try {
+            setVec.Successor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 13: Successor with large value
+        setVec.Insert(500);
+        setVec.Insert(1000);
+        assert(setVec.Successor(500) == 1000);
+        // Test 14: Successor after multiple inserts
+        setVec.Insert(750);
+        assert(setVec.Successor(500) == 750);
+        // Test 15: Successor of min in large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.Successor(0) == 10);
+        setVec.Clear();
+    }
+
+    // 11. Test PredecessorNRemove (15 cases)
+    {
+        // Test 1: PredecessorNRemove on empty set (exception)
+        try {
+            setVec.PredecessorNRemove(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: PredecessorNRemove with one element (exception)
+        setVec.Insert(10);
+        try {
+            setVec.PredecessorNRemove(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 3: PredecessorNRemove with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec.PredecessorNRemove(15) == 10);
+        // Test 4: Size after PredecessorNRemove
+        assert(setVec.Size() == 2);
+        // Test 5: PredecessorNRemove of min (exception)
+        try {
+            setVec.PredecessorNRemove(5);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 6: PredecessorNRemove of non-existent
+        assert(setVec.PredecessorNRemove(20) == 15);
+        // Test 7: PredecessorNRemove with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.PredecessorNRemove(0) == -10);
+        // Test 8: PredecessorNRemove with large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.PredecessorNRemove(50) == 40);
+        // Test 9: Size after PredecessorNRemove
+        assert(setVec.Size() == 9);
+        // Test 10: PredecessorNRemove with large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 15; ++i) {
+            setVec.PredecessorNRemove((19 - i) * 10);
+        }
+        assert(setVec.Size() == 5);
+        // Test 11: PredecessorNRemove with single element
+        setVec.Clear();
+        setVec.Insert(10);
+        try {
+            setVec.PredecessorNRemove(5);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 12: PredecessorNRemove with negative non-existent
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.PredecessorNRemove(-5) == -10);
+        // Test 13: PredecessorNRemove after clear
+        setVec.Clear();
+        try {
+            setVec.PredecessorNRemove(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 14: PredecessorNRemove with large negative
+        setVec.Insert(-100);
+        setVec.Insert(-50);
+        assert(setVec.PredecessorNRemove(-50) == -100);
+        // Test 15: PredecessorNRemove after multiple inserts
+        setVec.Insert(-75);
+        assert(setVec.PredecessorNRemove(-50) == -75);
+        setVec.Clear();
+    }
+
+    // 12. Test SuccessorNRemove (15 cases)
+    {
+        // Test 1: SuccessorNRemove on empty set (exception)
+        try {
+            setVec.SuccessorNRemove(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: SuccessorNRemove with one element (exception)
+        setVec.Insert(10);
+        try {
+            setVec.SuccessorNRemove(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 3: SuccessorNRemove with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec.SuccessorNRemove(5) == 10);
+        // Test 4: Size after SuccessorNRemove
+        assert(setVec.Size() == 2);
+        // Test 5: SuccessorNRemove of max (exception)
+        try {
+            setVec.SuccessorNRemove(15);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 6: SuccessorNRemove of non-existent
+        assert(setVec.SuccessorNRemove(0) == 5);
+        // Test 7: SuccessorNRemove with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.SuccessorNRemove(-10) == 0);
+        // Test 8: SuccessorNRemove with large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec.SuccessorNRemove(40) == 50);
+        // Test 9: Size after SuccessorNRemove
+        assert(setVec.Size() == 9);
+        // Test 10: SuccessorNRemove with large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 15; ++i) {
+            setVec.SuccessorNRemove(i * 10);
+        }
+        assert(setVec.Size() == 5);
+        // Test 11: SuccessorNRemove with single element
+        setVec.Clear();
+        setVec.Insert(10);
+        try {
+            setVec.SuccessorNRemove(15);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 12: SuccessorNRemove with negative non-existent
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec.SuccessorNRemove(-15) == -10);
+        // Test 13: SuccessorNRemove after clear
+        setVec.Clear();
+        try {
+            setVec.SuccessorNRemove(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 14: SuccessorNRemove with large value
+        setVec.Insert(500);
+        setVec.Insert(1000);
+        assert(setVec.SuccessorNRemove(500) == 1000);
+        // Test 15: SuccessorNRemove after multiple inserts
+        setVec.Insert(750);
+        assert(setVec.SuccessorNRemove(500) == 750);
+        setVec.Clear();
+    }
+
+    // 13. Test RemovePredecessor (15 cases)
+    {
+        // Test 1: RemovePredecessor on empty set (exception)
+        try {
+            setVec.RemovePredecessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: RemovePredecessor with one element (exception)
+        setVec.Insert(10);
+        try {
+            setVec.RemovePredecessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 3: RemovePredecessor with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        setVec.RemovePredecessor(15);
+        assert(!setVec.Exists(10));
+        // Test 4: Size after RemovePredecessor
+        assert(setVec.Size() == 2);
+        // Test 5: RemovePredecessor of min (exception)
+        try {
+            setVec.RemovePredecessor(5);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 6: RemovePredecessor of non-existent
+        setVec.RemovePredecessor(20);
+        assert(!setVec.Exists(15));
+        // Test 7: RemovePredecessor with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        setVec.RemovePredecessor(0);
+        assert(!setVec.Exists(-10));
+        // Test 8: RemovePredecessor with large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        setVec.RemovePredecessor(50);
+        assert(!setVec.Exists(40));
+        // Test 9: Size after RemovePredecessor
+        assert(setVec.Size() == 9);
+        // Test 10: RemovePredecessor with large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 15; ++i) {
+            setVec.RemovePredecessor((19 - i) * 10);
+        }
+        assert(setVec.Size() == 5);
+        // Test 11: RemovePredecessor with single element
+        setVec.Clear();
+        setVec.Insert(10);
+        try {
+            setVec.RemovePredecessor(5);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 12: RemovePredecessor with negative non-existent
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        setVec.RemovePredecessor(-5);
+        assert(!setVec.Exists(-10));
+        // Test 13: RemovePredecessor after clear
+        setVec.Clear();
+        try {
+            setVec.RemovePredecessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 14: RemovePredecessor with large negative
+        setVec.Insert(-100);
+        setVec.Insert(-50);
+        setVec.RemovePredecessor(-50);
+        assert(!setVec.Exists(-100));
+        // Test 15: RemovePredecessor after multiple inserts
+        setVec.Insert(-75);
+        setVec.RemovePredecessor(-50);
+        assert(!setVec.Exists(-75));
+        setVec.Clear();
+    }
+
+    // 14. Test RemoveSuccessor (15 cases)
+    {
+        // Test 1: RemoveSuccessor on empty set (exception)
+        try {
+            setVec.RemoveSuccessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 2: RemoveSuccessor with one element (exception)
+        setVec.Insert(10);
+        try {
+            setVec.RemoveSuccessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 3: RemoveSuccessor with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        setVec.RemoveSuccessor(5);
+        assert(!setVec.Exists(10));
+        // Test 4: Size after RemoveSuccessor
+        assert(setVec.Size() == 2);
+        // Test 5: RemoveSuccessor of max (exception)
+        try {
+            setVec.RemoveSuccessor(15);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 6: RemoveSuccessor of non-existent
+        setVec.RemoveSuccessor(0);
+        assert(!setVec.Exists(5));
+        // Test 7: RemoveSuccessor with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        setVec.RemoveSuccessor(-10);
+        assert(!setVec.Exists(0));
+        // Test 8: RemoveSuccessor with large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        setVec.RemoveSuccessor(40);
+        assert(!setVec.Exists(50));
+        // Test 9: Size after RemoveSuccessor
+        assert(setVec.Size() == 9);
+        // Test 10: RemoveSuccessor with large set
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 15; ++i) {
+            setVec.RemoveSuccessor(i * 10);
+        }
+        assert(setVec.Size() == 5);
+        // Test 11: RemoveSuccessor with single element
+        setVec.Clear();
+        setVec.Insert(10);
+        try {
+            setVec.RemoveSuccessor(15);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 12: RemoveSuccessor with negative non-existent
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        setVec.RemoveSuccessor(-15);
+        assert(!setVec.Exists(-10));
+        // Test 13: RemoveSuccessor after clear
+        setVec.Clear();
+        try {
+            setVec.RemoveSuccessor(10);
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 14: RemoveSuccessor with large value
+        setVec.Insert(500);
+        setVec.Insert(1000);
+        setVec.RemoveSuccessor(500);
+        assert(!setVec.Exists(1000));
+        // Test 15: RemoveSuccessor after multiple inserts
+        setVec.Insert(750);
+        setVec.RemoveSuccessor(500);
+        assert(!setVec.Exists(750));
+        setVec.Clear();
+    }
+
+    // 15. Test Clear (15 cases)
+    {
+        // Test 1: Clear empty set
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        // Test 2: Clear with one element
+        setVec.Insert(10);
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        // Test 3: Clear with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(10);
+        setVec.Insert(15);
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        // Test 4: Exists after clear
+        assert(!setVec.Exists(10));
+        // Test 5: Min after clear (exception)
+        try {
+            setVec.Min();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 6: Max after clear (exception)
+        try {
+            setVec.Max();
+            assert(false);
+        } catch (std::length_error&) {
+            assert(true);
+        }
+        // Test 7: Clear large set
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        // Test 8: Insert after clear
+        setVec.Insert(25);
+        assert(setVec.Size() == 1);
+        // Test 9: Clear after multiple inserts
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        // Test 10: Clear with negative values
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        setVec.Clear();
+        assert(!setVec.Exists(-10));
+        // Test 11: Clear multiple times
+        setVec.Insert(10);
+        setVec.Clear();
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        // Test 12: Exists after clear
+        setVec.Insert(10);
+        setVec.Clear();
+        assert(!setVec.Exists(10));
+        // Test 13: Clear after remove
+        setVec.Insert(10);
+        setVec.Remove(10);
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        // Test 14: Clear after MinNRemove
+        setVec.Insert(10);
+        setVec.MinNRemove();
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        // Test 15: Clear after MaxNRemove
+        setVec.Insert(10);
+        setVec.MaxNRemove();
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        setVec.Clear();
+    }
+
+    // 16. Test Operator== (15 cases)
+    {
+        lasd::SetVec<int> other;
+        // Test 1: Empty sets equal
+        assert(setVec == other);
+        // Test 2: Empty vs non-empty
+        setVec.Insert(10);
+        assert(!(setVec == other));
+        // Test 3: Same single element
+        other.Insert(10);
+        assert(setVec == other);
+        // Test 4: Same multiple elements
+        setVec.Insert(20);
+        other.Insert(20);
+        assert(setVec == other);
+        // Test 5: Different sizes
+        setVec.Insert(30);
+        assert(!(setVec == other));
+        // Test 6: Same size, different elements
+        other.Insert(25);
+        assert(!(setVec == other));
+        // Test 7: Equal after clear
+        setVec.Clear();
+        other.Clear();
+        assert(setVec == other);
+        // Test 8: Equal with negative values
+        setVec.Insert(-10);
+        other.Insert(-10);
+        assert(setVec == other);
+        // Test 9: Equal large sets
+        setVec.Clear();
+        other.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+            other.Insert(i * 10);
+        }
+        assert(setVec == other);
+        // Test 10: Different after remove
+        setVec.Remove(50);
+        assert(!(setVec == other));
+        // Test 11: Equal after reinsert
+        other.Remove(50);
+        assert(setVec == other);
+        // Test 12: Equal with single element
+        setVec.Clear();
+        other.Clear();
+        setVec.Insert(0);
+        other.Insert(0);
+        assert(setVec == other);
+        // Test 13: Different after clear
+        setVec.Clear();
+        assert(!(setVec == other));
+        // Test 14: Equal after multiple inserts
+        other.Clear();
+        setVec.Insert(10);
+        setVec.Insert(20);
+        other.Insert(10);
+        other.Insert(20);
+        assert(setVec == other);
+        // Test 15: Different with negative values
+        setVec.Insert(-10);
+        assert(!(setVec == other));
+        setVec.Clear();
+        other.Clear();
+    }
+
+    // 17. Test Operator!= (15 cases)
+    {
+        lasd::SetVec<int> other;
+        // Test 1: Empty sets not different
+        assert(!(setVec != other));
+        // Test 2: Empty vs non-empty
+        setVec.Insert(10);
+        assert(setVec != other);
+        // Test 3: Same single element
+        other.Insert(10);
+        assert(!(setVec != other));
+        // Test 4: Same multiple elements
+        setVec.Insert(20);
+        other.Insert(20);
+        assert(!(setVec != other));
+        // Test 5: Different sizes
+        setVec.Insert(30);
+        assert(setVec != other);
+        // Test 6: Same size, different elements
+        other.Insert(25);
+        assert(setVec != other);
+        // Test 7: Not different after clear
+        setVec.Clear();
+        other.Clear();
+        assert(!(setVec != other));
+        // Test 8: Not different with negative values
+        setVec.Insert(-10);
+        other.Insert(-10);
+        assert(!(setVec != other));
+        // Test 9: Not different large sets
+        setVec.Clear();
+        other.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+            other.Insert(i * 10);
+        }
+        assert(!(setVec != other));
+        // Test 10: Different after remove
+        setVec.Remove(50);
+        assert(setVec != other);
+        // Test 11: Not different after reinsert
+        other.Remove(50);
+        assert(!(setVec != other));
+        // Test 12: Not different with single element
+        setVec.Clear();
+        other.Clear();
+        setVec.Insert(0);
+        other.Insert(0);
+        assert(!(setVec != other));
+        // Test 13: Different after clear
+        setVec.Clear();
+        assert(setVec != other);
+        // Test 14: Not different after multiple inserts
+        other.Clear();
+        setVec.Insert(10);
+        setVec.Insert(20);
+        other.Insert(10);
+        other.Insert(20);
+        assert(!(setVec != other));
+        // Test 15: Different with negative values
+        setVec.Insert(-10);
+        assert(setVec != other);
+        setVec.Clear();
+        other.Clear();
+    }
+
+    // 18. Test Move Constructor (15 cases)
+    {
+        // Test 1: Move empty set
+        lasd::SetVec<int> setVec2{lasd::SetVec<int>{}};
+        assert(setVec2.Size() == 0);
+        // Test 2: Move set with one element
+        lasd::SetVec<int> temp;
+        temp.Insert(10);
+        lasd::SetVec<int> setVec3(std::move(temp));
+        assert(setVec3.Size() == 1);
+        assert(setVec3.Exists(10));
+        // Test 3: Move set with multiple elements
+        temp.Clear();
+        temp.Insert(5);
+        temp.Insert(10);
+        temp.Insert(15);
+        lasd::SetVec<int> setVec4(std::move(temp));
+        assert(setVec4.Size() == 3);
+        assert(setVec4.Exists(5));
+        // Test 4: Moved set is empty
+        assert(temp.Size() == 0);
+        // Test 5: Move with negative values
+        temp.Clear();
+        temp.Insert(-10);
+        temp.Insert(0);
+        lasd::SetVec<int> setVec5(std::move(temp));
+        assert(setVec5.Exists(-10));
+        // Test 6: Move large set
+        temp.Clear();
+        for (int i = 0; i < 10; ++i) {
+            temp.Insert(i * 10);
+        }
+        lasd::SetVec<int> setVec6(std::move(temp));
+        assert(setVec6.Size() == 10);
+        assert(setVec6.Exists(90));
+        // Test 7: Move after MinNRemove
+        temp.Clear();
+        temp.Insert(10);
+        temp.Insert(20);
+        temp.MinNRemove();
+        lasd::SetVec<int> setVec7(std::move(temp));
+        assert(setVec7.Exists(20));
+        // Test 8: Move after MaxNRemove
+        temp.Clear();
+        temp.Insert(10);
+        temp.Insert(20);
+        temp.MaxNRemove();
+        lasd::SetVec<int> setVec8(std::move(temp));
+        assert(setVec8.Exists(10));
+        // Test 9: Move after clear
+        temp.Clear();
+        lasd::SetVec<int> setVec9(std::move(temp));
+        assert(setVec9.Size() == 0);
+        // Test 10: Move with single negative
+        temp.Clear();
+        temp.Insert(-100);
+        lasd::SetVec<int> setVec10(std::move(temp));
+        assert(setVec10.Exists(-100));
+        // Test 11: Move after multiple inserts
+        temp.Clear();
+        temp.Insert(-50);
+        temp.Insert(0);
+        temp.Insert(50);
+        lasd::SetVec<int> setVec11(std::move(temp));
+        assert(setVec11.Size() == 3);
+        // Test 12: Move after multiple inserts
+        temp.Clear();
+        for (int i = 0; i < 20; ++i) {
+            temp.Insert(i * 10);
+        }
+        lasd::SetVec<int> setVec12(std::move(temp));
+        assert(setVec12.Exists(190));
+        // Test 13: Move and check original
+        assert(temp.Size() == 0);
+        // Test 14: Move after remove
+        temp.Clear();
+        temp.Insert(10);
+        temp.Insert(20);
+        temp.Remove(10);
+        lasd::SetVec<int> setVec13(std::move(temp));
+        assert(setVec13.Exists(20));
+        // Test 15: Move and modify moved
+        setVec13.Insert(30);
+        assert(setVec13.Size() == 2);
+        setVec.Clear();
+    }
+
+    // 19. Test Copy Assignment (15 cases)
+    {
+        lasd::SetVec<int> other;
+        // Test 1: Assign empty to empty
+        setVec = other;
+        assert(setVec.Size() == 0);
+        // Test 2: Assign non-empty to empty
+        other.Insert(10);
+        setVec = other;
+        assert(setVec.Size() == 1);
+        assert(setVec.Exists(10));
+        // Test 3: Assign with multiple elements
+        other.Insert(5);
+        other.Insert(15);
+        setVec = other;
+        assert(setVec.Size() == 3);
+        assert(setVec.Exists(5));
+        // Test 4: Independence of assignment
+        other.Remove(10);
+        assert(setVec.Exists(10));
+        // Test 5: Assign with negative values
+        other.Clear();
+        other.Insert(-10);
+        other.Insert(0);
+        setVec = other;
+        assert(setVec.Exists(-10));
+        // Test 6: Assign large set
+        other.Clear();
+        for (int i = 0; i < 10; ++i) {
+            other.Insert(i * 10);
+        }
+        setVec = other;
+        assert(setVec.Size() == 10);
+        assert(setVec.Exists(90));
+        // Test 7: Assign after MinNRemove
+        other.MinNRemove();
+        setVec = other;
+        assert(setVec.Exists(10));
+        // Test 8: Assign after MaxNRemove
+        other.MaxNRemove();
+        setVec = other;
+        assert(setVec.Exists(80));
+        // Test 9: Assign empty to non-empty
+        other.Clear();
+        setVec = other;
+        assert(setVec.Size() == 0);
+        // Test 10: Assign with single negative
+        other.Insert(-100);
+        setVec = other;
+        assert(setVec.Exists(-100));
+        // Test 11: Assign after multiple inserts
+        other.Insert(-50);
+        other.Insert(0);
+        setVec = other;
+        assert(setVec.Size() == 3);
+        // Test 12: Assign after multiple inserts
+        other.Clear();
+        for (int i = 0; i < 20; ++i) {
+            other.Insert(i * 10);
+        }
+        setVec = other;
+        assert(setVec.Exists(190));
+        // Test 13: Self-assignment
+        setVec = setVec;
+        assert(setVec.Size() == 20);
+        // Test 14: Assign after remove
+        other.Remove(100);
+        setVec = other;
+        assert(setVec.Exists(110));
+        // Test 15: Assign and modify original
+        other.Clear();
+        assert(setVec.Size() == 19);
+        setVec.Clear();
+    }
+
+    // 20. Test Move Assignment (15 cases)
+    {
+        lasd::SetVec<int> other;
+        // Test 1: Move assign empty to empty
+        setVec = std::move(other);
+        assert(setVec.Size() == 0);
+        // Test 2: Move assign non-empty to empty
+        other.Clear();
+        other.Insert(10);
+        setVec = std::move(other);
+        assert(setVec.Size() == 1);
+        assert(setVec.Exists(10));
+        // Test 3: Move assign with multiple elements
+        other.Clear();
+        other.Insert(5);
+        other.Insert(10);
+        other.Insert(15);
+        setVec = std::move(other);
+        assert(setVec.Size() == 3);
+        assert(setVec.Exists(5));
+        // Test 4: Original is empty
+        assert(other.Size() == 0);
+        // Test 5: Move assign with negative values
+        other.Clear();
+        other.Insert(-10);
+        other.Insert(0);
+        setVec = std::move(other);
+        assert(setVec.Exists(-10));
+        // Test 6: Move assign large set
+        other.Clear();
+        for (int i = 0; i < 10; ++i) {
+            other.Insert(i * 10);
+        }
+        setVec = std::move(other);
+        assert(setVec.Size() == 10);
+        assert(setVec.Exists(90));
+        // Test 7: Move assign after MinNRemove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.MinNRemove();
+        setVec = std::move(other);
+        assert(setVec.Exists(20));
+        // Test 8: Move assign after MaxNRemove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.MaxNRemove();
+        setVec = std::move(other);
+        assert(setVec.Exists(10));
+        // Test 9: Move assign empty to non-empty
+        other.Clear();
+        setVec = std::move(other);
+        assert(setVec.Size() == 0);
+        // Test 10: Move assign with single negative
+        other.Clear();
+        other.Insert(-100);
+        setVec = std::move(other);
+        assert(setVec.Exists(-100));
+        // Test 11: Move assign after multiple inserts
+        other.Clear();
+        other.Insert(-50);
+        other.Insert(0);
+        other.Insert(50);
+        setVec = std::move(other);
+        assert(setVec.Size() == 3);
+        // Test 12: Move assign after multiple inserts
+        other.Clear();
+        for (int i = 0; i < 20; ++i) {
+            other.Insert(i * 10);
+        }
+        setVec = std::move(other);
+        assert(setVec.Exists(190));
+        // Test 13: Move assign non-empty to non-empty
+        lasd::SetVec<int> temp;
+        temp.Insert(100);
+        temp.Insert(200);
+        setVec = std::move(temp);
+        assert(setVec.Size() == 2);
+        assert(setVec.Exists(100) && setVec.Exists(200));
+        assert(temp.Size() == 0);
+        // Test 14: Move assign after remove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.Remove(10);
+        setVec = std::move(other);
+        assert(setVec.Exists(20));
+        // Test 15: Move assign and check original
+        assert(other.Size() == 0);
+        setVec.Clear();
+    }
+
+    // 21. Test Operator[] (10 cases)
+    {
+        // Test 1: Operator[] on empty set (exception)
+        try {
+            setVec[0];
+            assert(false);
+        } catch (std::out_of_range&) {
+            assert(true);
+        }
+        // Test 2: Operator[] with one element
+        setVec.Insert(10);
+        assert(setVec[0] == 10);
+        // Test 3: Operator[] with multiple elements
+        setVec.Insert(5);
+        setVec.Insert(15);
+        assert(setVec[0] == 5);
+        assert(setVec[1] == 10);
+        assert(setVec[2] == 15);
+        // Test 4: Operator[] out of range (exception)
+        try {
+            setVec[3];
+            assert(false);
+        } catch (std::out_of_range&) {
+            assert(true);
+        }
+        // Test 5: Operator[] with large set
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(setVec[5] == 50);
+        // Test 6: Operator[] after remove
+        setVec.Remove(50);
+        assert(setVec[5] == 60);
+        // Test 7: Operator[] with negative values
+        setVec.Clear();
+        setVec.Insert(-10);
+        setVec.Insert(0);
+        assert(setVec[0] == -10);
+        // Test 8: Operator[] after MinNRemove
+        setVec.Clear();
+        setVec.Insert(10);
+        setVec.Insert(20);
+        setVec.MinNRemove();
+        assert(setVec[0] == 20);
+        // Test 9: Operator[] after MaxNRemove
+        setVec.Clear();
+        setVec.Insert(10);
+        setVec.Insert(20);
+        setVec.MaxNRemove();
+        assert(setVec[0] == 10);
+        // Test 10: Operator[] after clear
+        setVec.Clear();
+        try {
+            setVec[0];
+            assert(false);
+        } catch (std::out_of_range&) {
+            assert(true);
+        }
+        setVec.Clear();
+    }
+
+    // 22. Test Resize (11 cases)
+    {
+        // Test 1: Insert into empty set (initial capacity)
+        setVec.Clear();
+        assert(setVec.Size() == 0);
+        setVec.Insert(10);
+        assert(setVec.Size() == 1);
+        assert(setVec.Exists(10));
+        // Test 2: Insert multiple elements to trigger resize
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            assert(setVec.Insert(i * 10));
+        }
+        assert(setVec.Size() == 20);
+        assert(setVec.Exists(190));
+        // Test 3: Verify order after resize
+        for (unsigned long i = 1; i < setVec.Size(); ++i) {
+            assert(setVec[i - 1] < setVec[i]);
+        }
+        // Test 4: Insert after remove to trigger resize
+        setVec.Clear();
+        for (int i = 0; i < 10; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 5; ++i) {
+            setVec.Remove(i * 10);
+        }
+        for (int i = 10; i < 20; ++i) {
+            assert(setVec.Insert(i * 10));
+        }
+        assert(setVec.Size() == 15);
+        assert(setVec.Exists(190));
+        // Test 5: Insert with negative values
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            assert(setVec.Insert(i * 10 - 100));
+        }
+        assert(setVec.Size() == 20);
+        assert(setVec.Exists(-100));
+        assert(setVec.Exists(90));
+        // Test 6: Insert after clear
+        setVec.Clear();
+        setVec.Insert(25);
+        assert(setVec.Size() == 1);
+        assert(setVec.Exists(25));
+        // Test 7: Insert to trigger multiple resizes
+        setVec.Clear();
+        for (int i = 0; i < 50; ++i) {
+            assert(setVec.Insert(i));
+        }
+        assert(setVec.Size() == 50);
+        assert(setVec.Min() == 0);
+        assert(setVec.Max() == 49);
+        // Test 8: Insert after multiple removes
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        for (int i = 0; i < 15; ++i) {
+            setVec.Remove(i * 10);
+        }
+        for (int i = 20; i < 30; ++i) {
+            assert(setVec.Insert(i * 10));
+        }
+        assert(setVec.Size() == 15);
+        // Test 9: Insert duplicates after resize
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        assert(!setVec.Insert(0));
+        assert(setVec.Size() == 20);
+        // Test 10: Insert with move after resize
+        setVec.Clear();
+        for (int i = 0; i < 20; ++i) {
+            setVec.Insert(i * 10);
+        }
+        int value = 200;
+        assert(setVec.Insert(std::move(value)));
+        assert(setVec.Size() == 21);
+        assert(setVec.Exists(200));
+        // Test 11: Large set insert to trigger resize
+        setVec.Clear();
+        for (int i = 0; i < 100; ++i) {
+            assert(setVec.Insert(i * 10));
+        }
+        assert(setVec.Size() == 100);
+        assert(setVec.Exists(990));
+        for (unsigned long i = 1; i < setVec.Size(); ++i) {
+            assert(setVec[i - 1] < setVec[i]);
+        }
+        setVec.Clear();
+    }
+
+    // 23. Test Stress (1 case)
+    {
+        // Test 1: Large set operations
+        setVec.Clear();
+        for (int i = 0; i < 1000; ++i) {
+            setVec.Insert(i);
+        }
+        assert(setVec.Size() == 1000);
+        assert(setVec.Min() == 0);
+        assert(setVec.Max() == 999);
+        for (unsigned long i = 1; i < setVec.Size(); ++i) {
+            assert(setVec[i - 1] < setVec[i]);
+        }
+        setVec.Clear();
+    }
+
+    std::cout << "SetVec tests passed!" << std::endl;
+}

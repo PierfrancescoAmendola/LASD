@@ -25,11 +25,10 @@ protected:
 
   // using Container::???;
    using Container::size;
-   Vector<Data> vec;
-   unsigned long head= 0;
-
-   unsigned long numelm=0;
+   //Vector<Data> vec;
    Data *elements = nullptr;
+  unsigned long capacity = 0;
+  unsigned long head = 0;
 
    unsigned long CircularIndex(unsigned long i) const noexcept;
 
@@ -71,7 +70,7 @@ public:
 
   // Move assignment
   // type operator=(argument) specifiers;
-    SetVec& operator = ( SetVec&&);
+    SetVec& operator = ( SetVec&&) noexcept ;
 
   /* ************************************************************************ */
 
@@ -132,6 +131,7 @@ public:
   // type operator[](argument) specifiers; // Override LinearContainer member (must throw std::out_of_range when out of range)
      const Data& operator[](unsigned long ) const override;
      //Data& operator[](unsigned long) override;
+     
 
    
 
@@ -153,12 +153,31 @@ protected:
 
   void Resize(unsigned long) override;
 
+   //BinarySearch
+   //Ricerca binaria per trovare la posizione di un elemento in un vettore ordinato.
    unsigned long BinarySearch(const Data&) const noexcept;
-   // void ShiftLeftToHead(unsigned long) noexcept;
-   // void ShiftRightToHead(unsigned long) noexcept;
-   // void ShiftRightToTail(unsigned long) noexcept;
-   // void CheckEmpty() const;
-   // unsigned long ToRelativeIndex(unsigned long) const noexcept;
+
+   
+   //MakeSpaceAt
+   //Centralizza lo spostamento degli elementi per creare spazio in Insert 
+   //(entrambe le versioni), sostituendo i blocchi di codice che gestiscono lo 
+   //spostamento a sinistra (verso head) o a destra (verso la coda).
+   void MakeSpaceAt(unsigned long) noexcept;
+   
+   //FillGapAt
+   //Centralizza lo spostamento degli elementi per colmare un vuoto in Remove, 
+   //PredecessorNRemove, SuccessorNRemove, e RemoveSuccessor.
+   void FillGapAt(unsigned long) noexcept;
+
+   //RemoveAt
+   //Unifica la logica di rimozione di un elemento a una posizione specifica, 
+   //gestendo lo spostamento tramite FillGapAt e il ridimensionamento del vettore. 
+   //È utilizzata in PredecessorNRemove, RemovePredecessor, SuccessorNRemove, e RemoveSuccessor.
+   Data RemoveAt(unsigned long) ;
+
+   /*Implemenatare queste funzioni ha portato a dei benefici come:
+   1) Riduzione della Duplicazione: I blocchi di codice per lo spostamento degli elementi sono stati centralizzati in MakeSpaceAt e FillGapAt.
+   2) Unificazione della Logica di Rimozione: RemoveAt elimina la duplicazione tra PredecessorNRemove/RemovePredecessor e SuccessorNRemove/RemoveSuccessor.*/
 };
 
 /* ************************************************************************** */

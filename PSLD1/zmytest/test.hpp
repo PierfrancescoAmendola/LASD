@@ -16,6 +16,9 @@ void testSegmentationFault();
 void testMemoryLeak();
 void stressTestVectorAndList();
 void mySetVecExtendedTests(uint& testnum, uint& testerr);
+void testSetLstExercise(uint& testnum, uint& testerr);
+void testSetLst();
+void testSetVec();
 /* ************************************************************************** */
 
 #endif

@@ -1,3 +1,10 @@
+//
+//  container.hpp
+//  Progetto LASD 2025
+//
+//  Created by Pierfrancesco on 30/04/25.
+//
+
 namespace lasd {
 
 /* ************************************************************************** */
@@ -31,6 +38,7 @@ SetLst<Data>::SetLst(SetLst&& other) noexcept {
 template <typename Data>
 SetLst<Data>::~SetLst() {
     Clear();
+    //delete head;
 }
 
 /* ************************************************************************** */
@@ -90,13 +98,13 @@ bool SetLst<Data>::operator!=(const SetLst& other) const noexcept {
 // OrderedDictionaryContainer
 template <typename Data>
 const Data& SetLst<Data>::Min() const {
-    if (head == nullptr) throw std::length_error("Set vuoto");
+    if (head == nullptr) throw std::length_error("Set is empty");
     return head->element;
 }
 
 template <typename Data>
 Data SetLst<Data>::MinNRemove() {
-    if (head == nullptr) throw std::length_error("Set vuoto");
+    if (head == nullptr) throw std::length_error("Set is empty");
     Node* oldHead = head;
     Data result = oldHead->element;  // Copia il valore
     head = oldHead->next;            // Aggiorna head
@@ -111,7 +119,7 @@ Data SetLst<Data>::MinNRemove() {
 
 template <typename Data>
 void SetLst<Data>::RemoveMin() {
-    if (head == nullptr) throw std::length_error("Set vuoto");
+    if (head == nullptr) throw std::length_error("Set is empty");
     Node* oldHead = head;
     head = oldHead->next;
     if (head == nullptr) {

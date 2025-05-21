@@ -1,7 +1,8 @@
 
- #include "zlasdtest/test.hpp"
+#include "zlasdtest/test.hpp"
 
 #include "zmytest/test.hpp"
+
 
 // /* ************************************************************************** */
 
@@ -17,8 +18,8 @@
 // }
 
 // int main() {
-//   unsigned short index = 3;  
-  
+//   unsigned short index = 3;
+
 //   while(index != 0){
 //     std::cout << std::endl << std::endl << "Inserire 0 per uscire, 1 per avviare il Simple Test, 2 per avviare il Personal Test"<< std::endl << std::endl <<
 //       "0) Esci" << std::endl << "1) Simple Test" << std::endl << "2) Personal Test" << std::endl;
@@ -46,7 +47,7 @@
 //         std::cout << "Personal Lasd Libraries 2023" << std::endl;
 //         personalLasdTest();
 //       break;
-      
+
 //       default:
 //         std::cout << "Inserire un numero valido";
 //       break;
@@ -54,14 +55,14 @@
 //   }
 // }
 
-
-int main() {
+int main()
+{
   std::cout << "Lasd Libraries 2025" << std::endl;
   uint testnum = 0;
   uint testerr = 0;
 
   int scelta = -1;
-  while(scelta != 0)
+  while (scelta != 0)
   {
     std::cout << "" << std::endl;
     std::cout << "-------------------Benevenuto alla fine dei giochi-------------------" << std::endl;
@@ -74,37 +75,42 @@ int main() {
     std::cout << "4)Test n°4 SetLst e SetVec" << std::endl;
     std::cout << "5)Test n°5 SetLst e SetVec Estesi" << std::endl;
     std::cout << "6)Test n°6 TestMioEsercizio 1B" << std::endl;
-    std::cout << "7)Test n°7 testSegmentationFault"<<std::endl;
-    std::cout << "8)Test n°8 testMemoryLeak"<<std::endl;
-    std::cout << "9)Test n°9 stressTestVectorAndList"<<std::endl;
-    std::cout << "10)Test n°10 mySetVecExtendedTests"<<std::endl;
-    
-
+    std::cout << "7)Test n°7 testSegmentationFault" << std::endl;
+    std::cout << "8)Test n°8 testMemoryLeak" << std::endl;
+    std::cout << "9)Test n°9 stressTestVectorAndList" << std::endl;
+    std::cout << "10)Test n°10 mySetVecExtendedTests" << std::endl;
+    std::cout << "11)Test n°11 SetVec" << std::endl;
+    std::cout << "12)Test n°12 SetList" << std::endl;
 
     std::cout << "0)Exit" << std::endl;
-    std::cin  >> scelta;
-    if(scelta == 1)
+    std::cin >> scelta;
+    if (scelta == 1)
       lasdtest();
-    //if(scelta == 2)
-      //mytest();
-    if(scelta == 2)
+    // if(scelta == 2)
+    // mytest();
+    if (scelta == 2)
       mytest2();
-    if(scelta == 3)
+    if (scelta == 3)
       personalLasdTest();
-     if(scelta == 4)
+    if (scelta == 4)
       testSetVecAndSetLst();
-    if(scelta == 5)
+    if (scelta == 5)
       testSetVecAndSetLst_Extended();
-    if(scelta == 6)
+    if (scelta == 6)
       myTestSimpleExercise1B();
-    if(scelta ==7)
+    if (scelta == 7)
       testSegmentationFault();
-    if(scelta ==8)
+    if (scelta == 8)
       testMemoryLeak();
     if (scelta == 9)
       stressTestVectorAndList();
     if (scelta == 10)
-      mySetVecExtendedTests(testnum, testerr);}
-    
-return 0;
+      mySetVecExtendedTests(testnum, testerr);
+    if (scelta == 11)
+      testSetVec();
+    if (scelta == 12)
+      testSetLst();
+  }
+  return 0;
+
 }
