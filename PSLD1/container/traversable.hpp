@@ -1,4 +1,9 @@
-
+//
+//  traversable.hpp
+//  Progetto LASD 2025
+//
+//  Created by Pierfrancesco on 30/04/25.
+//
 #ifndef TRAVERSABLE_HPP
 #define TRAVERSABLE_HPP
 
