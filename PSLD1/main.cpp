@@ -76,7 +76,7 @@ int main()
     std::cout << "5)Test n°5 SetLst e SetVec Estesi" << std::endl;
     std::cout << "6)Test n°6 TestMioEsercizio 1B" << std::endl;
     std::cout << "7)Test n°7 testSegmentationFault" << std::endl;
-    std::cout << "8)Test n°8 testMemoryLeak" << std::endl;
+    std::cout << "8)Test n°8 testMarco" << std::endl;
     std::cout << "9)Test n°9 stressTestVectorAndList" << std::endl;
     std::cout << "10)Test n°10 mySetVecExtendedTests" << std::endl;
     std::cout << "11)Test n°11 SetVec" << std::endl;
@@ -101,7 +101,7 @@ int main()
     if (scelta == 7)
       testSegmentationFault();
     if (scelta == 8)
-      testMemoryLeak();
+      TestMarco();
     if (scelta == 9)
       stressTestVectorAndList();
     if (scelta == 10)

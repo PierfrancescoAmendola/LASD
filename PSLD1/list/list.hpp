@@ -251,6 +251,15 @@ protected:
     void PreOrderMap(MapFun, Node *);
     void PostOrderMap(MapFun, Node *);
 
+    //Funzioni ausiliarie per ridurre il codice duplicato
+    
+    void CopyList(const List&);
+    void DeleteList();
+    void AppendNode(Node*);
+    void RemoveLastNode();
+    Node* GetNodeAt(unsigned long) const;
+    void CheckEmpty(const char*) const;
+
 
 };
 

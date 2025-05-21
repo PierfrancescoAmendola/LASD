@@ -4399,3 +4399,791 @@ void testSetVec()
 
     std::cout << "SetVec tests passed!" << std::endl;
 }
+
+
+
+template <typename Data>
+void PrintSetVec(const SetVec<Data>& sv, const std::string& label) {
+    std::cout << label << ": ";
+    sv.PreOrderTraverse([](const Data& val) { std::cout << val << " "; });
+    std::cout << "(size: " << sv.Size() << ")\n";
+}
+
+// Test copy constructor and assignment
+void TestCopy() {
+    std::cout << "\n=== Testing Copy Constructor and Assignment ===\n";
+    SetVec<int> sv1;
+    sv1.Insert(3);
+    sv1.Insert(1);
+    sv1.Insert(5);
+    PrintSetVec(sv1, "Original sv1");
+
+    // Copy constructor
+    SetVec<int> sv2(sv1);
+    PrintSetVec(sv2, "sv2 (copy constructed)");
+    assert(sv2.Size() == sv1.Size());
+    assert(sv2 == sv1);
+
+    // Copy assignment
+    SetVec<int> sv3;
+    sv3 = sv1;
+    PrintSetVec(sv3, "sv3 (copy assigned)");
+    assert(sv3.Size() == sv1.Size());
+    assert(sv3 == sv1);
+
+    // Modify sv2, ensure sv1 unchanged
+    sv2.Insert(7);
+    PrintSetVec(sv2, "sv2 after inserting 7");
+    PrintSetVec(sv1, "sv1 (unchanged)");
+    assert(sv1.Size() == 3);
+    assert(sv2.Size() == 4);
+}
+
+// Test move constructor and assignment
+void TestMove() {
+    std::cout << "\n=== Testing Move Constructor and Assignment ===\n";
+    SetVec<int> sv1;
+    sv1.Insert(3);
+    sv1.Insert(1);
+    sv1.Insert(5);
+    PrintSetVec(sv1, "Original sv1");
+
+    // Move constructor
+    SetVec<int> sv2(std::move(sv1));
+    PrintSetVec(sv2, "sv2 (move constructed)");
+    assert(sv2.Size() == 3);
+    assert(sv1.Size() == 0);
+    assert(sv1.Empty());
+
+    // Move assignment
+    SetVec<int> sv3;
+    sv3.Insert(10);
+    sv3 = std::move(sv2);
+    PrintSetVec(sv3, "sv3 (move assigned)");
+    PrintSetVec(sv2, "sv2 (after move)");
+    assert(sv3.Size() == 3);
+    assert(sv2.Size() == 0);
+}
+
+// Test Min, RemoveMin, MinNRemove
+void TestMin() {
+    std::cout << "\n=== Testing Min, RemoveMin, MinNRemove ===\n";
+    SetVec<int> sv;
+    sv.Insert(3);
+    sv.Insert(1);
+    sv.Insert(5);
+    PrintSetVec(sv, "sv");
+
+    // Min
+    assert(sv.Min() == 1);
+    std::cout << "Min: " << sv.Min() << "\n";
+
+    // MinNRemove
+    int min = sv.MinNRemove();
+    PrintSetVec(sv, "sv after MinNRemove");
+    assert(min == 1);
+    assert(sv.Size() == 2);
+    assert(sv.Min() == 3);
+
+    // RemoveMin
+    sv.RemoveMin();
+    PrintSetVec(sv, "sv after RemoveMin");
+    assert(sv.Size() == 1);
+    assert(sv.Min() == 5);
+
+    // Empty set
+    try {
+        sv.RemoveMin();
+        sv.Min();
+        assert(false && "Expected length_error for Min on empty set");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Min on empty set\n";
+    }
+}
+
+// Test Max, RemoveMax, MaxNRemove
+void TestMax() {
+    std::cout << "\n=== Testing Max, RemoveMax, MaxNRemove ===\n";
+    SetVec<int> sv;
+    sv.Insert(3);
+    sv.Insert(1);
+    sv.Insert(5);
+    PrintSetVec(sv, "sv");
+
+    // Max
+    assert(sv.Max() == 5);
+    std::cout << "Max: " << sv.Max() << "\n";
+
+    // MaxNRemove
+    int max = sv.MaxNRemove();
+    PrintSetVec(sv, "sv after MaxNRemove");
+    assert(max == 5);
+    assert(sv.Size() == 2);
+    assert(sv.Max() == 3);
+
+    // RemoveMax
+    sv.RemoveMax();
+    PrintSetVec(sv, "sv after RemoveMax");
+    assert(sv.Size() == 1);
+    assert(sv.Max() == 1);
+
+    // Empty set
+    try {
+        sv.RemoveMax();
+        sv.Max();
+        assert(false && "Expected length_error for Max on empty set");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Max on empty set\n";
+    }
+}
+
+// Test Predecessor, RemovePredecessor, PredecessorNRemove
+void TestPredecessor() {
+    std::cout << "\n=== Testing Predecessor, RemovePredecessor, PredecessorNRemove ===\n";
+    SetVec<int> sv;
+    sv.Insert(1);
+    sv.Insert(3);
+    sv.Insert(5);
+    sv.Insert(7);
+    PrintSetVec(sv, "sv");
+
+    // Predecessor
+    assert(sv.Predecessor(5) == 3);
+    std::cout << "Predecessor of 5: " << sv.Predecessor(5) << "\n";
+
+    // PredecessorNRemove
+    int pred = sv.PredecessorNRemove(5);
+    PrintSetVec(sv, "sv after PredecessorNRemove(5)");
+    assert(pred == 3);
+    assert(sv.Size() == 3);
+    assert(sv.Exists(5));
+    assert(!sv.Exists(3));
+
+    // RemovePredecessor
+    sv.RemovePredecessor(7);
+    PrintSetVec(sv, "sv after RemovePredecessor(7)");
+    assert(sv.Size() == 2);
+    assert(sv.Exists(7));
+    assert(!sv.Exists(5));
+
+    // Edge case: no predecessor
+    try {
+        sv.Predecessor(1);
+        assert(false && "Expected length_error for Predecessor of min");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Predecessor of min\n";
+    }
+}
+
+// Test Successor, RemoveSuccessor, SuccessorNRemove
+void TestSuccessor() {
+    std::cout << "\n=== Testing Successor, RemoveSuccessor, SuccessorNRemove ===\n";
+    SetVec<int> sv;
+    sv.Insert(1);
+    sv.Insert(3);
+    sv.Insert(5);
+    sv.Insert(7);
+    PrintSetVec(sv, "sv");
+
+    // Successor
+    assert(sv.Successor(3) == 5);
+    std::cout << "Successor of 3: " << sv.Successor(3) << "\n";
+
+    // SuccessorNRemove
+    int succ = sv.SuccessorNRemove(3);
+    PrintSetVec(sv, "sv after SuccessorNRemove(3)");
+    assert(succ == 5);
+    assert(sv.Size() == 3);
+    assert(sv.Exists(3));
+    assert(!sv.Exists(5));
+
+    // RemoveSuccessor
+    sv.RemoveSuccessor(1);
+    PrintSetVec(sv, "sv after RemoveSuccessor(1)");
+    assert(sv.Size() == 2);
+    assert(sv.Exists(1));
+    assert(!sv.Exists(3));
+
+    // Edge case: no successor
+    try {
+        sv.Successor(7);
+        assert(false && "Expected length_error for Successor of max");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Successor of max\n";
+    }
+}
+
+// Test Insert (copy and move)
+void TestInsert() {
+    std::cout << "\n=== Testing Insert (Copy and Move) ===\n";
+    SetVec<int> sv;
+    PrintSetVec(sv, "Empty sv");
+
+    // Copy Insert
+    assert(sv.Insert(3));
+    assert(sv.Insert(1));
+    assert(!sv.Insert(3)); // Duplicate
+    PrintSetVec(sv, "sv after copy inserts");
+
+    // Move Insert
+    int val = 5;
+    assert(sv.Insert(std::move(val)));
+    assert(!sv.Insert(5)); // Duplicate
+    PrintSetVec(sv, "sv after move insert");
+    assert(sv.Size() == 3);
+    assert(sv.Exists(1));
+    assert(sv.Exists(3));
+    assert(sv.Exists(5));
+
+    // Test resizing by inserting multiple elements
+    SetVec<int> sv2;
+    sv2.Insert(1);
+    sv2.Insert(2);
+    sv2.Insert(3); // Should trigger resize
+    sv2.Insert(4); // Further test resize
+    PrintSetVec(sv2, "sv2 after multiple inserts");
+    assert(sv2.Size() == 4);
+}
+
+// Test Remove
+void TestRemove() {
+    std::cout << "\n=== Testing Remove ===\n";
+    SetVec<int> sv;
+    sv.Insert(1);
+    sv.Insert(3);
+    sv.Insert(5);
+    PrintSetVec(sv, "sv");
+
+    assert(sv.Remove(3));
+    PrintSetVec(sv, "sv after Remove(3)");
+    assert(sv.Size() == 2);
+    assert(!sv.Exists(3));
+
+    assert(!sv.Remove(3)); // Non-existent
+    PrintSetVec(sv, "sv after failed Remove(3)");
+    assert(sv.Size() == 2);
+
+    // Empty set
+    sv.Clear();
+    assert(!sv.Remove(1));
+    PrintSetVec(sv, "sv after Clear and Remove attempt");
+}
+
+// Test operator[]
+void TestOperator() {
+    std::cout << "\n=== Testing operator[] ===\n";
+    SetVec<int> sv;
+    sv.Insert(1);
+    sv.Insert(3);
+    sv.Insert(5);
+    PrintSetVec(sv, "sv");
+
+    assert(sv[0] == 1);
+    assert(sv[1] == 3);
+    assert(sv[2] == 5);
+    std::cout << "sv[0]: " << sv[0] << ", sv[1]: " << sv[1] << ", sv[2]: " << sv[2] << "\n";
+
+    // Out of range
+    try {
+        sv[3];
+        assert(false && "Expected out_of_range for invalid index");
+    } catch (const std::out_of_range&) {
+        std::cout << "Caught out_of_range for invalid index\n";
+    }
+}
+
+// Test Exists
+void TestExists() {
+    std::cout << "\n=== Testing Exists ===\n";
+    SetVec<int> sv;
+    sv.Insert(1);
+    sv.Insert(3);
+    sv.Insert(5);
+    PrintSetVec(sv, "sv");
+
+    assert(sv.Exists(3));
+    assert(!sv.Exists(2));
+    std::cout << "Exists(3): " << sv.Exists(3) << ", Exists(2): " << sv.Exists(2) << "\n";
+
+    sv.Clear();
+    assert(!sv.Exists(3));
+    std::cout << "Exists(3) on empty set: " << sv.Exists(3) << "\n";
+}
+
+// Test Clear
+void TestClear() {
+    std::cout << "\n=== Testing Clear ===\n";
+    SetVec<int> sv;
+    sv.Insert(1);
+    sv.Insert(3);
+    sv.Insert(5);
+    PrintSetVec(sv, "sv before Clear");
+
+    sv.Clear();
+    PrintSetVec(sv, "sv after Clear");
+    assert(sv.Size() == 0);
+    assert(sv.Empty());
+}
+
+// Test PreOrderTraverse and PostOrderTraverse
+void TestTraverse() {
+    std::cout << "\n=== Testing PreOrderTraverse and PostOrderTraverse ===\n";
+    SetVec<int> sv;
+    sv.Insert(1);
+    sv.Insert(3);
+    sv.Insert(5);
+    PrintSetVec(sv, "sv");
+
+    // PreOrderTraverse (1, 3, 5)
+    std::cout << "PreOrderTraverse: ";
+    sv.PreOrderTraverse([](const int& val) { std::cout << val << " "; });
+    std::cout << "\n";
+
+    // PostOrderTraverse (5, 3, 1)
+    std::cout << "PostOrderTraverse: ";
+    sv.PostOrderTraverse([](const int& val) { std::cout << val << " "; });
+    std::cout << "\n";
+
+    // Verify order
+    int preOrder[3];
+    int postOrder[3];
+    int i = 0;
+    sv.PreOrderTraverse([&preOrder, &i](const int& val) { preOrder[i++] = val; });
+    i = 0;
+    sv.PostOrderTraverse([&postOrder, &i](const int& val) { postOrder[i++] = val; });
+    assert(preOrder[0] == 1 && preOrder[1] == 3 && preOrder[2] == 5);
+    assert(postOrder[0] == 5 && postOrder[1] == 3 && postOrder[2] == 1);
+}
+
+void TestMinString() {
+    std::cout << "\n=== Testing Min, RemoveMin, MinNRemove (std::string) ===\n";
+    SetVec<std::string> sv;
+    sv.Insert("apple");
+    sv.Insert("banana");
+    sv.Insert("cherry");
+    PrintSetVec(sv, "sv");
+
+    // Min
+    assert(sv.Min() == "apple");
+    std::cout << "Min: " << sv.Min() << "\n";
+
+    // MinNRemove
+    std::string min = sv.MinNRemove();
+    PrintSetVec(sv, "sv after MinNRemove");
+    assert(min == "apple");
+    assert(sv.Size() == 2);
+    assert(sv.Min() == "banana");
+
+    // RemoveMin
+    sv.RemoveMin();
+    PrintSetVec(sv, "sv after RemoveMin");
+    assert(sv.Size() == 1);
+    assert(sv.Min() == "cherry");
+
+    // Empty set
+    try {
+        sv.RemoveMin();
+        sv.Min();
+        assert(false && "Expected length_error for Min on empty set");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Min on empty set\n";
+    }
+}
+
+void TestCopyString() {
+    std::cout << "\n=== Testing Copy Constructor and Assignment (std::string) ===\n";
+    SetVec<std::string> sv1;
+    sv1.Insert("apple");
+    sv1.Insert("banana");
+    sv1.Insert("cherry");
+    PrintSetVec(sv1, "Original sv1");
+
+    // Copy constructor
+    SetVec<std::string> sv2(sv1);
+    PrintSetVec(sv2, "sv2 (copy constructed)");
+    assert(sv2.Size() == sv1.Size());
+    assert(sv2 == sv1);
+
+    // Copy assignment
+    SetVec<std::string> sv3;
+    sv3 = sv1;
+    PrintSetVec(sv3, "sv3 (copy assigned)");
+    assert(sv3.Size() == sv1.Size());
+    assert(sv3 == sv1);
+
+    // Modify sv2, ensure sv1 unchanged
+    sv2.Insert("date");
+    PrintSetVec(sv2, "sv2 after inserting date");
+    PrintSetVec(sv1, "sv1 (unchanged)");
+    assert(sv1.Size() == 3);
+    assert(sv2.Size() == 4);
+}
+
+void TestMoveString() {
+    std::cout << "\n=== Testing Move Constructor and Assignment (std::string) ===\n";
+    SetVec<std::string> sv1;
+    sv1.Insert("apple");
+    sv1.Insert("banana");
+    sv1.Insert("cherry");
+    PrintSetVec(sv1, "Original sv1");
+
+    // Move constructor
+    SetVec<std::string> sv2(std::move(sv1));
+    PrintSetVec(sv2, "sv2 (move constructed)");
+    assert(sv2.Size() == 3);
+    assert(sv1.Size() == 0);
+    assert(sv1.Empty());
+
+    // Move assignment
+    SetVec<std::string> sv3;
+    sv3.Insert("date");
+    sv3 = std::move(sv2);
+    PrintSetVec(sv3, "sv3 (move assigned)");
+    PrintSetVec(sv2, "sv2 (after move)");
+    assert(sv3.Size() == 3);
+    assert(sv2.Size() == 0);
+}
+
+void TestMaxString() {
+    std::cout << "\n=== Testing Max, RemoveMax, MaxNRemove (std::string) ===\n";
+    SetVec<std::string> sv;
+    sv.Insert("apple");
+    sv.Insert("banana");
+    sv.Insert("cherry");
+    PrintSetVec(sv, "sv");
+
+    // Max
+    assert(sv.Max() == "cherry");
+    std::cout << "Max: " << sv.Max() << "\n";
+
+    // MaxNRemove
+    std::string max = sv.MaxNRemove();
+    PrintSetVec(sv, "sv after MaxNRemove");
+    assert(max == "cherry");
+    assert(sv.Size() == 2);
+    assert(sv.Max() == "banana");
+
+    // RemoveMax
+    sv.RemoveMax();
+    PrintSetVec(sv, "sv after RemoveMax");
+    assert(sv.Size() == 1);
+    assert(sv.Max() == "apple");
+
+    // Empty set
+    try {
+        sv.RemoveMax();
+        sv.Max();
+        assert(false && "Expected length_error for Max on empty set");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Max on empty set\n";
+    }
+}
+
+void TestPredecessorString() {
+    std::cout << "\n=== Testing Predecessor, RemovePredecessor, PredecessorNRemove (std::string) ===\n";
+    SetVec<std::string> sv;
+    sv.Insert("apple");
+    sv.Insert("banana");
+    sv.Insert("cherry");
+    sv.Insert("date");
+    PrintSetVec(sv, "sv");
+
+    // Predecessor
+    assert(sv.Predecessor("cherry") == "banana");
+    std::cout << "Predecessor of cherry: " << sv.Predecessor("cherry") << "\n";
+
+    // PredecessorNRemove
+    std::string pred = sv.PredecessorNRemove("cherry");
+    PrintSetVec(sv, "sv after PredecessorNRemove(cherry)");
+    assert(pred == "banana");
+    assert(sv.Size() == 3);
+    assert(sv.Exists("cherry"));
+    assert(!sv.Exists("banana"));
+
+    // RemovePredecessor
+    sv.RemovePredecessor("date");
+    PrintSetVec(sv, "sv after RemovePredecessor(date)");
+    assert(sv.Size() == 2);
+    assert(sv.Exists("date"));
+    assert(!sv.Exists("cherry"));
+
+    // Edge case: no predecessor
+    try {
+        sv.Predecessor("apple");
+        assert(false && "Expected length_error for Predecessor of min");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Predecessor of min\n";
+    }
+}
+
+void TestSuccessorString() {
+    std::cout << "\n=== Testing Successor, RemoveSuccessor, SuccessorNRemove (std::string) ===\n";
+    SetVec<std::string> sv;
+    sv.Insert("apple");
+    sv.Insert("banana");
+    sv.Insert("cherry");
+    sv.Insert("date");
+    PrintSetVec(sv, "sv");
+
+    // Successor
+    assert(sv.Successor("banana") == "cherry");
+    std::cout << "Successor of banana: " << sv.Successor("banana") << "\n";
+
+    // SuccessorNRemove
+    std::string succ = sv.SuccessorNRemove("banana");
+    PrintSetVec(sv, "sv after SuccessorNRemove(banana)");
+    assert(succ == "cherry");
+    assert(sv.Size() == 3);
+    assert(sv.Exists("banana"));
+    assert(!sv.Exists("cherry"));
+
+    // RemoveSuccessor
+    sv.RemoveSuccessor("apple");
+    PrintSetVec(sv, "sv after RemoveSuccessor(apple)");
+    assert(sv.Size() == 2);
+    assert(sv.Exists("apple"));
+    assert(!sv.Exists("banana"));
+
+    // Edge case: no successor
+    try {
+        sv.Successor("date");
+        assert(false && "Expected length_error for Successor of max");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Successor of max\n";
+    }
+}
+
+void TestCopyLong() {
+    std::cout << "\n=== Testing Copy Constructor and Assignment (long) ===\n";
+    SetVec<long> sv1;
+    sv1.Insert(1000000000L);
+    sv1.Insert(2000000000L);
+    sv1.Insert(3000000000L);
+    PrintSetVec(sv1, "Original sv1");
+
+    // Copy constructor
+    SetVec<long> sv2(sv1);
+    PrintSetVec(sv2, "sv2 (copy constructed)");
+    assert(sv2.Size() == sv1.Size());
+    assert(sv2 == sv1);
+
+    // Copy assignment
+    SetVec<long> sv3;
+    sv3 = sv1;
+    PrintSetVec(sv3, "sv3 (copy assigned)");
+    assert(sv3.Size() == sv1.Size());
+    assert(sv3 == sv1);
+
+    // Modify sv2, ensure sv1 unchanged
+    sv2.Insert(4000000000L);
+    PrintSetVec(sv2, "sv2 after inserting 4000000000");
+    PrintSetVec(sv1, "sv1 (unchanged)");
+    assert(sv1.Size() == 3);
+    assert(sv2.Size() == 4);
+}
+
+void TestMoveLong() {
+    std::cout << "\n=== Testing Move Constructor and Assignment (long) ===\n";
+    SetVec<long> sv1;
+    sv1.Insert(1000000000L);
+    sv1.Insert(2000000000L);
+    sv1.Insert(3000000000L);
+    PrintSetVec(sv1, "Original sv1");
+
+    // Move constructor
+    SetVec<long> sv2(std::move(sv1));
+    PrintSetVec(sv2, "sv2 (move constructed)");
+    assert(sv2.Size() == 3);
+    assert(sv1.Size() == 0);
+    assert(sv1.Empty());
+
+    // Move assignment
+    SetVec<long> sv3;
+    sv3.Insert(4000000000L);
+    sv3 = std::move(sv2);
+    PrintSetVec(sv3, "sv3 (move assigned)");
+    PrintSetVec(sv2, "sv2 (after move)");
+    assert(sv3.Size() == 3);
+    assert(sv2.Size() == 0);
+}
+
+void TestMinLong() {
+    std::cout << "\n=== Testing Min, RemoveMin, MinNRemove (long) ===\n";
+    SetVec<long> sv;
+    sv.Insert(1000000000L);
+    sv.Insert(2000000000L);
+    sv.Insert(3000000000L);
+    PrintSetVec(sv, "sv");
+
+    // Min
+    assert(sv.Min() == 1000000000L);
+    std::cout << "Min: " << sv.Min() << "\n";
+
+    // MinNRemove
+    long min = sv.MinNRemove();
+    PrintSetVec(sv, "sv after MinNRemove");
+    assert(min == 1000000000L);
+    assert(sv.Size() == 2);
+    assert(sv.Min() == 2000000000L);
+
+    // RemoveMin
+    sv.RemoveMin();
+    PrintSetVec(sv, "sv after RemoveMin");
+    assert(sv.Size() == 1);
+    assert(sv.Min() == 3000000000L);
+
+    // Empty set
+    try {
+        sv.RemoveMin();
+        sv.Min();
+        assert(false && "Expected length_error for Min on empty set");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Min on empty set\n";
+    }
+}
+
+void TestMaxLong() {
+    std::cout << "\n=== Testing Max, RemoveMax, MaxNRemove (long) ===\n";
+    SetVec<long> sv;
+    sv.Insert(1000000000L);
+    sv.Insert(2000000000L);
+    sv.Insert(3000000000L);
+    PrintSetVec(sv, "sv");
+
+    // Max
+    assert(sv.Max() == 3000000000L);
+    std::cout << "Max: " << sv.Max() << "\n";
+
+    // MaxNRemove
+    long max = sv.MaxNRemove();
+    PrintSetVec(sv, "sv after MaxNRemove");
+    assert(max == 3000000000L);
+    assert(sv.Size() == 2);
+    assert(sv.Max() == 2000000000L);
+
+    // RemoveMax
+    sv.RemoveMax();
+    PrintSetVec(sv, "sv after RemoveMax");
+    assert(sv.Size() == 1);
+    assert(sv.Max() == 1000000000L);
+
+    // Empty set
+    try {
+        sv.RemoveMax();
+        sv.Max();
+        assert(false && "Expected length_error for Max on empty set");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Max on empty set\n";
+    }
+}
+
+void TestPredecessorLong() {
+    std::cout << "\n=== Testing Predecessor, RemovePredecessor, PredecessorNRemove (long) ===\n";
+    SetVec<long> sv;
+    sv.Insert(1000000000L);
+    sv.Insert(2000000000L);
+    sv.Insert(3000000000L);
+    sv.Insert(4000000000L);
+    PrintSetVec(sv, "sv");
+
+    // Predecessor
+    assert(sv.Predecessor(3000000000L) == 2000000000L);
+    std::cout << "Predecessor of 3000000000: " << sv.Predecessor(3000000000L) << "\n";
+
+    // PredecessorNRemove
+    long pred = sv.PredecessorNRemove(3000000000L);
+    PrintSetVec(sv, "sv after PredecessorNRemove(3000000000)");
+    assert(pred == 2000000000L);
+    assert(sv.Size() == 3);
+    assert(sv.Exists(3000000000L));
+    assert(!sv.Exists(2000000000L));
+
+    // RemovePredecessor
+    sv.RemovePredecessor(4000000000L);
+    PrintSetVec(sv, "sv after RemovePredecessor(4000000000)");
+    assert(sv.Size() == 2);
+    assert(sv.Exists(4000000000L));
+    assert(!sv.Exists(3000000000L));
+
+    // Edge case: no predecessor
+    try {
+        sv.Predecessor(1000000000L);
+        assert(false && "Expected length_error for Predecessor of min");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Predecessor of min\n";
+    }
+}
+
+void TestSuccessorLong() {
+    std::cout << "\n=== Testing Successor, RemoveSuccessor, SuccessorNRemove (long) ===\n";
+    SetVec<long> sv;
+    sv.Insert(1000000000L);
+    sv.Insert(2000000000L);
+    sv.Insert(3000000000L);
+    sv.Insert(4000000000L);
+    PrintSetVec(sv, "sv");
+
+    // Successor
+    assert(sv.Successor(2000000000L) == 3000000000L);
+    std::cout << "Successor of 2000000000: " << sv.Successor(2000000000L) << "\n";
+
+    // SuccessorNRemove
+    long succ = sv.SuccessorNRemove(2000000000L);
+    PrintSetVec(sv, "sv after SuccessorNRemove(2000000000)");
+    assert(succ == 3000000000L);
+    assert(sv.Size() == 3);
+    assert(sv.Exists(2000000000L));
+    assert(!sv.Exists(3000000000L));
+
+    // RemoveSuccessor
+    sv.RemoveSuccessor(1000000000L);
+    PrintSetVec(sv, "sv after RemoveSuccessor(1000000000)");
+    assert(sv.Size() == 2);
+    assert(sv.Exists(1000000000L));
+    assert(!sv.Exists(2000000000L));
+
+    // Edge case: no successor
+    try {
+        sv.Successor(4000000000L);
+        assert(false && "Expected length_error for Successor of max");
+    } catch (const std::length_error&) {
+        std::cout << "Caught length_error for Successor of max\n";
+    }
+}
+
+void TestMarco(){
+
+    std::cout << "=== Testing Marco ===\n";
+
+    //Test per int
+    TestCopy();
+    TestMove();
+    TestMin();
+    TestMax();
+    TestPredecessor();
+    TestSuccessor();
+    TestInsert();
+    TestRemove();
+    TestOperator();
+    TestExists();
+    TestClear();
+    TestTraverse();
+
+    // Test per string
+    TestCopyString();
+    TestMoveString();
+    TestMinString();
+    TestMaxString();
+    TestPredecessorString();
+    TestSuccessorString();
+
+    // Test per long
+    TestCopyLong();
+    TestMoveLong();
+    TestMinLong();
+    TestMaxLong();
+    TestPredecessorLong();
+    TestSuccessorLong();
+
+    std::cout << "All tests passed!" << std::endl;
+}
