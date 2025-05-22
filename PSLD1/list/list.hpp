@@ -260,12 +260,25 @@ protected:
 
     //Funzioni ausiliarie per ridurre il codice duplicato
     
-    void CopyList(const List&);
-    void DeleteList();
-    void AppendNode(Node*);
-    void RemoveLastNode();
-    Node* GetNodeAt(unsigned long) const;
-    void CheckEmpty(const char*) const;
+    // Copia tutti i nodi da un'altra lista, creando nuovi nodi (profondamente).
+void CopyList(const List&);
+
+// Cancella tutti i nodi della lista e libera la memoria.
+void DeleteList();
+
+// Aggiunge un nuovo nodo in fondo alla lista (append).
+void AppendNode(Node*);
+
+// Rimuove l'ultimo nodo dalla lista.
+void RemoveLastNode();
+
+// Restituisce il puntatore al nodo in posizione 'index' (0-based).
+// Lancia eccezione se l'indice è fuori dal range.
+Node* GetNodeAt(unsigned long) const;
+
+// Controlla se la lista è vuota; se sì, lancia eccezione con il messaggio fornito.
+void CheckEmpty(const char*) const;
+
 
 
 };

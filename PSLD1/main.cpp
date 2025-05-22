@@ -79,11 +79,11 @@ int main()
     std::cout << "1)Test n°1 SimpleTest del Professore " << std::endl;
     std::cout << "2)Test n°2 List Test & Vector Test" << std::endl;
     std::cout << "3)Test n°3 TestMioEsercizio 1B" << std::endl;
-    std::cout << "4)Test n°4 testMarcoSetVec" << std::endl;
-    std::cout << "5)Test n°5 stressTestVectorAndList" << std::endl;
-    std::cout << "6)Test n°6 mySetVecExtendedTests" << std::endl;
-    std::cout << "7)Test n°7 SetVec" << std::endl;
-    std::cout << "8)Test n°8 SetList" << std::endl;
+    std::cout << "4)Test n°4 stressTestVectorAndList" << std::endl;
+    std::cout << "5)Test n°5 mySetVecExtendedTests" << std::endl;
+    std::cout << "6)Test n°6 SetVec" << std::endl;
+    std::cout << "7)Test n°7 SetList" << std::endl;
+    
 
     std::cout << "0)Exit" << std::endl;
     std::cin >> scelta;
@@ -94,14 +94,12 @@ int main()
     if (scelta == 3)
       myTestSimpleExercise1B();
     if (scelta == 4)
-      TestMarco();
-    if (scelta == 5)
       stressTestVectorAndList();
-    if (scelta == 6)
+    if (scelta == 5)
       mySetVecExtendedTests(testnum, testerr);
-    if (scelta == 7)
+    if (scelta == 6)
       testSetVec();
-    if (scelta == 8)
+    if (scelta == 7)
       testSetLst();
   }
   return 0;

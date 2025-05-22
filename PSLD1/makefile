@@ -1,6 +1,9 @@
 
 cc = g++
 cflags = -Wall -pedantic -O3 -std=c++20 -fsanitize=address
+#test valgrind, qui sotto
+#cflags = -Wall -pedantic -O0 -g -std=c++20  
+#comando per terminale valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./main
 
 objects = main.o test.o mytest.o container.o exc1as.o exc1af.o exc1bs.o exc1bf.o
 

@@ -122,6 +122,9 @@ public:
 protected:
 
   // Auxiliary functions, if necessary!
+  void AllocateMemory(const unsigned long); // Funzione ausiliaria per allocare memoria
+  void CopyElements(Data* ,const Data*, const unsigned long); // Funzione ausiliaria per copiare gli elementi
+  void ThrowIfEmpty() const; // Funzione ausiliaria per lanciare eccezioni se il vettore è vuoto
 
 };
 

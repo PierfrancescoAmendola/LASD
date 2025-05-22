@@ -10,6 +10,9 @@
 
 #include <iostream>
 
+#include <random>
+
+
 #include <cassert> //da eliminare perchè serve solo per assert
 
 #include <functional>
@@ -32,6 +35,11 @@
 
 using namespace std;
 using namespace lasd;
+
+
+
+
+
 /* ************************************************************************** */
 
 // Macro di supporto per i test
@@ -432,10 +440,10 @@ void personalLasdTest()
 }
 
 // Macro di supporto per i test
-#define RUN_TEST(desc, expr)                                                               \
+#define TEST_RUN(desc, expre)                                                               \
     do                                                                                     \
     {                                                                                      \
-        bool result = (expr);                                                              \
+        bool result = (expre);                                                              \
         cout << "[TEST] " << desc << ": " << (result ? "PASSED ✅" : "FAILED ❌") << endl; \
         totalTests++;                                                                      \
         if (result)                                                                        \
@@ -452,26 +460,26 @@ void mytest2()
 
     cout << "\n--- Vector Tests: Integers ---\n";
     lasd::SortableVector<int> vect;
-    RUN_TEST("vect should be empty", vect.Empty());
-    RUN_TEST("vect size should be 0", vect.Size() == 0);
+    TEST_RUN("vect should be empty", vect.Empty());
+    TEST_RUN("vect size should be 0", vect.Size() == 0);
 
     vect.Resize(5);
-    RUN_TEST("vect size should be 5 after resize", vect.Size() == 5);
+    TEST_RUN("vect size should be 5 after resize", vect.Size() == 5);
     cout << "Front: " << vect.Front() << ", Back: " << vect.Back() << "\n";
 
     lasd::SortableVector<int> vectCopy(vect);
-    RUN_TEST("vectCopy size should be 5", vectCopy.Size() == 5);
+    TEST_RUN("vectCopy size should be 5", vectCopy.Size() == 5);
 
     lasd::SortableVector<int> vectMove(move(vectCopy));
-    RUN_TEST("vectMove size should be 5", vectMove.Size() == 5);
+    TEST_RUN("vectMove size should be 5", vectMove.Size() == 5);
 
     cout << "\nCreating vector for fold/map test...\n";
     lasd::Vector<int> vectorForTest(5);
     cout << "Inserting values: 1, 2, 3, 4, 5\n";
     for (int i = 0; i < 5; ++i)
         vectorForTest[i] = i + 1;
-    RUN_TEST("2 should be in vector", vectorForTest.Exists(2));
-    RUN_TEST("vector size should be 5", vectorForTest.Size() == 5);
+    TEST_RUN("2 should be in vector", vectorForTest.Exists(2));
+    TEST_RUN("vector size should be 5", vectorForTest.Size() == 5);
 
     cout << "Folding with sum...\n";
     int sum1 = vectorForTest.Fold<int>([](const int &acc, const int &elem)
@@ -493,25 +501,25 @@ void mytest2()
 
     cout << "\n--- Vector Tests: Strings ---\n";
     lasd::Vector<string> vectString;
-    RUN_TEST("vectString should be empty", vectString.Empty());
-    RUN_TEST("vectString size should be 0", vectString.Size() == 0);
+    TEST_RUN("vectString should be empty", vectString.Empty());
+    TEST_RUN("vectString size should be 0", vectString.Size() == 0);
 
     vectString.Resize(3);
-    RUN_TEST("vectString size should be 3", vectString.Size() == 3);
+    TEST_RUN("vectString size should be 3", vectString.Size() == 3);
     cout << "Front: '" << vectString.Front() << "', Back: '" << vectString.Back() << "'\n";
 
     lasd::Vector<string> vectCopyString(vectString);
-    RUN_TEST("vectCopyString size should be 3", vectCopyString.Size() == 3);
+    TEST_RUN("vectCopyString size should be 3", vectCopyString.Size() == 3);
 
     lasd::Vector<string> vectMoveString(move(vectCopyString));
-    RUN_TEST("vectMoveString size should be 3", vectMoveString.Size() == 3);
+    TEST_RUN("vectMoveString size should be 3", vectMoveString.Size() == 3);
 
     cout << "Inserting values: hello, world, !!\n";
     lasd::Vector<string> vectorForTestString(3);
     vectorForTestString[0] = "hello";
     vectorForTestString[1] = "world";
     vectorForTestString[2] = "!!";
-    RUN_TEST("'world' should exist", vectorForTestString.Exists("world"));
+    TEST_RUN("'world' should exist", vectorForTestString.Exists("world"));
 
     cout << "Folding with concatenation...\n";
     string concat = vectorForTestString.Fold<string>([](const string &acc, const string &elem)
@@ -528,17 +536,17 @@ void mytest2()
 
     cout << "\n--- Vector Tests: Floats ---\n";
     lasd::SortableVector<float> vectFloat;
-    RUN_TEST("vectFloat should be empty", vectFloat.Empty());
-    RUN_TEST("vectFloat size should be 0", vectFloat.Size() == 0);
+    TEST_RUN("vectFloat should be empty", vectFloat.Empty());
+    TEST_RUN("vectFloat size should be 0", vectFloat.Size() == 0);
 
     vectFloat.Resize(4);
-    RUN_TEST("vectFloat size should be 4", vectFloat.Size() == 4);
+    TEST_RUN("vectFloat size should be 4", vectFloat.Size() == 4);
 
     lasd::SortableVector<float> vectCopyFloat(vectFloat);
-    RUN_TEST("vectCopyFloat size should be 4", vectCopyFloat.Size() == 4);
+    TEST_RUN("vectCopyFloat size should be 4", vectCopyFloat.Size() == 4);
 
     lasd::SortableVector<float> vectMoveFloat(move(vectCopyFloat));
-    RUN_TEST("vectMoveFloat size should be 4", vectMoveFloat.Size() == 4);
+    TEST_RUN("vectMoveFloat size should be 4", vectMoveFloat.Size() == 4);
 
     lasd::Vector<float> vectorForTestFloat(4);
     float values[] = {1.5, 2.5, 3.5, 4.5};
@@ -546,7 +554,7 @@ void mytest2()
         vectorForTestFloat[i] = values[i];
 
     cout << "Front: " << vectorForTestFloat.Front() << ", Back: " << vectorForTestFloat.Back() << "\n";
-    RUN_TEST("2.5 should be in vector", vectorForTestFloat.Exists(2.5));
+    TEST_RUN("2.5 should be in vector", vectorForTestFloat.Exists(2.5));
 
     float sumF = vectorForTestFloat.Fold<float>([](const float &acc, const float &e)
                                                 { return acc + e; }, 0.0);
@@ -579,22 +587,22 @@ void testSetVecAndSetLst()
     cout << "\n--- Testing SetVec ---\n";
     lasd::SetVec<int> setVec;
 
-    RUN_TEST("SetVec should be empty initially", setVec.Empty());
-    RUN_TEST("SetVec size should be 0 initially", setVec.Size() == 0);
+    TEST_RUN("SetVec should be empty initially", setVec.Empty());
+    TEST_RUN("SetVec size should be 0 initially", setVec.Size() == 0);
 
     setVec.Insert(5);
-    RUN_TEST("SetVec size should be 1 after inserting 5", setVec.Size() == 1);
-    RUN_TEST("SetVec should contain 5", setVec.Exists(5));
+    TEST_RUN("SetVec size should be 1 after inserting 5", setVec.Size() == 1);
+    TEST_RUN("SetVec should contain 5", setVec.Exists(5));
 
     setVec.Insert(10);
     setVec.Insert(15);
-    RUN_TEST("SetVec size should be 3 after inserting 10 and 15", setVec.Size() == 3);
-    RUN_TEST("SetVec should contain 10", setVec.Exists(10));
-    RUN_TEST("SetVec should contain 15", setVec.Exists(15));
+    TEST_RUN("SetVec size should be 3 after inserting 10 and 15", setVec.Size() == 3);
+    TEST_RUN("SetVec should contain 10", setVec.Exists(10));
+    TEST_RUN("SetVec should contain 15", setVec.Exists(15));
 
     setVec.Remove(10);
-    RUN_TEST("SetVec size should be 2 after removing 10", setVec.Size() == 2);
-    RUN_TEST("SetVec should not contain 10", !setVec.Exists(10));
+    TEST_RUN("SetVec size should be 2 after removing 10", setVec.Size() == 2);
+    TEST_RUN("SetVec should not contain 10", !setVec.Exists(10));
 
     try
     {
@@ -609,29 +617,29 @@ void testSetVecAndSetLst()
     totalTests++;
 
     setVec.Clear();
-    RUN_TEST("SetVec should be empty after clearing", setVec.Empty());
-    RUN_TEST("SetVec size should be 0 after clearing", setVec.Size() == 0);
+    TEST_RUN("SetVec should be empty after clearing", setVec.Empty());
+    TEST_RUN("SetVec size should be 0 after clearing", setVec.Size() == 0);
 
     // Test SetLst
     cout << "\n--- Testing SetLst ---\n";
     lasd::SetLst<int> setLst;
 
-    RUN_TEST("SetLst should be empty initially", setLst.Empty());
-    RUN_TEST("SetLst size should be 0 initially", setLst.Size() == 0);
+    TEST_RUN("SetLst should be empty initially", setLst.Empty());
+    TEST_RUN("SetLst size should be 0 initially", setLst.Size() == 0);
 
     setLst.Insert(5);
-    RUN_TEST("SetLst size should be 1 after inserting 5", setLst.Size() == 1);
-    RUN_TEST("SetLst should contain 5", setLst.Exists(5));
+    TEST_RUN("SetLst size should be 1 after inserting 5", setLst.Size() == 1);
+    TEST_RUN("SetLst should contain 5", setLst.Exists(5));
 
     setLst.Insert(10);
     setLst.Insert(15);
-    RUN_TEST("SetLst size should be 3 after inserting 10 and 15", setLst.Size() == 3);
-    RUN_TEST("SetLst should contain 10", setLst.Exists(10));
-    RUN_TEST("SetLst should contain 15", setLst.Exists(15));
+    TEST_RUN("SetLst size should be 3 after inserting 10 and 15", setLst.Size() == 3);
+    TEST_RUN("SetLst should contain 10", setLst.Exists(10));
+    TEST_RUN("SetLst should contain 15", setLst.Exists(15));
 
     setLst.Remove(10);
-    RUN_TEST("SetLst size should be 2 after removing 10", setLst.Size() == 2);
-    RUN_TEST("SetLst should not contain 10", !setLst.Exists(10));
+    TEST_RUN("SetLst size should be 2 after removing 10", setLst.Size() == 2);
+    TEST_RUN("SetLst should not contain 10", !setLst.Exists(10));
 
     try
     {
@@ -646,8 +654,8 @@ void testSetVecAndSetLst()
     totalTests++;
 
     setLst.Clear();
-    RUN_TEST("SetLst should be empty after clearing", setLst.Empty());
-    RUN_TEST("SetLst size should be 0 after clearing", setLst.Size() == 0);
+    TEST_RUN("SetLst should be empty after clearing", setLst.Empty());
+    TEST_RUN("SetLst size should be 0 after clearing", setLst.Size() == 0);
 
     // Final Summary
     cout << "\n==============================\n";
@@ -696,7 +704,7 @@ void myTestSimpleExercise1B()
         testnum++;
         testerr++;
         cout << endl
-             << "Unmanaged error! " << endl;
+        << "Unmanaged error! " << endl;
     }
 }
 
@@ -715,7 +723,7 @@ void stressTestVectorAndList()
     for (ulong i = 0; i < v1.Size(); ++i)
         if (v1[i] != (int)i)
             ok = false;
-    RUN_TEST("Vector mass insert and check 100000", ok);
+    TEST_RUN("Vector mass insert and check 100000", ok);
 
     // 2. Vector: accesso fuori limite basso
     try
@@ -746,14 +754,14 @@ void stressTestVectorAndList()
     // 4. Vector: resize ripetuti
     for (int i = 0; i < 100; ++i)
         v1.Resize(1000 + i);
-    RUN_TEST("Vector repeated resize up", v1.Size() == 1099);
+    TEST_RUN("Vector repeated resize up", v1.Size() == 1099);
     for (int i = 0; i < 100; ++i)
         v1.Resize(1000 - i);
-    RUN_TEST("Vector repeated resize down", v1.Size() == 901); // <-- 901, non 900
+    TEST_RUN("Vector repeated resize down", v1.Size() == 901); // <-- 901, non 900
 
     // 5. Vector: clear e refill
     v1.Clear();
-    RUN_TEST("Vector clear", v1.Empty());
+    TEST_RUN("Vector clear", v1.Empty());
     v1.Resize(1000);
     for (ulong i = 0; i < v1.Size(); ++i)
         v1[i] = i * 2;
@@ -761,13 +769,13 @@ void stressTestVectorAndList()
     for (ulong i = 0; i < v1.Size(); ++i)
         if (v1[i] != (int)(i * 2))
             ok = false;
-    RUN_TEST("Vector refill after clear", ok);
+    TEST_RUN("Vector refill after clear", ok);
 
     // 6. Vector: copy e move
     lasd::Vector<int> v2(v1);
-    RUN_TEST("Vector copy", v2.Size() == v1.Size() && v2[10] == v1[10]);
+    TEST_RUN("Vector copy", v2.Size() == v1.Size() && v2[10] == v1[10]);
     lasd::Vector<int> v3(std::move(v2));
-    RUN_TEST("Vector move", v3.Size() == v1.Size() && v3[10] == v1[10]);
+    TEST_RUN("Vector move", v3.Size() == v1.Size() && v3[10] == v1[10]);
 
     // 7. List: inserimento massivo in coda
     lasd::List<int> l1;
@@ -780,7 +788,7 @@ void stressTestVectorAndList()
             ok = false;
             break;
         }
-    RUN_TEST("List mass insert at back 50000", ok);
+    TEST_RUN("List mass insert at back 50000", ok);
 
     // 8. List: inserimento massivo in testa
     lasd::List<int> l2;
@@ -793,7 +801,7 @@ void stressTestVectorAndList()
             ok = false;
             break;
         }
-    RUN_TEST("List mass insert at front 10000", ok);
+    TEST_RUN("List mass insert at front 10000", ok);
     // 9. List: accesso fuori limite
     try
     {
@@ -809,30 +817,30 @@ void stressTestVectorAndList()
 
     // 10. List: clear e refill
     l1.Clear();
-    RUN_TEST("List clear", l1.Empty());
+    TEST_RUN("List clear", l1.Empty());
     for (int i = 0; i < 1000; ++i)
         l1.InsertAtBack(i * 3);
     ok = true;
     for (ulong i = 0; i < l1.Size(); ++i)
         if (l1[i] != (int)(i * 3))
             ok = false;
-    RUN_TEST("List refill after clear", ok);
+    TEST_RUN("List refill after clear", ok);
 
     // 11. List: copy e move
     lasd::List<int> l3(l1);
-    RUN_TEST("List copy", l3.Size() == l1.Size() && l3[10] == l1[10]);
+    TEST_RUN("List copy", l3.Size() == l1.Size() && l3[10] == l1[10]);
     lasd::List<int> l4(std::move(l3));
-    RUN_TEST("List move", l4.Size() == l1.Size() && l4[10] == l1[10]);
+    TEST_RUN("List move", l4.Size() == l1.Size() && l4[10] == l1[10]);
 
     // 12. Vector: test di fold
     int sum = v3.Fold<int>([](const int &acc, const int &elem)
                            { return acc + elem; }, 0);
-    RUN_TEST("Vector fold sum", sum > 0);
+    TEST_RUN("Vector fold sum", sum > 0);
 
     // 13. List: test di fold
     int sumL = l4.Fold<int>([](const int &acc, const int &elem)
                             { return acc + elem; }, 0);
-    RUN_TEST("List fold sum", sumL > 0);
+    TEST_RUN("List fold sum", sumL > 0);
 
     // 14. Vector: test di map
     v3.Map([](int &x)
@@ -841,7 +849,7 @@ void stressTestVectorAndList()
     for (ulong i = 0; i < v3.Size(); ++i)
         if (v3[i] != (int)(i * 2 + 1))
             ok = false;
-    RUN_TEST("Vector map increment", ok);
+    TEST_RUN("Vector map increment", ok);
 
     // 15. List: test di map
     l4.Map([](int &x)
@@ -850,27 +858,27 @@ void stressTestVectorAndList()
     for (ulong i = 0; i < l4.Size(); ++i)
         if (l4[i] != (int)(i * 3 - 1))
             ok = false;
-    RUN_TEST("List map decrement", ok);
+    TEST_RUN("List map decrement", ok);
 
     // 16. Vector: test di operator==
     lasd::Vector<int> v4(v3);
-    RUN_TEST("Vector operator==", v4 == v3);
+    TEST_RUN("Vector operator==", v4 == v3);
 
     // 17. List: test di operator==
     lasd::List<int> l5(l4);
-    RUN_TEST("List operator==", l5 == l4);
+    TEST_RUN("List operator==", l5 == l4);
 
     // 18. Vector: test di operator!=
     v4[0] = -1;
-    RUN_TEST("Vector operator!=", v4 != v3);
+    TEST_RUN("Vector operator!=", v4 != v3);
 
     // 19. List: test di operator!=
     l5[0] = -1;
-    RUN_TEST("List operator!=", l5 != l4);
+    TEST_RUN("List operator!=", l5 != l4);
 
     // 20. Vector: test resize a 0 e refill
     v3.Resize(0);
-    RUN_TEST("Vector resize to 0", v3.Empty());
+    TEST_RUN("Vector resize to 0", v3.Empty());
     v3.Resize(10);
     for (ulong i = 0; i < v3.Size(); ++i)
         v3[i] = i;
@@ -878,18 +886,18 @@ void stressTestVectorAndList()
     for (ulong i = 0; i < v3.Size(); ++i)
         if (v3[i] != (int)i)
             ok = false;
-    RUN_TEST("Vector refill after resize to 0", ok);
+    TEST_RUN("Vector refill after resize to 0", ok);
 
     // 21. List: test clear e refill
     l4.Clear();
-    RUN_TEST("List clear again", l4.Empty());
+    TEST_RUN("List clear again", l4.Empty());
     for (ulong i = 0; i < 10; ++i)
         l4.InsertAtBack(i);
     ok = true;
     for (ulong i = 0; i < l4.Size(); ++i)
         if (l4[i] != (int)i)
             ok = false;
-    RUN_TEST("List refill after clear again", ok);
+    TEST_RUN("List refill after clear again", ok);
 
     // 22. Vector: test accesso multiplo fuori limite
     bool allCaught = true;
@@ -904,7 +912,7 @@ void stressTestVectorAndList()
         {
         }
     }
-    RUN_TEST("Vector multiple out of bounds", allCaught);
+    TEST_RUN("Vector multiple out of bounds", allCaught);
 
     // 23. List: test accesso multiplo fuori limite
     allCaught = true;
@@ -919,35 +927,35 @@ void stressTestVectorAndList()
         {
         }
     }
-    RUN_TEST("List multiple out of bounds", allCaught);
+    TEST_RUN("List multiple out of bounds", allCaught);
 
     // 24. Vector: test operator==
     lasd::Vector<int> v5(10);
     for (ulong i = 0; i < 10; ++i)
         v5[i] = i;
-    RUN_TEST("Vector == after refill", v5 == v3);
+    TEST_RUN("Vector == after refill", v5 == v3);
 
     // 25. List: test operator==
     lasd::List<int> l6;
     for (ulong i = 0; i < 10; ++i)
         l6.InsertAtBack(i);
-    RUN_TEST("List == after refill", l6 == l4);
+    TEST_RUN("List == after refill", l6 == l4);
 
     // 26. Vector: test operator!=
     v5[9] = -1;
-    RUN_TEST("Vector != after change", v5 != v3);
+    TEST_RUN("Vector != after change", v5 != v3);
 
     // 27. List: test operator!=
     l6[9] = -1;
-    RUN_TEST("List != after change", l6 != l4);
+    TEST_RUN("List != after change", l6 != l4);
 
     // 28. Vector: test resize up grande
     v3.Resize(100000);
-    RUN_TEST("Vector resize up to 100000", v3.Size() == 100000);
+    TEST_RUN("Vector resize up to 100000", v3.Size() == 100000);
 
     // 29. Vector: test resize down grande
     v3.Resize(10);
-    RUN_TEST("Vector resize down to 10", v3.Size() == 10);
+    TEST_RUN("Vector resize down to 10", v3.Size() == 10);
 
     // 30. List: test inserimento e rimozione alternati
     lasd::List<int> l7;
@@ -955,7 +963,7 @@ void stressTestVectorAndList()
         l7.InsertAtBack(i);
     for (int i = 0; i < 500; ++i)
         l7.RemoveFromFront();
-    RUN_TEST("List remove from front 500", l7.Size() == 500);
+    TEST_RUN("List remove from front 500", l7.Size() == 500);
 
     // 31. List: test rimozione da lista vuota (eccezione)
     l7.Clear();
@@ -968,7 +976,7 @@ void stressTestVectorAndList()
     {
         caught = true;
     }
-    RUN_TEST("List remove from empty throws", caught);
+    TEST_RUN("List remove from empty throws", caught);
 
     // 32. Vector: test accesso dopo clear
     v3.Clear();
@@ -981,7 +989,7 @@ void stressTestVectorAndList()
     {
         caught2 = true;
     }
-    RUN_TEST("Vector access after clear throws", caught2);
+    TEST_RUN("Vector access after clear throws", caught2);
 
     // 33. List: test accesso dopo clear
     l7.Clear();
@@ -994,19 +1002,19 @@ void stressTestVectorAndList()
     {
         caught3 = true;
     }
-    RUN_TEST("List access after clear throws", caught3);
+    TEST_RUN("List access after clear throws", caught3);
 
     // 34. Vector: test fold su vettore vuoto
     v3.Clear();
     int sumEmpty = v3.Fold<int>([](const int &acc, const int &elem)
                                 { return acc + elem; }, 0);
-    RUN_TEST("Vector fold on empty", sumEmpty == 0);
+    TEST_RUN("Vector fold on empty", sumEmpty == 0);
 
     // 35. List: test fold su lista vuota
     l7.Clear();
     int sumEmptyL = l7.Fold<int>([](const int &acc, const int &elem)
                                  { return acc + elem; }, 0);
-    RUN_TEST("List fold on empty", sumEmptyL == 0);
+    TEST_RUN("List fold on empty", sumEmptyL == 0);
 
     // 36. Vector: test map su vettore vuoto (non deve crashare)
     v3.Clear();
@@ -1020,7 +1028,7 @@ void stressTestVectorAndList()
     {
         ok = false;
     }
-    RUN_TEST("Vector map on empty", ok);
+    TEST_RUN("Vector map on empty", ok);
 
     // 37. List: test map su lista vuota (non deve crashare)
     l7.Clear();
@@ -1034,7 +1042,7 @@ void stressTestVectorAndList()
     {
         ok = false;
     }
-    RUN_TEST("List map on empty", ok);
+    TEST_RUN("List map on empty", ok);
 
     // 38. Vector: test ricorsione profonda (simulazione stack overflow)
     try
@@ -1050,7 +1058,7 @@ void stressTestVectorAndList()
     catch (...)
     {
     }
-    RUN_TEST("Deep recursion (stack overflow simulation)", true);
+    TEST_RUN("Deep recursion (stack overflow simulation)", true);
 
     // 39. Vector: test allocazione molto grande (simulazione bad_alloc)
     bool allocFailed = false;
@@ -1062,7 +1070,7 @@ void stressTestVectorAndList()
     {
         allocFailed = true;
     }
-    RUN_TEST("Vector huge allocation (bad_alloc simulation)", allocFailed);
+    TEST_RUN("Vector huge allocation (bad_alloc simulation)", allocFailed);
 
     // 40. List: test allocazione molto grande (simulazione bad_alloc)
     allocFailed = false;
@@ -1076,7 +1084,7 @@ void stressTestVectorAndList()
     {
         allocFailed = true;
     }
-    RUN_TEST("List huge allocation (bad_alloc simulation)", allocFailed);
+    TEST_RUN("List huge allocation (bad_alloc simulation)", allocFailed);
 
     cout << "\n==============================\n";
     cout << "   Stress Test Summary\n";
@@ -1088,7 +1096,7 @@ void stressTestVectorAndList()
         cout << "❌ Some stress tests failed. Check above for details.\n";
 }
 
-#define RUN_TEST(desc, expr)                                                                       \
+#define RUN1_TEST(desc, expr)                                                                       \
     do                                                                                             \
     {                                                                                              \
         bool result = (expr);                                                                      \
@@ -1111,20 +1119,20 @@ void mySetVecExtendedTests(uint &testnum, uint &testerr)
     set.Insert(20);
     set.Insert(10);
     set.Insert(30);
-    RUN_TEST("Set should maintain sorted order: [10,20,30]", set[0] == 10 && set[1] == 20 && set[2] == 30);
+    RUN1_TEST("Set should maintain sorted order: [10,20,30]", set[0] == 10 && set[1] == 20 && set[2] == 30);
 
     // Test inserimento duplicati
     set.Insert(20);
-    RUN_TEST("Insert duplicate should not change size", set.Size() == 3);
+    RUN1_TEST("Insert duplicate should not change size", set.Size() == 3);
 
     // Test rimozione elemento presente
     set.Remove(20);
-    RUN_TEST("Remove existing element (20)", !set.Exists(20) && set.Size() == 2);
+    RUN1_TEST("Remove existing element (20)", !set.Exists(20) && set.Size() == 2);
 
     // Test rimozione elemento non presente
     bool removeNonExisting = set.Remove(999);
-    RUN_TEST("Remove non-existing element (999) returns false", removeNonExisting == false);
-    RUN_TEST("Set size remains unchanged after failed removal", set.Size() == 2);
+    RUN1_TEST("Remove non-existing element (999) returns false", removeNonExisting == false);
+    RUN1_TEST("Set size remains unchanged after failed removal", set.Size() == 2);
 
     // Test accesso out-of-range
     bool caught = false;
@@ -1137,29 +1145,29 @@ void mySetVecExtendedTests(uint &testnum, uint &testerr)
     {
         caught = true;
     }
-    RUN_TEST("Access out-of-range index should throw", caught);
+    RUN1_TEST("Access out-of-range index should throw", caught);
 
     // Test Min / Max
-    RUN_TEST("Min should be 10", set.Min() == 10);
-    RUN_TEST("Max should be 30", set.Max() == 30);
+    RUN1_TEST("Min should be 10", set.Min() == 10);
+    RUN1_TEST("Max should be 30", set.Max() == 30);
 
     // Test Copy constructor
     SetVec<int> setCopy(set);
-    RUN_TEST("Copy constructor should replicate contents", setCopy == set);
+    RUN1_TEST("Copy constructor should replicate contents", setCopy == set);
     setCopy.Insert(99);
-    RUN_TEST("After insert in copy, sets should differ", setCopy != set);
+    RUN1_TEST("After insert in copy, sets should differ", setCopy != set);
 
     // Test Assignment
     SetVec<int> setAssign;
     setAssign = set;
-    RUN_TEST("Assignment should copy contents", setAssign == set);
+    RUN1_TEST("Assignment should copy contents", setAssign == set);
     setAssign.Insert(77);
-    RUN_TEST("After insert in assigned, sets should differ", setAssign != set);
+    RUN1_TEST("After insert in assigned, sets should differ", setAssign != set);
 
     // Test Clear
     set.Clear();
-    RUN_TEST("Clear should empty the set", set.Empty());
-    RUN_TEST("Clear should reset size to 0", set.Size() == 0);
+    RUN1_TEST("Clear should empty the set", set.Empty());
+    RUN1_TEST("Clear should reset size to 0", set.Size() == 0);
 
     // Riepilogo
     cout << "Extended SetVec Tests Completed (Errors/Tests: " << localTestErr << "/" << localTestNum << ")\n";
@@ -5167,791 +5175,3 @@ void testSetVec() {
 //-------------------------------------------------------------------------
 
 
-
-//Test di marco 
-
-template <typename Data>
-void PrintSetVec(const SetVec<Data>& sv, const std::string& label) {
-    std::cout << label << ": ";
-    sv.PreOrderTraverse([](const Data& val) { std::cout << val << " "; });
-    std::cout << "(size: " << sv.Size() << ")\n";
-}
-
-// Test copy constructor and assignment
-void TestCopy() {
-    std::cout << "\n=== Testing Copy Constructor and Assignment ===\n";
-    SetVec<int> sv1;
-    sv1.Insert(3);
-    sv1.Insert(1);
-    sv1.Insert(5);
-    PrintSetVec(sv1, "Original sv1");
-
-    // Copy constructor
-    SetVec<int> sv2(sv1);
-    PrintSetVec(sv2, "sv2 (copy constructed)");
-    assert(sv2.Size() == sv1.Size());
-    assert(sv2 == sv1);
-
-    // Copy assignment
-    SetVec<int> sv3;
-    sv3 = sv1;
-    PrintSetVec(sv3, "sv3 (copy assigned)");
-    assert(sv3.Size() == sv1.Size());
-    assert(sv3 == sv1);
-
-    // Modify sv2, ensure sv1 unchanged
-    sv2.Insert(7);
-    PrintSetVec(sv2, "sv2 after inserting 7");
-    PrintSetVec(sv1, "sv1 (unchanged)");
-    assert(sv1.Size() == 3);
-    assert(sv2.Size() == 4);
-}
-
-// Test move constructor and assignment
-void TestMove() {
-    std::cout << "\n=== Testing Move Constructor and Assignment ===\n";
-    SetVec<int> sv1;
-    sv1.Insert(3);
-    sv1.Insert(1);
-    sv1.Insert(5);
-    PrintSetVec(sv1, "Original sv1");
-
-    // Move constructor
-    SetVec<int> sv2(std::move(sv1));
-    PrintSetVec(sv2, "sv2 (move constructed)");
-    assert(sv2.Size() == 3);
-    assert(sv1.Size() == 0);
-    assert(sv1.Empty());
-
-    // Move assignment
-    SetVec<int> sv3;
-    sv3.Insert(10);
-    sv3 = std::move(sv2);
-    PrintSetVec(sv3, "sv3 (move assigned)");
-    PrintSetVec(sv2, "sv2 (after move)");
-    assert(sv3.Size() == 3);
-    assert(sv2.Size() == 0);
-}
-
-// Test Min, RemoveMin, MinNRemove
-void TestMin() {
-    std::cout << "\n=== Testing Min, RemoveMin, MinNRemove ===\n";
-    SetVec<int> sv;
-    sv.Insert(3);
-    sv.Insert(1);
-    sv.Insert(5);
-    PrintSetVec(sv, "sv");
-
-    // Min
-    assert(sv.Min() == 1);
-    std::cout << "Min: " << sv.Min() << "\n";
-
-    // MinNRemove
-    int min = sv.MinNRemove();
-    PrintSetVec(sv, "sv after MinNRemove");
-    assert(min == 1);
-    assert(sv.Size() == 2);
-    assert(sv.Min() == 3);
-
-    // RemoveMin
-    sv.RemoveMin();
-    PrintSetVec(sv, "sv after RemoveMin");
-    assert(sv.Size() == 1);
-    assert(sv.Min() == 5);
-
-    // Empty set
-    try {
-        sv.RemoveMin();
-        sv.Min();
-        assert(false && "Expected length_error for Min on empty set");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Min on empty set\n";
-    }
-}
-
-// Test Max, RemoveMax, MaxNRemove
-void TestMax() {
-    std::cout << "\n=== Testing Max, RemoveMax, MaxNRemove ===\n";
-    SetVec<int> sv;
-    sv.Insert(3);
-    sv.Insert(1);
-    sv.Insert(5);
-    PrintSetVec(sv, "sv");
-
-    // Max
-    assert(sv.Max() == 5);
-    std::cout << "Max: " << sv.Max() << "\n";
-
-    // MaxNRemove
-    int max = sv.MaxNRemove();
-    PrintSetVec(sv, "sv after MaxNRemove");
-    assert(max == 5);
-    assert(sv.Size() == 2);
-    assert(sv.Max() == 3);
-
-    // RemoveMax
-    sv.RemoveMax();
-    PrintSetVec(sv, "sv after RemoveMax");
-    assert(sv.Size() == 1);
-    assert(sv.Max() == 1);
-
-    // Empty set
-    try {
-        sv.RemoveMax();
-        sv.Max();
-        assert(false && "Expected length_error for Max on empty set");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Max on empty set\n";
-    }
-}
-
-// Test Predecessor, RemovePredecessor, PredecessorNRemove
-void TestPredecessor() {
-    std::cout << "\n=== Testing Predecessor, RemovePredecessor, PredecessorNRemove ===\n";
-    SetVec<int> sv;
-    sv.Insert(1);
-    sv.Insert(3);
-    sv.Insert(5);
-    sv.Insert(7);
-    PrintSetVec(sv, "sv");
-
-    // Predecessor
-    assert(sv.Predecessor(5) == 3);
-    std::cout << "Predecessor of 5: " << sv.Predecessor(5) << "\n";
-
-    // PredecessorNRemove
-    int pred = sv.PredecessorNRemove(5);
-    PrintSetVec(sv, "sv after PredecessorNRemove(5)");
-    assert(pred == 3);
-    assert(sv.Size() == 3);
-    assert(sv.Exists(5));
-    assert(!sv.Exists(3));
-
-    // RemovePredecessor
-    sv.RemovePredecessor(7);
-    PrintSetVec(sv, "sv after RemovePredecessor(7)");
-    assert(sv.Size() == 2);
-    assert(sv.Exists(7));
-    assert(!sv.Exists(5));
-
-    // Edge case: no predecessor
-    try {
-        sv.Predecessor(1);
-        assert(false && "Expected length_error for Predecessor of min");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Predecessor of min\n";
-    }
-}
-
-// Test Successor, RemoveSuccessor, SuccessorNRemove
-void TestSuccessor() {
-    std::cout << "\n=== Testing Successor, RemoveSuccessor, SuccessorNRemove ===\n";
-    SetVec<int> sv;
-    sv.Insert(1);
-    sv.Insert(3);
-    sv.Insert(5);
-    sv.Insert(7);
-    PrintSetVec(sv, "sv");
-
-    // Successor
-    assert(sv.Successor(3) == 5);
-    std::cout << "Successor of 3: " << sv.Successor(3) << "\n";
-
-    // SuccessorNRemove
-    int succ = sv.SuccessorNRemove(3);
-    PrintSetVec(sv, "sv after SuccessorNRemove(3)");
-    assert(succ == 5);
-    assert(sv.Size() == 3);
-    assert(sv.Exists(3));
-    assert(!sv.Exists(5));
-
-    // RemoveSuccessor
-    sv.RemoveSuccessor(1);
-    PrintSetVec(sv, "sv after RemoveSuccessor(1)");
-    assert(sv.Size() == 2);
-    assert(sv.Exists(1));
-    assert(!sv.Exists(3));
-
-    // Edge case: no successor
-    try {
-        sv.Successor(7);
-        assert(false && "Expected length_error for Successor of max");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Successor of max\n";
-    }
-}
-
-// Test Insert (copy and move)
-void TestInsert() {
-    std::cout << "\n=== Testing Insert (Copy and Move) ===\n";
-    SetVec<int> sv;
-    PrintSetVec(sv, "Empty sv");
-
-    // Copy Insert
-    assert(sv.Insert(3));
-    assert(sv.Insert(1));
-    assert(!sv.Insert(3)); // Duplicate
-    PrintSetVec(sv, "sv after copy inserts");
-
-    // Move Insert
-    int val = 5;
-    assert(sv.Insert(std::move(val)));
-    assert(!sv.Insert(5)); // Duplicate
-    PrintSetVec(sv, "sv after move insert");
-    assert(sv.Size() == 3);
-    assert(sv.Exists(1));
-    assert(sv.Exists(3));
-    assert(sv.Exists(5));
-
-    // Test resizing by inserting multiple elements
-    SetVec<int> sv2;
-    sv2.Insert(1);
-    sv2.Insert(2);
-    sv2.Insert(3); // Should trigger resize
-    sv2.Insert(4); // Further test resize
-    PrintSetVec(sv2, "sv2 after multiple inserts");
-    assert(sv2.Size() == 4);
-}
-
-// Test Remove
-void TestRemove() {
-    std::cout << "\n=== Testing Remove ===\n";
-    SetVec<int> sv;
-    sv.Insert(1);
-    sv.Insert(3);
-    sv.Insert(5);
-    PrintSetVec(sv, "sv");
-
-    assert(sv.Remove(3));
-    PrintSetVec(sv, "sv after Remove(3)");
-    assert(sv.Size() == 2);
-    assert(!sv.Exists(3));
-
-    assert(!sv.Remove(3)); // Non-existent
-    PrintSetVec(sv, "sv after failed Remove(3)");
-    assert(sv.Size() == 2);
-
-    // Empty set
-    sv.Clear();
-    assert(!sv.Remove(1));
-    PrintSetVec(sv, "sv after Clear and Remove attempt");
-}
-
-// Test operator[]
-void TestOperator() {
-    std::cout << "\n=== Testing operator[] ===\n";
-    SetVec<int> sv;
-    sv.Insert(1);
-    sv.Insert(3);
-    sv.Insert(5);
-    PrintSetVec(sv, "sv");
-
-    assert(sv[0] == 1);
-    assert(sv[1] == 3);
-    assert(sv[2] == 5);
-    std::cout << "sv[0]: " << sv[0] << ", sv[1]: " << sv[1] << ", sv[2]: " << sv[2] << "\n";
-
-    // Out of range
-    try {
-        sv[3];
-        assert(false && "Expected out_of_range for invalid index");
-    } catch (const std::out_of_range&) {
-        std::cout << "Caught out_of_range for invalid index\n";
-    }
-}
-
-// Test Exists
-void TestExists() {
-    std::cout << "\n=== Testing Exists ===\n";
-    SetVec<int> sv;
-    sv.Insert(1);
-    sv.Insert(3);
-    sv.Insert(5);
-    PrintSetVec(sv, "sv");
-
-    assert(sv.Exists(3));
-    assert(!sv.Exists(2));
-    std::cout << "Exists(3): " << sv.Exists(3) << ", Exists(2): " << sv.Exists(2) << "\n";
-
-    sv.Clear();
-    assert(!sv.Exists(3));
-    std::cout << "Exists(3) on empty set: " << sv.Exists(3) << "\n";
-}
-
-// Test Clear
-void TestClear() {
-    std::cout << "\n=== Testing Clear ===\n";
-    SetVec<int> sv;
-    sv.Insert(1);
-    sv.Insert(3);
-    sv.Insert(5);
-    PrintSetVec(sv, "sv before Clear");
-
-    sv.Clear();
-    PrintSetVec(sv, "sv after Clear");
-    assert(sv.Size() == 0);
-    assert(sv.Empty());
-}
-
-// Test PreOrderTraverse and PostOrderTraverse
-void TestTraverse() {
-    std::cout << "\n=== Testing PreOrderTraverse and PostOrderTraverse ===\n";
-    SetVec<int> sv;
-    sv.Insert(1);
-    sv.Insert(3);
-    sv.Insert(5);
-    PrintSetVec(sv, "sv");
-
-    // PreOrderTraverse (1, 3, 5)
-    std::cout << "PreOrderTraverse: ";
-    sv.PreOrderTraverse([](const int& val) { std::cout << val << " "; });
-    std::cout << "\n";
-
-    // PostOrderTraverse (5, 3, 1)
-    std::cout << "PostOrderTraverse: ";
-    sv.PostOrderTraverse([](const int& val) { std::cout << val << " "; });
-    std::cout << "\n";
-
-    // Verify order
-    int preOrder[3];
-    int postOrder[3];
-    int i = 0;
-    sv.PreOrderTraverse([&preOrder, &i](const int& val) { preOrder[i++] = val; });
-    i = 0;
-    sv.PostOrderTraverse([&postOrder, &i](const int& val) { postOrder[i++] = val; });
-    assert(preOrder[0] == 1 && preOrder[1] == 3 && preOrder[2] == 5);
-    assert(postOrder[0] == 5 && postOrder[1] == 3 && postOrder[2] == 1);
-}
-
-void TestMinString() {
-    std::cout << "\n=== Testing Min, RemoveMin, MinNRemove (std::string) ===\n";
-    SetVec<std::string> sv;
-    sv.Insert("apple");
-    sv.Insert("banana");
-    sv.Insert("cherry");
-    PrintSetVec(sv, "sv");
-
-    // Min
-    assert(sv.Min() == "apple");
-    std::cout << "Min: " << sv.Min() << "\n";
-
-    // MinNRemove
-    std::string min = sv.MinNRemove();
-    PrintSetVec(sv, "sv after MinNRemove");
-    assert(min == "apple");
-    assert(sv.Size() == 2);
-    assert(sv.Min() == "banana");
-
-    // RemoveMin
-    sv.RemoveMin();
-    PrintSetVec(sv, "sv after RemoveMin");
-    assert(sv.Size() == 1);
-    assert(sv.Min() == "cherry");
-
-    // Empty set
-    try {
-        sv.RemoveMin();
-        sv.Min();
-        assert(false && "Expected length_error for Min on empty set");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Min on empty set\n";
-    }
-}
-
-void TestCopyString() {
-    std::cout << "\n=== Testing Copy Constructor and Assignment (std::string) ===\n";
-    SetVec<std::string> sv1;
-    sv1.Insert("apple");
-    sv1.Insert("banana");
-    sv1.Insert("cherry");
-    PrintSetVec(sv1, "Original sv1");
-
-    // Copy constructor
-    SetVec<std::string> sv2(sv1);
-    PrintSetVec(sv2, "sv2 (copy constructed)");
-    assert(sv2.Size() == sv1.Size());
-    assert(sv2 == sv1);
-
-    // Copy assignment
-    SetVec<std::string> sv3;
-    sv3 = sv1;
-    PrintSetVec(sv3, "sv3 (copy assigned)");
-    assert(sv3.Size() == sv1.Size());
-    assert(sv3 == sv1);
-
-    // Modify sv2, ensure sv1 unchanged
-    sv2.Insert("date");
-    PrintSetVec(sv2, "sv2 after inserting date");
-    PrintSetVec(sv1, "sv1 (unchanged)");
-    assert(sv1.Size() == 3);
-    assert(sv2.Size() == 4);
-}
-
-void TestMoveString() {
-    std::cout << "\n=== Testing Move Constructor and Assignment (std::string) ===\n";
-    SetVec<std::string> sv1;
-    sv1.Insert("apple");
-    sv1.Insert("banana");
-    sv1.Insert("cherry");
-    PrintSetVec(sv1, "Original sv1");
-
-    // Move constructor
-    SetVec<std::string> sv2(std::move(sv1));
-    PrintSetVec(sv2, "sv2 (move constructed)");
-    assert(sv2.Size() == 3);
-    assert(sv1.Size() == 0);
-    assert(sv1.Empty());
-
-    // Move assignment
-    SetVec<std::string> sv3;
-    sv3.Insert("date");
-    sv3 = std::move(sv2);
-    PrintSetVec(sv3, "sv3 (move assigned)");
-    PrintSetVec(sv2, "sv2 (after move)");
-    assert(sv3.Size() == 3);
-    assert(sv2.Size() == 0);
-}
-
-void TestMaxString() {
-    std::cout << "\n=== Testing Max, RemoveMax, MaxNRemove (std::string) ===\n";
-    SetVec<std::string> sv;
-    sv.Insert("apple");
-    sv.Insert("banana");
-    sv.Insert("cherry");
-    PrintSetVec(sv, "sv");
-
-    // Max
-    assert(sv.Max() == "cherry");
-    std::cout << "Max: " << sv.Max() << "\n";
-
-    // MaxNRemove
-    std::string max = sv.MaxNRemove();
-    PrintSetVec(sv, "sv after MaxNRemove");
-    assert(max == "cherry");
-    assert(sv.Size() == 2);
-    assert(sv.Max() == "banana");
-
-    // RemoveMax
-    sv.RemoveMax();
-    PrintSetVec(sv, "sv after RemoveMax");
-    assert(sv.Size() == 1);
-    assert(sv.Max() == "apple");
-
-    // Empty set
-    try {
-        sv.RemoveMax();
-        sv.Max();
-        assert(false && "Expected length_error for Max on empty set");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Max on empty set\n";
-    }
-}
-
-void TestPredecessorString() {
-    std::cout << "\n=== Testing Predecessor, RemovePredecessor, PredecessorNRemove (std::string) ===\n";
-    SetVec<std::string> sv;
-    sv.Insert("apple");
-    sv.Insert("banana");
-    sv.Insert("cherry");
-    sv.Insert("date");
-    PrintSetVec(sv, "sv");
-
-    // Predecessor
-    assert(sv.Predecessor("cherry") == "banana");
-    std::cout << "Predecessor of cherry: " << sv.Predecessor("cherry") << "\n";
-
-    // PredecessorNRemove
-    std::string pred = sv.PredecessorNRemove("cherry");
-    PrintSetVec(sv, "sv after PredecessorNRemove(cherry)");
-    assert(pred == "banana");
-    assert(sv.Size() == 3);
-    assert(sv.Exists("cherry"));
-    assert(!sv.Exists("banana"));
-
-    // RemovePredecessor
-    sv.RemovePredecessor("date");
-    PrintSetVec(sv, "sv after RemovePredecessor(date)");
-    assert(sv.Size() == 2);
-    assert(sv.Exists("date"));
-    assert(!sv.Exists("cherry"));
-
-    // Edge case: no predecessor
-    try {
-        sv.Predecessor("apple");
-        assert(false && "Expected length_error for Predecessor of min");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Predecessor of min\n";
-    }
-}
-
-void TestSuccessorString() {
-    std::cout << "\n=== Testing Successor, RemoveSuccessor, SuccessorNRemove (std::string) ===\n";
-    SetVec<std::string> sv;
-    sv.Insert("apple");
-    sv.Insert("banana");
-    sv.Insert("cherry");
-    sv.Insert("date");
-    PrintSetVec(sv, "sv");
-
-    // Successor
-    assert(sv.Successor("banana") == "cherry");
-    std::cout << "Successor of banana: " << sv.Successor("banana") << "\n";
-
-    // SuccessorNRemove
-    std::string succ = sv.SuccessorNRemove("banana");
-    PrintSetVec(sv, "sv after SuccessorNRemove(banana)");
-    assert(succ == "cherry");
-    assert(sv.Size() == 3);
-    assert(sv.Exists("banana"));
-    assert(!sv.Exists("cherry"));
-
-    // RemoveSuccessor
-    sv.RemoveSuccessor("apple");
-    PrintSetVec(sv, "sv after RemoveSuccessor(apple)");
-    assert(sv.Size() == 2);
-    assert(sv.Exists("apple"));
-    assert(!sv.Exists("banana"));
-
-    // Edge case: no successor
-    try {
-        sv.Successor("date");
-        assert(false && "Expected length_error for Successor of max");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Successor of max\n";
-    }
-}
-
-void TestCopyLong() {
-    std::cout << "\n=== Testing Copy Constructor and Assignment (long) ===\n";
-    SetVec<long> sv1;
-    sv1.Insert(1000000000L);
-    sv1.Insert(2000000000L);
-    sv1.Insert(3000000000L);
-    PrintSetVec(sv1, "Original sv1");
-
-    // Copy constructor
-    SetVec<long> sv2(sv1);
-    PrintSetVec(sv2, "sv2 (copy constructed)");
-    assert(sv2.Size() == sv1.Size());
-    assert(sv2 == sv1);
-
-    // Copy assignment
-    SetVec<long> sv3;
-    sv3 = sv1;
-    PrintSetVec(sv3, "sv3 (copy assigned)");
-    assert(sv3.Size() == sv1.Size());
-    assert(sv3 == sv1);
-
-    // Modify sv2, ensure sv1 unchanged
-    sv2.Insert(4000000000L);
-    PrintSetVec(sv2, "sv2 after inserting 4000000000");
-    PrintSetVec(sv1, "sv1 (unchanged)");
-    assert(sv1.Size() == 3);
-    assert(sv2.Size() == 4);
-}
-
-void TestMoveLong() {
-    std::cout << "\n=== Testing Move Constructor and Assignment (long) ===\n";
-    SetVec<long> sv1;
-    sv1.Insert(1000000000L);
-    sv1.Insert(2000000000L);
-    sv1.Insert(3000000000L);
-    PrintSetVec(sv1, "Original sv1");
-
-    // Move constructor
-    SetVec<long> sv2(std::move(sv1));
-    PrintSetVec(sv2, "sv2 (move constructed)");
-    assert(sv2.Size() == 3);
-    assert(sv1.Size() == 0);
-    assert(sv1.Empty());
-
-    // Move assignment
-    SetVec<long> sv3;
-    sv3.Insert(4000000000L);
-    sv3 = std::move(sv2);
-    PrintSetVec(sv3, "sv3 (move assigned)");
-    PrintSetVec(sv2, "sv2 (after move)");
-    assert(sv3.Size() == 3);
-    assert(sv2.Size() == 0);
-}
-
-void TestMinLong() {
-    std::cout << "\n=== Testing Min, RemoveMin, MinNRemove (long) ===\n";
-    SetVec<long> sv;
-    sv.Insert(1000000000L);
-    sv.Insert(2000000000L);
-    sv.Insert(3000000000L);
-    PrintSetVec(sv, "sv");
-
-    // Min
-    assert(sv.Min() == 1000000000L);
-    std::cout << "Min: " << sv.Min() << "\n";
-
-    // MinNRemove
-    long min = sv.MinNRemove();
-    PrintSetVec(sv, "sv after MinNRemove");
-    assert(min == 1000000000L);
-    assert(sv.Size() == 2);
-    assert(sv.Min() == 2000000000L);
-
-    // RemoveMin
-    sv.RemoveMin();
-    PrintSetVec(sv, "sv after RemoveMin");
-    assert(sv.Size() == 1);
-    assert(sv.Min() == 3000000000L);
-
-    // Empty set
-    try {
-        sv.RemoveMin();
-        sv.Min();
-        assert(false && "Expected length_error for Min on empty set");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Min on empty set\n";
-    }
-}
-
-void TestMaxLong() {
-    std::cout << "\n=== Testing Max, RemoveMax, MaxNRemove (long) ===\n";
-    SetVec<long> sv;
-    sv.Insert(1000000000L);
-    sv.Insert(2000000000L);
-    sv.Insert(3000000000L);
-    PrintSetVec(sv, "sv");
-
-    // Max
-    assert(sv.Max() == 3000000000L);
-    std::cout << "Max: " << sv.Max() << "\n";
-
-    // MaxNRemove
-    long max = sv.MaxNRemove();
-    PrintSetVec(sv, "sv after MaxNRemove");
-    assert(max == 3000000000L);
-    assert(sv.Size() == 2);
-    assert(sv.Max() == 2000000000L);
-
-    // RemoveMax
-    sv.RemoveMax();
-    PrintSetVec(sv, "sv after RemoveMax");
-    assert(sv.Size() == 1);
-    assert(sv.Max() == 1000000000L);
-
-    // Empty set
-    try {
-        sv.RemoveMax();
-        sv.Max();
-        assert(false && "Expected length_error for Max on empty set");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Max on empty set\n";
-    }
-}
-
-void TestPredecessorLong() {
-    std::cout << "\n=== Testing Predecessor, RemovePredecessor, PredecessorNRemove (long) ===\n";
-    SetVec<long> sv;
-    sv.Insert(1000000000L);
-    sv.Insert(2000000000L);
-    sv.Insert(3000000000L);
-    sv.Insert(4000000000L);
-    PrintSetVec(sv, "sv");
-
-    // Predecessor
-    assert(sv.Predecessor(3000000000L) == 2000000000L);
-    std::cout << "Predecessor of 3000000000: " << sv.Predecessor(3000000000L) << "\n";
-
-    // PredecessorNRemove
-    long pred = sv.PredecessorNRemove(3000000000L);
-    PrintSetVec(sv, "sv after PredecessorNRemove(3000000000)");
-    assert(pred == 2000000000L);
-    assert(sv.Size() == 3);
-    assert(sv.Exists(3000000000L));
-    assert(!sv.Exists(2000000000L));
-
-    // RemovePredecessor
-    sv.RemovePredecessor(4000000000L);
-    PrintSetVec(sv, "sv after RemovePredecessor(4000000000)");
-    assert(sv.Size() == 2);
-    assert(sv.Exists(4000000000L));
-    assert(!sv.Exists(3000000000L));
-
-    // Edge case: no predecessor
-    try {
-        sv.Predecessor(1000000000L);
-        assert(false && "Expected length_error for Predecessor of min");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Predecessor of min\n";
-    }
-}
-
-void TestSuccessorLong() {
-    std::cout << "\n=== Testing Successor, RemoveSuccessor, SuccessorNRemove (long) ===\n";
-    SetVec<long> sv;
-    sv.Insert(1000000000L);
-    sv.Insert(2000000000L);
-    sv.Insert(3000000000L);
-    sv.Insert(4000000000L);
-    PrintSetVec(sv, "sv");
-
-    // Successor
-    assert(sv.Successor(2000000000L) == 3000000000L);
-    std::cout << "Successor of 2000000000: " << sv.Successor(2000000000L) << "\n";
-
-    // SuccessorNRemove
-    long succ = sv.SuccessorNRemove(2000000000L);
-    PrintSetVec(sv, "sv after SuccessorNRemove(2000000000)");
-    assert(succ == 3000000000L);
-    assert(sv.Size() == 3);
-    assert(sv.Exists(2000000000L));
-    assert(!sv.Exists(3000000000L));
-
-    // RemoveSuccessor
-    sv.RemoveSuccessor(1000000000L);
-    PrintSetVec(sv, "sv after RemoveSuccessor(1000000000)");
-    assert(sv.Size() == 2);
-    assert(sv.Exists(1000000000L));
-    assert(!sv.Exists(2000000000L));
-
-    // Edge case: no successor
-    try {
-        sv.Successor(4000000000L);
-        assert(false && "Expected length_error for Successor of max");
-    } catch (const std::length_error&) {
-        std::cout << "Caught length_error for Successor of max\n";
-    }
-}
-
-void TestMarco(){
-
-    std::cout << "=== Testing Marco ===\n";
-
-    //Test per int
-    TestCopy();
-    TestMove();
-    TestMin();
-    TestMax();
-    TestPredecessor();
-    TestSuccessor();
-    TestInsert();
-    TestRemove();
-    TestOperator();
-    TestExists();
-    TestClear();
-    TestTraverse();
-
-    // Test per string
-    TestCopyString();
-    TestMoveString();
-    TestMinString();
-    TestMaxString();
-    TestPredecessorString();
-    TestSuccessorString();
-
-    // Test per long
-    TestCopyLong();
-    TestMoveLong();
-    TestMinLong();
-    TestMaxLong();
-    TestPredecessorLong();
-    TestSuccessorLong();
-
-    std::cout << "All tests passed!" << std::endl;
-}
