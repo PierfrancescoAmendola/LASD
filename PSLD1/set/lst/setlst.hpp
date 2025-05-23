@@ -182,9 +182,15 @@ public:
 protected:
 
   // Auxiliary functions, if necessary!
-  // Node* BinarySearch(const Data& , Node **, Node **, unsigned long ) const noexcept
+  //Esegue una ricerca binaria su una lista concatenata ordinata per trovare la posizione di un elemento o il punto di inserimento.
   Node** BinarySearch(const Data& )const  ;
+
+  //Inserisce un nodo già creato nella posizione corretta, mantenendo l'ordine e controllando i duplicati.
+  //Centralizza la logica di inserimento per le funzioni Insert(const Data&) e Insert(Data&&), riducendo la duplicazione del codice.
   bool DoInsert(Node* ) ;
+  
+  //Aggiorna il puntatore tail dopo la rimozione di un nodo, trovando l'ultimo nodo della lista.
+  //Usata in Remove per mantenere il puntatore tail corretto quando l'ultimo nodo viene rimosso.
   void UpdateTail() ;
 
 
