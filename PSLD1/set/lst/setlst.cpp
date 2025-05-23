@@ -1,9 +1,12 @@
-//
 //  setlst.cpp
 //  Progetto LASD 2025
 //
 //  Created by Pierfrancesco on 30/04/25.
 //
+//  Implementazione di un insieme ordinato basato su una lista concatenata.
+//  Ho scelto una lista concatenata per mantenere gli elementi ordinati e
+//  garantire operazioni efficienti per il minimo e il massimo (O(1)).
+//  Ho aggiunto funzioni ausiliarie per ridurre la duplicazione del codice.
 
 namespace lasd {
 
@@ -58,7 +61,7 @@ SetLst<Data>::~SetLst() {
 // Operatore di Assegnamento per Copia
 template <typename Data>
 SetLst<Data>& SetLst<Data>::operator=(const SetLst& other) {
-    // Controllo se sto assegnando a me stesso
+    // Controllo se sto assegnando a me stesso per evitare operazioni inutili
     if (this != &other) {
         // Svuoto l'insieme corrente e copio tutto dall'altro
         // Perché: Clear e CopyList fanno il lavoro in modo pulito e sicuro
@@ -71,7 +74,7 @@ SetLst<Data>& SetLst<Data>::operator=(const SetLst& other) {
 // Operatore di Assegnamento per Movimento
 template <typename Data>
 SetLst<Data>& SetLst<Data>::operator=(SetLst&& other) noexcept {
-    // Evito di assegnare a me stesso
+    // Evito di assegnare a me stesso per prevenire errori
     if (this != &other) {
         // Svuoto l'insieme e scambio i puntatori con l'altro
         // Perché: è veloce (O(1)) e non rischio perdite di memoria
@@ -91,7 +94,7 @@ SetLst<Data>& SetLst<Data>::operator=(SetLst&& other) noexcept {
 template <typename Data>
 bool SetLst<Data>::operator==(const SetLst& other) const noexcept {
     // Uso la funzione di confronto della classe base List
-    // Perché: è già pronta e confronta gli elementi uno per uno
+    // Perché: è già pronta e confronta gli elementi uno per uno in modo affidabile
     return List<Data>::operator==(other);
 }
 
@@ -99,7 +102,7 @@ bool SetLst<Data>::operator==(const SetLst& other) const noexcept {
 template <typename Data>
 bool SetLst<Data>::operator!=(const SetLst& other) const noexcept {
     // Nego il risultato di operator==, semplice e veloce
-    // Perché: è il modo standard per definire !=
+    // Perché: è il modo standard per definire !=, evitando codice ridondante
     return !(*this == other);
 }
 
@@ -119,7 +122,7 @@ const Data& SetLst<Data>::Min() const {
 template <typename Data>
 Data SetLst<Data>::MinNRemove() {
     // Uso la funzione della classe base per rimuovere il primo elemento
-    // Perché: è veloce (O(1)) e già testata
+    // Perché: è veloce (O(1)) e già testata, garantendo correttezza
     return List<Data>::FrontNRemove();
 }
 
@@ -143,7 +146,7 @@ const Data& SetLst<Data>::Max() const {
 template <typename Data>
 Data SetLst<Data>::MaxNRemove() {
     // Rimuovo l'ultimo elemento e lo restituisco
-    // Perché: è veloce (O(1)) grazie alla struttura della lista
+    // Perché: è veloce (O(1)) grazie alla struttura della lista con puntatore tail
     return List<Data>::BackNRemove();
 }
 
@@ -184,6 +187,8 @@ const Data& SetLst<Data>::Predecessor(const Data& data) const {
 // Rimuovo e restituisco il predecessore
 template <typename Data>
 Data SetLst<Data>::PredecessorNRemove(const Data& data) {
+    // Trovo il predecessore e lo rimuovo, restituendo il valore
+    // Perché: riutilizzo Predecessor e Remove per modularità
     Data val = Predecessor(data);
     Remove(val);
     return val;
@@ -192,6 +197,8 @@ Data SetLst<Data>::PredecessorNRemove(const Data& data) {
 // Rimuovo il predecessore
 template <typename Data>
 void SetLst<Data>::RemovePredecessor(const Data& data) {
+    // Trovo il predecessore e lo rimuovo senza restituirlo
+    // Perché: simile a PredecessorNRemove, ma più semplice
     Data val = Predecessor(data);
     Remove(val);
 }
@@ -221,6 +228,8 @@ const Data& SetLst<Data>::Successor(const Data& data) const {
 // Rimuovo e restituisco il successore
 template <typename Data>
 Data SetLst<Data>::SuccessorNRemove(const Data& data) {
+    // Trovo il successore e lo rimuovo, restituendo il valore
+    // Perché: riutilizzo Successor e Remove per modularità
     Data val = Successor(data);
     Remove(val);
     return val;
@@ -229,6 +238,8 @@ Data SetLst<Data>::SuccessorNRemove(const Data& data) {
 // Rimuovo il successore
 template <typename Data>
 void SetLst<Data>::RemoveSuccessor(const Data& data) {
+    // Trovo il successore e lo rimuovo senza restituirlo
+    // Perché: simile a SuccessorNRemove, ma più semplice
     Data val = Successor(data);
     Remove(val);
 }
@@ -240,37 +251,17 @@ void SetLst<Data>::RemoveSuccessor(const Data& data) {
 // Inserisco un elemento (copia)
 template <typename Data>
 bool SetLst<Data>::Insert(const Data& data) {
-    // Cerco dove inserire con la ricerca binaria
-    Node** pos = BinarySearch(data);
-    // Se l'elemento esiste già, non lo inserisco
-    if (*pos != nullptr && (*pos)->element == data) return false;
-    // Creo un nuovo nodo e lo inserisco
-    Node* newNode = new Node(data);
-    newNode->next = *pos;
-    *pos = newNode;
-    // Aggiorno tail se il nuovo nodo è l'ultimo
-    if (newNode->next == nullptr) tail = newNode;
-    size++;
-    // Perché: la ricerca binaria mantiene l'ordine, e controllo l'esistenza per rispettare le regole dell'insieme
-    return true;
+    // Creo un nuovo nodo con copia dell'elemento e lo inserisco usando DoInsert
+    // Perché: DoInsert centralizza la logica di inserimento, riducendo duplicazione
+    return DoInsert(new Node(data));
 }
 
 // Inserisco un elemento (movimento)
 template <typename Data>
 bool SetLst<Data>::Insert(Data&& data) {
-    // Cerco dove inserire con la ricerca binaria
-    Node** pos = BinarySearch(data);
-    // Se l'elemento esiste già, non lo inserisco
-    if (*pos != nullptr && (*pos)->element == data) return false;
-    // Creo un nuovo nodo spostando l'elemento per essere più veloce
-    Node* newNode = new Node(std::move(data));
-    newNode->next = *pos;
-    *pos = newNode;
-    // Aggiorno tail se il nuovo nodo è l'ultimo
-    if (newNode->next == nullptr) tail = newNode;
-    size++;
-    // Perché: come Insert per copia, ma std::move rende tutto più efficiente
-    return true;
+    // Creo un nuovo nodo spostando l'elemento e lo inserisco usando DoInsert
+    // Perché: std::move è più efficiente per tipi che supportano il movimento
+    return DoInsert(new Node(std::move(data)));
 }
 
 // Rimuovo un elemento
@@ -280,28 +271,20 @@ bool SetLst<Data>::Remove(const Data& data) {
     Node** pos = BinarySearch(data);
     // Se non lo trovo o non corrisponde, restituisco false
     if (*pos == nullptr || (*pos)->element != data) return false;
-    
+
     // Rimuovo il nodo aggiornando i puntatori
     Node* toRemove = *pos;
     *pos = toRemove->next;
-    
+
     // Aggiorno tail se ho rimosso l'ultimo nodo
     if (toRemove == tail) {
-        if (head == nullptr) {
-            tail = nullptr;
-        } else {
-            Node* current = head;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            tail = current;
-        }
+        UpdateTail();
     }
-    
-    toRemove->next = nullptr;
+
+    // Libero la memoria e decremento la dimensione
+    // Perché: gestisco tail con cura e libero la memoria correttamente
     delete toRemove;
     size--;
-    // Perché: gestisco tail con cura e libero la memoria correttamente
     return true;
 }
 
@@ -312,8 +295,8 @@ bool SetLst<Data>::Remove(const Data& data) {
 // Accedo all'elemento a un certo indice
 template <typename Data>
 const Data& SetLst<Data>::operator[](unsigned long index) const {
-    // Uso la funzione della classe base
-    // Perché: è già pronta, anche se un po' lenta (O(n))
+    // Uso la funzione della classe base per accedere all'elemento
+    // Perché: è già pronta, anche se un po' lenta (O(n)) per liste concatenate
     return List<Data>::operator[](index);
 }
 
@@ -348,7 +331,7 @@ void SetLst<Data>::Clear() {
 // Funzione Ausiliaria: Ricerca binaria per lista ordinata
 template <typename Data>
 typename SetLst<Data>::Node** SetLst<Data>::BinarySearch(const Data& dat) const {
-    // Se la lista è vuota, punto a head
+    // Se la lista è vuota, punto a head per consentire l'inserimento
     if (size == 0) {
         return const_cast<Node**>(&head);
     }
@@ -364,10 +347,10 @@ typename SetLst<Data>::Node** SetLst<Data>::BinarySearch(const Data& dat) const 
     // Faccio la ricerca binaria
     while (left <= right) {
         long mid = left + (right - left) / 2;
-        
+
         // Mi muovo al nodo centrale
         long steps = mid - left;
-        
+
         Node* midNode = leftNode;
         Node** midPtr = leftPtr;
         // Scorro la lista per arrivare al nodo centrale
@@ -402,5 +385,44 @@ typename SetLst<Data>::Node** SetLst<Data>::BinarySearch(const Data& dat) const 
 }
 
 /* ************************************************************************** */
+
+// Funzioni Ausiliarie Aggiunte
+
+// Funzione Ausiliaria: Inserisce un nodo già creato nella posizione corretta
+template <typename Data>
+bool SetLst<Data>::DoInsert(Node* newNode) {
+    // Cerco la posizione di inserimento con la ricerca binaria
+    Node** pos = BinarySearch(newNode->element);
+    // Se l'elemento esiste già, elimino il nuovo nodo e restituisco false
+    if (*pos != nullptr && (*pos)->element == newNode->element) {
+        delete newNode;
+        return false;
+    }
+    // Inserisco il nuovo nodo mantenendo l'ordine
+    newNode->next = *pos;
+    *pos = newNode;
+    // Aggiorno tail se il nuovo nodo è l'ultimo
+    if (newNode->next == nullptr)
+        tail = newNode;
+    size++;
+    // Perché: centralizzo la logica di inserimento per evitare duplicazione in Insert
+    return true;
+}
+
+// Funzione Ausiliaria: Aggiorna il puntatore tail dopo la rimozione di un nodo
+template <typename Data>
+void SetLst<Data>::UpdateTail() {
+    // Se la lista è vuota, imposto tail a nullptr
+    if (head == nullptr)
+        tail = nullptr;
+    else {
+        // Scorro la lista per trovare l'ultimo nodo
+        Node* current = head;
+        while (current->next != nullptr)
+            current = current->next;
+        tail = current;
+    }
+    // Perché: separo la logica di aggiornamento di tail per rendere Remove più leggibile
+}
 
 }

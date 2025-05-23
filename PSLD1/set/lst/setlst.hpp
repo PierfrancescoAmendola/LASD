@@ -184,6 +184,8 @@ protected:
   // Auxiliary functions, if necessary!
   // Node* BinarySearch(const Data& , Node **, Node **, unsigned long ) const noexcept
   Node** BinarySearch(const Data& )const  ;
+  bool DoInsert(Node* ) ;
+  void UpdateTail() ;
 
 
   /* ************************************************************************ */
