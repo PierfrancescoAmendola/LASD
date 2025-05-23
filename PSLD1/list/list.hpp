@@ -254,30 +254,37 @@ protected:
     /* ************************************************************************ */
 
     // Auxiliary member functions (for MappableContainer)
-
+    // Applica una funzione di mapping a ogni elemento a partire dal nodo specificato in pre-ordine
+    // Attraversa la lista in pre-ordine, applicando la funzione 'fun' a ogni elemento
+    // A cosa serve: supporta PreOrderMap pubblico, eseguendo operazioni di modifica sugli elementi
     void PreOrderMap(MapFun, Node *);
+
+    
+    // Applica una funzione di mapping a ogni elemento a partire dal nodo specificato in post-ordine
+    // Attraversa la lista in post-ordine, applicando la funzione 'fun' a ogni elemento
+    // A cosa serve: supporta PostOrderMap pubblico, utile per operazioni che elaborano prima i nodi successivi
     void PostOrderMap(MapFun, Node *);
 
     //Funzioni ausiliarie per ridurre il codice duplicato
     
     // Copia tutti i nodi da un'altra lista, creando nuovi nodi (profondamente).
-void CopyList(const List&);
+    void CopyList(const List&);
 
-// Cancella tutti i nodi della lista e libera la memoria.
-void DeleteList();
+    // Cancella tutti i nodi della lista e libera la memoria.
+    void DeleteList();
 
-// Aggiunge un nuovo nodo in fondo alla lista (append).
-void AppendNode(Node*);
+    // Aggiunge un nuovo nodo in fondo alla lista (append).
+    void AppendNode(Node*);
 
-// Rimuove l'ultimo nodo dalla lista.
-void RemoveLastNode();
+    // Rimuove l'ultimo nodo dalla lista.
+    void RemoveLastNode();
 
-// Restituisce il puntatore al nodo in posizione 'index' (0-based).
-// Lancia eccezione se l'indice è fuori dal range.
-Node* GetNodeAt(unsigned long) const;
+    // Restituisce il puntatore al nodo in posizione 'index' (0-based).
+    // Lancia eccezione se l'indice è fuori dal range.
+    Node* GetNodeAt(unsigned long) const;
 
-// Controlla se la lista è vuota; se sì, lancia eccezione con il messaggio fornito.
-void CheckEmpty(const char*) const;
+    // Controlla se la lista è vuota; se sì, lancia eccezione con il messaggio fornito.
+    void CheckEmpty(const char*) const;
 
 
 
