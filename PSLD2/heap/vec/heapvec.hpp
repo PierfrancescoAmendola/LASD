@@ -80,21 +80,25 @@ public:
   // Specific member functions (inherited from Heap)
 
   // type IsHeap(argument) specifiers; // Override Heap member
-  bool isHeap() const override; 
+  bool IsHeap() const override; 
 
   // type Heapify(argument) specifiers; // Override Heap member
   void Heapify() override;
 
   /* ************************************************************************ */
 
+  
+  /**********************************************************************++ */
   // Specific member function (inherited from SortableLinearContainer)
 
   // type Sort(argument) specifiers; // Override SortableLinearContainer member
+  void Sort() override; 
 
 protected:
 
   // Auxiliary functions, if necessary!
 
+  
 };
 
 /* ************************************************************************** */
