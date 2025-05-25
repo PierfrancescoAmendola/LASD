@@ -80,8 +80,10 @@ public:
   // Specific member functions (inherited from Heap)
 
   // type IsHeap(argument) specifiers; // Override Heap member
+  bool isHeap() const override; 
 
   // type Heapify(argument) specifiers; // Override Heap member
+  void Heapify() override;
 
   /* ************************************************************************ */
 

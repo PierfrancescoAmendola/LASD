@@ -74,8 +74,11 @@ public:
   // Specific member functions (inherited from PQ)
 
   // type Tip(argument) specifiers; // Override PQ member (must throw std::length_error when empty)
+  const Data& Tip() const override;
   // type RemoveTip(argument) specifiers; // Override PQ member (must throw std::length_error when empty)
+  void RemoveTip() override;
   // type TipNRemove(argument) specifiers; // Override PQ member (must throw std::length_error when empty)
+  Data TipNRemove() override;
 
   // type Insert(argument) specifiers; // Override PQ member (Copy of the value)
   virtual bool Insert(const Data&) override;
@@ -83,7 +86,9 @@ public:
   virtual bool Insert(Data&&) override;
 
   // type Change(argument) specifiers; // Override PQ member (Copy of the value)
+  bool Change (const Data&) override;
   // type Change(argument) specifiers; // Override PQ member (Move of the value)
+  bool Change (Data&&) override;
 
 protected:
 
