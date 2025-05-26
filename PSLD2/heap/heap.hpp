@@ -25,8 +25,7 @@ public:
 
   // Destructor
   // ~Heap() specifiers
-  virtual ~Heap(); 
-
+  virtual ~Heap() = default;
   /* ************************************************************************ */
 
   // Copy assignment

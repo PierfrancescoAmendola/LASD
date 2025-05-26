@@ -26,6 +26,7 @@ protected:
 
   // using Container::???;
   using Container :: size;
+  using Vector<Data>::elements; // Elements is the array of Data in Vector<Data>
 
   // ...
 
@@ -72,9 +73,9 @@ public:
 
   // Comparison operators
   // type operator==(argument) specifiers;
-  inline bool operator == (const HeapVec<Data>&) const;
+  inline bool operator == (const HeapVec<Data>&) const noexcept;
   // type operator!=(argument) specifiers;
-  inline bool operator != (const HeapVec<Data>&) const;
+  inline bool operator != (const HeapVec<Data>&) const noexcept;
   /* ************************************************************************ */
 
   // Specific member functions (inherited from Heap)
@@ -92,11 +93,13 @@ public:
   // Specific member function (inherited from SortableLinearContainer)
 
   // type Sort(argument) specifiers; // Override SortableLinearContainer member
-  void Sort() override; 
+  void Sort() noexcept override; 
 
 protected:
 
   // Auxiliary functions, if necessary!
+  void HeapDown(ulong );
+  bool IsHeapRecursive(ulong index) const;
 
   
 };
