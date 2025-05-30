@@ -14,7 +14,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class HeapVec : virtual public Heap<Data>, virtual public Vector<Data> {
+class HeapVec : virtual public Heap<Data>, public SortableVector<Data> {
   // Must extend Heap<Data>,
   // Could extend Vector<Data>
 
@@ -26,7 +26,7 @@ protected:
 
   // using Container::???;
   using Container :: size;
-  using Vector<Data>::elements; // Elements is the array of Data in Vector<Data>
+  //using Vector<Data>::elements; // Elements is the array of Data in Vector<Data>
 
   // ...
 
@@ -34,7 +34,7 @@ public:
 
   // Default constructor
   // HeapVec() specifiers;
-  HeapVec() = default; // Default constructor of abstract types is not possible.
+  HeapVec() = default;
 
   /* ************************************************************************ */
 
@@ -56,7 +56,7 @@ public:
 
   // Destructor
   // ~HeapVec() specifiers;
-  virtual ~HeapVec();
+  virtual ~HeapVec() = default;
 
   /* ************************************************************************ */
 
@@ -94,12 +94,13 @@ public:
 
   // type Sort(argument) specifiers; // Override SortableLinearContainer member
   void Sort() noexcept override; 
+  using Vector<Data>::Clear;
 
 protected:
 
   // Auxiliary functions, if necessary!
-  void HeapDown(ulong );
-  bool IsHeapRecursive(ulong index) const;
+  void HeapDown(unsigned long);
+  bool IsHeapRecursive(unsigned long ) const;
 
   
 };

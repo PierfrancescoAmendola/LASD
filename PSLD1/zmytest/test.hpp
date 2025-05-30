@@ -21,6 +21,8 @@ void mySetVecExtendedTests(uint& testnum, uint& testerr);
 void testSetLstExercise(uint& testnum, uint& testerr);
 void testSetLst();
 void testSetVec();
+
+void mytestGaetano();
 /* ************************************************************************** */
 
 #endif

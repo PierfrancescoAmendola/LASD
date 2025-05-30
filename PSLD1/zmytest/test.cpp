@@ -33,6 +33,18 @@
 #include "../set/lst/setlst.hpp"
 #include "../set/vec/setvec.hpp"
 
+
+#include "../zlasdtest/container/container.hpp"
+#include "../zlasdtest/container/dictionary.hpp"
+#include "../zlasdtest/container/linear.hpp"
+#include "../zlasdtest/container/mappable.hpp"
+#include "../zlasdtest/container/testable.hpp"
+#include "../zlasdtest/container/traversable.hpp"
+
+#include "../zlasdtest/vector/vector.hpp"
+#include "../zlasdtest/list/list.hpp"
+#include "../zlasdtest/set/set.hpp"
+
 using namespace std;
 using namespace lasd;
 
@@ -5175,3 +5187,3029 @@ void testSetVec() {
 //-------------------------------------------------------------------------
 
 
+void testEmptyVectorInt(lasd::SortableVector<int> & vec, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, 0);
+  GetFront(testnum, testerr, vec, false, 0);
+  GetBack(testnum, testerr, vec, false, 0);
+
+  SetAt(testnum, testerr, vec, false, 0, 0);
+  SetBack(testnum, testerr, vec, false, 0);
+  SetFront(testnum, testerr, vec, false, 0);
+
+  Exists(testnum, testerr, vec, false, 0);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+
+  vec.Clear();
+
+  vec.Sort();
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, 0);
+  GetFront(testnum, testerr, vec, false, 0);
+  GetBack(testnum, testerr, vec, false, 0);
+
+  SetAt(testnum, testerr, vec, false, 0, 0);
+  SetBack(testnum, testerr, vec, false, 0);
+  SetFront(testnum, testerr, vec, false, 0);
+
+  Exists(testnum, testerr, vec, false, 0);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 0);
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 0);
+
+}
+
+void testSingleVectorInt(lasd::SortableVector<int> & vec, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, vec, false);
+  Size(testnum, testerr, vec, true, 1);
+
+  GetAt(testnum, testerr, vec, true, 0, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  SetAt(testnum, testerr, vec, true, 0, 0);
+  GetAt(testnum, testerr, vec, true, 0, 0);
+  Exists(testnum, testerr, vec, true, 0);
+
+  GetFront(testnum, testerr, vec, true, 0);
+  SetFront(testnum, testerr, vec, true, 1);
+  GetFront(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  SetFront(testnum, testerr, vec, true, 0);
+  GetFront(testnum, testerr, vec, true, 0);
+  Exists(testnum, testerr, vec, true, 0);
+
+  GetBack(testnum, testerr, vec, true, 0);
+  SetBack(testnum, testerr, vec, true, 1);
+  GetBack(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  SetBack(testnum, testerr, vec, true, 0);
+  GetBack(testnum, testerr, vec, true, 0);
+  Exists(testnum, testerr, vec, true, 0);
+
+  SetAt(testnum, testerr, vec, true, 0, 1);
+  GetAt(testnum, testerr, vec, true, 0, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 1);
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+
+  TraversePreOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPreOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 1);
+
+  vec.Clear();
+
+  testEmptyVectorInt(vec, testnum, testerr);
+
+  vec.Resize(1);
+
+  vec.Sort();
+
+  Exists(testnum, testerr, vec, true, 0);
+
+  SetFront(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 1);
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 1);
+
+  vec.Clear();
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, 0);
+  GetFront(testnum, testerr, vec, false, 0);
+  GetBack(testnum, testerr, vec, false, 0);
+
+  SetAt(testnum, testerr, vec, false, 0, 0);
+  SetBack(testnum, testerr, vec, false, 0);
+  SetFront(testnum, testerr, vec, false, 0);
+
+  Exists(testnum, testerr, vec, false, 0);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 0);
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 0);
+
+  vec.Resize(1);
+  SetFront(testnum, testerr, vec, true, 1);
+
+}
+
+void testMultipleVectorInt(lasd::SortableVector<int> & vec, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, vec, false);
+  Size(testnum, testerr, vec, true, 20);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 210);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, vec, true, index);
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, vec, true, index, index + 1);
+
+  GetFront(testnum, testerr, vec, true, 1);
+  SetFront(testnum, testerr, vec, true, 20);
+  GetFront(testnum, testerr, vec, true, 20);
+  Exists(testnum, testerr, vec, true, 20);
+  SetFront(testnum, testerr, vec, true, 1);
+  GetFront(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+
+  GetBack(testnum, testerr, vec, true, 20);
+  SetBack(testnum, testerr, vec, true, 1);
+  GetBack(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  SetBack(testnum, testerr, vec, true, 20);
+  GetBack(testnum, testerr, vec, true, 20);
+  Exists(testnum, testerr, vec, true, 20);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 210);
+  
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec, true, 19 - index, 20 - index);
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 210);
+
+  vec.Resize(1);
+  SetAt(testnum, testerr, vec, true, 0, 1);
+  testSingleVectorInt(vec, testnum, testerr);
+
+  vec.Resize(10);
+
+  for (int index = 0; index < 10; index++)
+    SetAt(testnum, testerr, vec, true, 9 - index, 10 - index);
+
+  for (int index = 1; index <= 10; index++)
+    Exists(testnum, testerr, vec, true, index);
+
+  vec.Sort();
+
+  for (int index = 0; index < 10; index++)
+    GetAt(testnum, testerr, vec, true, index, index + 1);
+
+  vec.Resize(20);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec, true, index, index + 1);
+  
+}
+
+void testVectorInt(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of Vector<int> Test:" << endl;
+  try {
+    {
+      cout << endl << "Empty Vector" << endl;
+
+      lasd::List<int> list;
+
+      lasd::SortableVector<int> vector;
+
+      testEmptyVectorInt(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<int> copyCVector(list);
+
+      testEmptyVectorInt(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> copyVector = vector;
+
+      testEmptyVectorInt(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<int> moveCVector(std::move(list));
+
+      testEmptyVectorInt(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> moveVector = std::move(vector);
+
+      testEmptyVectorInt(moveVector, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 Vector" << endl;
+
+      lasd::List<int> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, 1);
+
+      lasd::SortableVector<int> vector(1);
+
+      SetFront(loctestnum, loctesterr, vector, true, 1);
+
+      cout << endl << "Size 1 Vector" << endl;
+
+      testSingleVectorInt(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<int> copyCVector(list);
+
+      testSingleVectorInt(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> copyVector = vector;
+
+      testSingleVectorInt(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<int> moveCVector(std::move(list));
+
+      testSingleVectorInt(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> moveVector = std::move(vector);
+
+      testSingleVectorInt(moveVector, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 Vector" << endl;
+      
+      lasd::List<int> list;
+      
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, index);
+      
+      lasd::SortableVector<int> vector(20);
+      
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vector, true, index, index + 1);
+      
+      cout << endl << "Size 20 Vector" << endl;
+
+      testMultipleVectorInt(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<int> copyCVector(list);
+
+      testMultipleVectorInt(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> copyVector = vector;
+
+      testMultipleVectorInt(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<int> moveCVector(std::move(list));
+
+      testMultipleVectorInt(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> moveVector = std::move(vector);
+
+      testMultipleVectorInt(moveVector, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of Vector<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void testEmptyVectorString(lasd::SortableVector<string> & vec, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, string(""));
+  GetFront(testnum, testerr, vec, false, string(""));
+  GetBack(testnum, testerr, vec, false, string(""));
+
+  SetAt(testnum, testerr, vec, false, 0, string(""));
+  SetBack(testnum, testerr, vec, false, string(""));
+  SetFront(testnum, testerr, vec, false, string(""));
+
+  Exists(testnum, testerr, vec, false, string(""));
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+
+  vec.Clear();
+
+  vec.Sort();
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, string(""));
+  GetFront(testnum, testerr, vec, false, string(""));
+  GetBack(testnum, testerr, vec, false, string(""));
+
+  SetAt(testnum, testerr, vec, false, 0, string(""));
+  SetBack(testnum, testerr, vec, false, string(""));
+  SetFront(testnum, testerr, vec, false, string(""));
+
+  Exists(testnum, testerr, vec, false, string(""));
+
+  MapPreOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string(""));
+
+  MapPostOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string(""));
+
+}
+
+void testSingleVectorString(lasd::SortableVector<string> & vec, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, vec, false);
+  Size(testnum, testerr, vec, true, 1);
+
+  GetAt(testnum, testerr, vec, true, 0, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  SetAt(testnum, testerr, vec, true, 0, string(""));
+  GetAt(testnum, testerr, vec, true, 0, string(""));
+  Exists(testnum, testerr, vec, true, string(""));
+
+  GetFront(testnum, testerr, vec, true, string(""));
+  SetFront(testnum, testerr, vec, true, string("a"));
+  GetFront(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  SetFront(testnum, testerr, vec, true, string(""));
+  GetFront(testnum, testerr, vec, true, string(""));
+  Exists(testnum, testerr, vec, true, string(""));
+
+  GetBack(testnum, testerr, vec, true, string(""));
+  SetBack(testnum, testerr, vec, true, string("a"));
+  GetBack(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  SetBack(testnum, testerr, vec, true, string(""));
+  GetBack(testnum, testerr, vec, true, string(""));
+  Exists(testnum, testerr, vec, true, string(""));
+
+  SetAt(testnum, testerr, vec, true, 0, string("a"));
+  GetAt(testnum, testerr, vec, true, 0, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a"));
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+
+  TraversePreOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a"));
+
+  vec.Clear();
+
+  testEmptyVectorString(vec, testnum, testerr);
+
+  vec.Resize(1);
+
+  vec.Sort();
+
+  Exists(testnum, testerr, vec, true, string(""));
+
+  SetFront(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a"));
+
+  MapPreOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a "));
+
+  MapPostOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a  "));
+
+  vec.Clear();
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, string(""));
+  GetFront(testnum, testerr, vec, false, string(""));
+  GetBack(testnum, testerr, vec, false, string(""));
+
+  SetAt(testnum, testerr, vec, false, 0, string(""));
+  SetBack(testnum, testerr, vec, false, string(""));
+  SetFront(testnum, testerr, vec, false, string(""));
+
+  Exists(testnum, testerr, vec, false, string(""));
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string(""));
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string(""));
+
+  vec.Resize(1);
+  SetFront(testnum, testerr, vec, true, string("a"));
+
+}
+
+void testMultipleVectorString(lasd::SortableVector<string> & vec, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, vec, false);
+  Size(testnum, testerr, vec, true, 20);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("abcdefghijklmnopqrst"));
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, vec, true, string(1, char (97 + index)));
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, vec, true, index, string(1, char (97 + index)));
+
+  GetFront(testnum, testerr, vec, true, string("a"));
+  SetFront(testnum, testerr, vec, true, string("t"));
+  GetFront(testnum, testerr, vec, true, string("t"));
+  Exists(testnum, testerr, vec, true, string("t"));
+  SetFront(testnum, testerr, vec, true, string("a"));
+  GetFront(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+
+  GetBack(testnum, testerr, vec, true, string("t"));
+  SetBack(testnum, testerr, vec, true, string("a"));
+  GetBack(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  SetBack(testnum, testerr, vec, true, string("t"));
+  GetBack(testnum, testerr, vec, true, string("t"));
+  Exists(testnum, testerr, vec, true, string("t"));
+
+  MapPreOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a b c d e f g h i j k l m n o p q r s t "));
+  
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec, true, 19 - index, string(1, char (97 + index)));
+
+  MapPostOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a b c d e f g h i j k l m n o p q r s t "));
+
+  vec.Resize(1);
+  SetAt(testnum, testerr, vec, true, 0, string("a"));
+  testSingleVectorString(vec, testnum, testerr);
+
+  vec.Resize(10);
+
+  for (int index = 0; index < 10; index++)
+    SetAt(testnum, testerr, vec, true, 9 - index, string(1, char (97 + index)));
+
+  for (int index = 0; index < 10; index++)
+    Exists(testnum, testerr, vec, true, string(1, char (97 + index)));
+
+  vec.Sort();
+
+  for (int index = 0; index < 10; index++)
+    GetAt(testnum, testerr, vec, true, index, string(1, char (97 + index)));
+
+  vec.Resize(20);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec, true, index, string(1, char (97 + index)));
+  
+}
+
+void testVectorString(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of Vector<string> Test:" << endl;
+  try  {
+    {
+      cout << endl << "Empty Vector" << endl;
+
+      lasd::List<string> list;
+
+      lasd::SortableVector<string> vector;
+
+      testEmptyVectorString(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<string> copyCVector(list);
+
+      testEmptyVectorString(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> copyVector = vector;
+
+      testEmptyVectorString(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<string> moveCVector(std::move(list));
+
+      testEmptyVectorString(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> moveVector = std::move(vector);
+
+      testEmptyVectorString(moveVector, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 Vector" << endl;
+
+      lasd::List<string> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, string("a"));
+
+      lasd::SortableVector<string> vector(1);
+
+      SetFront(loctestnum, loctesterr, vector, true, string("a"));
+
+      cout << endl << "Size 1 Vector" << endl;
+
+      testSingleVectorString(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<string> copyCVector(list);
+
+      testSingleVectorString(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> copyVector = vector;
+
+      testSingleVectorString(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<string> moveCVector(std::move(list));
+
+      testSingleVectorString(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> moveVector = std::move(vector);
+
+      testSingleVectorString(moveVector, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 Vector" << endl;
+      
+      lasd::List<string> list;
+      
+      for (int index = 0; index < 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, string(1, char (97 + index)));
+      
+      lasd::SortableVector<string> vector(20);
+      
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vector, true, index, string(1, char (97 + index)));
+      
+      cout << endl << "Size 20 Vector" << endl;
+
+      testMultipleVectorString(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<string> copyCVector(list);
+
+      testMultipleVectorString(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> copyVector = vector;
+
+      testMultipleVectorString(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<string> moveCVector(std::move(list));
+
+      testMultipleVectorString(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> moveVector = std::move(vector);
+
+      testMultipleVectorString(moveVector, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of Vector<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void testEmptyListInt(lasd::List<int> & lst, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  GetAt(testnum, testerr, lst, false, 0, 0);
+  GetFront(testnum, testerr, lst, false, 0);
+  GetBack(testnum, testerr, lst, false, 0);
+
+  SetAt(testnum, testerr, lst, false, 0, 0);
+  SetBack(testnum, testerr, lst, false, 0);
+  SetFront(testnum, testerr, lst, false, 0);
+
+  Exists(testnum, testerr, lst, false, 0);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  GetAt(testnum, testerr, lst, false, 0, 0);
+  GetFront(testnum, testerr, lst, false, 0);
+  GetBack(testnum, testerr, lst, false, 0);
+
+  SetAt(testnum, testerr, lst, false, 0, 0);
+  SetBack(testnum, testerr, lst, false, 0);
+  SetFront(testnum, testerr, lst, false, 0);
+
+  Exists(testnum, testerr, lst, false, 0);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 0);
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 0);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, 0);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+
+  Exists(testnum, testerr, lst, true, 1);
+
+  FrontNRemove(testnum, testerr, lst, true, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromFront(testnum, testerr, lst, true);
+
+  RemoveFromBack(testnum, testerr, lst, false);
+  BackNRemove(testnum, testerr, lst, false, 0);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  Exists(testnum, testerr, lst, true, 1);
+
+  BackNRemove(testnum, testerr, lst, true, 1);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+}
+
+void testSingleListInt(lasd::List<int> & lst, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, lst, false);
+  Size(testnum, testerr, lst, true, 1);
+
+  GetAt(testnum, testerr, lst, true, 0, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  SetAt(testnum, testerr, lst, true, 0, 0);
+  GetAt(testnum, testerr, lst, true, 0, 0);
+  Exists(testnum, testerr, lst, true, 0);
+
+  GetFront(testnum, testerr, lst, true, 0);
+  SetFront(testnum, testerr, lst, true, 1);
+  GetFront(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  SetFront(testnum, testerr, lst, true, 0);
+  GetFront(testnum, testerr, lst, true, 0);
+  Exists(testnum, testerr, lst, true, 0);
+
+  GetBack(testnum, testerr, lst, true, 0);
+  SetBack(testnum, testerr, lst, true, 1);
+  GetBack(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  SetBack(testnum, testerr, lst, true, 0);
+  GetBack(testnum, testerr, lst, true, 0);
+  Exists(testnum, testerr, lst, true, 0);
+
+  SetAt(testnum, testerr, lst, true, 0, 1);
+  GetAt(testnum, testerr, lst, true, 0, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+
+  TraversePreOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPreOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  FrontNRemove(testnum, testerr, lst, false, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, 1);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  RemoveFromFront(testnum, testerr, lst, true);
+  FrontNRemove(testnum, testerr, lst, false, 1);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  FrontNRemove(testnum, testerr, lst, true, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+
+  lst.Clear();
+  
+  testEmptyListInt(lst, testnum, testerr);
+
+  Exists(testnum, testerr, lst, false, 1);
+
+  InsertAtBack(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  FrontNRemove(testnum, testerr, lst, false, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, 0);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  RemoveFromFront(testnum, testerr, lst, true);
+  FrontNRemove(testnum, testerr, lst, false, 0);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  FrontNRemove(testnum, testerr, lst, true, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+}
+
+void testMultipleListInt(lasd::List<int> & lst, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, lst, false);
+  Size(testnum, testerr, lst, true, 20);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 210);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, index);
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, lst, true, index, index + 1);
+
+  GetFront(testnum, testerr, lst, true, 1);
+  SetFront(testnum, testerr, lst, true, 20);
+  GetFront(testnum, testerr, lst, true, 20);
+  Exists(testnum, testerr, lst, true, 20);
+  SetFront(testnum, testerr, lst, true, 1);
+  GetFront(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+
+  GetBack(testnum, testerr, lst, true, 20);
+  SetBack(testnum, testerr, lst, true, 1);
+  GetBack(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  SetBack(testnum, testerr, lst, true, 20);
+  GetBack(testnum, testerr, lst, true, 20);
+  Exists(testnum, testerr, lst, true, 20);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 210);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, lst, true, 19 - index, 20 - index);
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 210);
+
+  lst.Clear();
+
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, index);
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, index);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, index);
+
+  for (int index = 1; index <= 10; index++)
+    FrontNRemove(testnum, testerr, lst, true, index);
+
+  for (int index = 20; index >= 11; index--)
+    BackNRemove(testnum, testerr, lst, true, index);
+
+  lst.Clear();
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, index);
+  
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, index);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, index);
+
+  for (int index = 20; index >= 11; index--)
+    BackNRemove(testnum, testerr, lst, true, index);
+  
+  for (int index = 1; index <= 10; index++)
+    FrontNRemove(testnum, testerr, lst, true, index);
+
+  lst.Clear();
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  testSingleListInt(lst, testnum, testerr);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, index);
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, index);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, index);
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, lst, true, index, index + 1);
+
+}
+
+void testListInt(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of List<int> Test:" << endl;
+  try {
+    {
+      cout << endl << "Empty List" << endl;
+
+      lasd::Vector<int> vector;
+
+      lasd::List<int> list;
+
+      testEmptyListInt(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<int> copyCList(vector);
+
+      testEmptyListInt(copyCList, loctestnum, loctesterr);
+
+      lasd::List<int> copyList = list;
+
+      testEmptyListInt(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<int> moveCList(std::move(vector));
+
+      testEmptyListInt(moveCList, loctestnum, loctesterr);
+
+      lasd::List<int> moveList = std::move(list);
+
+      testEmptyListInt(moveList, loctestnum, loctesterr);
+    }
+     {
+      cout << endl << "Start Inserting Element Size 1 List" << endl;
+
+      lasd::Vector<int> vector(1);
+
+      SetFront(loctestnum, loctesterr, vector, true, 1);
+      
+      lasd::List<int> list;
+      
+      InsertAtFront(loctestnum, loctesterr, list, true, 1);
+
+      cout << endl << "Size 1 List" << endl;
+
+      testSingleListInt(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<int> copyCList(vector);
+
+      testSingleListInt(copyCList, loctestnum, loctesterr);
+
+      lasd::List<int> copyList = list;
+
+      testSingleListInt(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<int> moveCList(std::move(vector));
+
+      testSingleListInt(moveCList, loctestnum, loctesterr);
+
+      lasd::List<int> moveList = std::move(list);
+
+      testSingleListInt(moveList, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 List" << endl;
+      
+      lasd::Vector<int> vector(20);
+      
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vector, true, index, index + 1);
+      
+      lasd::List<int> list;
+      
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, index);
+      
+      cout << endl << "Size 20 List" << endl;
+
+      testMultipleListInt(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<int> copyCList(vector);
+
+      testMultipleListInt(copyCList, loctestnum, loctesterr);
+
+      lasd::List<int> copyList = list;
+
+      testMultipleListInt(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<int> moveCList(std::move(vector));
+
+      testMultipleListInt(moveCList, loctestnum, loctesterr);
+
+      lasd::List<int> moveList = std::move(list);
+
+      testMultipleListInt(moveList, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of List<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void testEmptyListString(lasd::List<string> & lst, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  GetAt(testnum, testerr, lst, false, 0, string(""));
+  GetFront(testnum, testerr, lst, false, string(""));
+  GetBack(testnum, testerr, lst, false, string(""));
+
+  SetAt(testnum, testerr, lst, false, 0, string(""));
+  SetBack(testnum, testerr, lst, false, string(""));
+  SetFront(testnum, testerr, lst, false, string(""));
+
+  Exists(testnum, testerr, lst, false, string(""));
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  GetAt(testnum, testerr, lst, false, 0, string(""));
+  GetFront(testnum, testerr, lst, false, string(""));
+  GetBack(testnum, testerr, lst, false, string(""));
+
+  SetAt(testnum, testerr, lst, false, 0, string(""));
+  SetBack(testnum, testerr, lst, false, string(""));
+  SetFront(testnum, testerr, lst, false, string(""));
+
+  Exists(testnum, testerr, lst, false, string(""));
+
+  MapPreOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string(""));
+
+  MapPostOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string(""));
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, string(""));
+  InsertAtFront(testnum, testerr, lst, true, string(""));
+
+  Exists(testnum, testerr, lst, true, string(""));
+
+  FrontNRemove(testnum, testerr, lst, true, string(""));
+  InsertAtFront(testnum, testerr, lst, true, string(""));
+  RemoveFromFront(testnum, testerr, lst, true);
+
+  RemoveFromBack(testnum, testerr, lst, false);
+  BackNRemove(testnum, testerr, lst, false, string(""));
+  InsertAtBack(testnum, testerr, lst, true, string(""));
+
+  Exists(testnum, testerr, lst, true, string(""));
+
+  BackNRemove(testnum, testerr, lst, true, string(""));
+  InsertAtBack(testnum, testerr, lst, true, string(""));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+}
+
+void testSingleListString(lasd::List<string> & lst, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, lst, false);
+  Size(testnum, testerr, lst, true, 1);
+
+  GetAt(testnum, testerr, lst, true, 0, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  SetAt(testnum, testerr, lst, true, 0, string("a"));
+  GetAt(testnum, testerr, lst, true, 0, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  GetFront(testnum, testerr, lst, true, string("a"));
+  SetFront(testnum, testerr, lst, true, string("a"));
+  GetFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  SetFront(testnum, testerr, lst, true, string("a"));
+  GetFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  GetBack(testnum, testerr, lst, true, string("a"));
+  SetBack(testnum, testerr, lst, true, string("a"));
+  GetBack(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  SetBack(testnum, testerr, lst, true, string("a"));
+  GetBack(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  SetAt(testnum, testerr, lst, true, 0, string("a"));
+  GetAt(testnum, testerr, lst, true, 0, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a"));
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a"));
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+
+  RemoveFromFront(testnum, testerr, lst, true);
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+
+  FrontNRemove(testnum, testerr, lst, true, string("a"));
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  lst.Clear();
+  
+  testEmptyListString(lst, testnum, testerr);
+
+  Exists(testnum, testerr, lst, false, string("a"));
+
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  MapPreOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a "));
+
+  MapPostOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a  "));
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+
+  RemoveFromFront(testnum, testerr, lst, true);
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+
+  FrontNRemove(testnum, testerr, lst, true, string("a"));
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  MapPreOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a "));
+
+  MapPostOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a  "));
+
+  lst.Clear();
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+
+}
+
+void testMultipleListString(lasd::List<string> & lst, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, lst, false);
+  Size(testnum, testerr, lst, true, 20);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("abcdefghijklmnopqrst"));
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, lst, true, string(1, char (97 + index)));
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, lst, true, index, string(1, char (97 + index)));
+
+  GetFront(testnum, testerr, lst, true, string("a"));
+  SetFront(testnum, testerr, lst, true, string("t"));
+  GetFront(testnum, testerr, lst, true, string("t"));
+  Exists(testnum, testerr, lst, true, string("t"));
+  SetFront(testnum, testerr, lst, true, string("a"));
+  GetFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  GetBack(testnum, testerr, lst, true, string("t"));
+  SetBack(testnum, testerr, lst, true, string("a"));
+  GetBack(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  SetBack(testnum, testerr, lst, true, string("t"));
+  GetBack(testnum, testerr, lst, true, string("t"));
+  Exists(testnum, testerr, lst, true, string("t"));
+
+  MapPreOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a b c d e f g h i j k l m n o p q r s t "));
+  
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, lst, true, 19 - index, string(1, char (97 + index)));
+
+  MapPostOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a b c d e f g h i j k l m n o p q r s t "));
+
+  lst.Clear();
+
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 1; index <= 10; index++)
+    FrontNRemove(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 20; index >= 11; index--)
+    BackNRemove(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  lst.Clear();
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+  
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 20; index >= 11; index--)
+    BackNRemove(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+  
+  for (int index = 1; index <= 10; index++)
+    FrontNRemove(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  lst.Clear();
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  testSingleListString(lst, testnum, testerr);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, lst, true, index, string(1, char (97 + index)));
+
+}
+
+void testListString(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of List<string> Test:" << endl;
+  try {
+    {
+      cout << endl << "Empty List" << endl;
+
+      lasd::Vector<string> vector;
+
+      lasd::List<string> list;
+
+      testEmptyListString(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<string> copyCList(vector);
+
+      testEmptyListString(copyCList, loctestnum, loctesterr);
+
+      lasd::List<string> copyList = list;
+
+      testEmptyListString(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<string> moveCList(std::move(vector));
+
+      testEmptyListString(moveCList, loctestnum, loctesterr);
+
+      lasd::List<string> moveList = std::move(list);
+
+      testEmptyListString(moveList, loctestnum, loctesterr);
+    }
+      {
+      cout << endl << "Start Inserting Element Size 1 List" << endl;
+
+      lasd::Vector<string> vector(1);
+
+      SetFront(loctestnum, loctesterr, vector, true, string("a"));
+      
+      lasd::List<string> list;
+      
+      InsertAtFront(loctestnum, loctesterr, list, true, string("a"));
+
+      cout << endl << "Size 1 List" << endl;
+
+      testSingleListString(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<string> copyCList(vector);
+
+      testSingleListString(copyCList, loctestnum, loctesterr);
+
+      lasd::List<string> copyList = list;
+
+      testSingleListString(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<string> moveCList(std::move(vector));
+
+      testSingleListString(moveCList, loctestnum, loctesterr);
+
+      lasd::List<string> moveList = std::move(list);
+
+      testSingleListString(moveList, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 List" << endl;
+      
+      lasd::Vector<string> vector(20);
+      
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vector, true, index, string(1, char (97 + index)));
+      
+      lasd::List<string> list;
+      
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, string(1, char (97 + index - 1)));
+      
+      cout << endl << "Size 20 List" << endl;
+
+      testMultipleListString(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<string> copyCList(vector);
+
+      testMultipleListString(copyCList, loctestnum, loctesterr);
+
+      lasd::List<string> copyList = list;
+
+      testMultipleListString(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<string> moveCList(std::move(vector));
+
+      testMultipleListString(moveCList, loctestnum, loctesterr);
+
+      lasd::List<string> moveList = std::move(list);
+
+      testMultipleListString(moveList, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of List<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+/* ************************************************************************** */
+
+void testVector(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  testVectorInt(loctestnum, loctesterr);
+  testVectorString(loctestnum, loctesterr);
+  testnum += loctestnum;
+  testerr += loctesterr;
+  cout << endl << "Exercise 1A - Vector (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+}
+
+void testList(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  testListInt(loctestnum, loctesterr);
+  testListString(loctestnum, loctesterr);
+  testnum += loctestnum;
+  testerr += loctesterr;
+  cout << endl << "Exercise 1A - List (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+}
+
+void testExercise1A(unsigned int & testnum, unsigned int & testerr) {
+  testVector(testnum, testerr);
+  testList(testnum, testerr);
+  cout << endl << "Exercise 1A (Student Test) (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
+}
+
+/* ************************************************************************** */
+
+void testEmptySetInt(lasd::Set<int> & set, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, set, true);
+  Size(testnum, testerr, set, true, 0);
+
+  GetAt(testnum, testerr, set, false, 0, 0);
+  GetFront(testnum, testerr, set, false, 0);
+  GetBack(testnum, testerr, set, false, 0);
+
+  Exists(testnum, testerr, set, false, 0);
+
+  lasd::Vector<int> vec(1);
+
+  SetFront(testnum, testerr, vec, true, 1);
+
+  lasd::Vector<int> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<int> vec2(2);
+
+  SetFront(testnum, testerr, vec2, true, 1);
+  SetBack(testnum, testerr, vec2, true, 2);
+
+  lasd::Vector<int> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<int>);
+
+  Min(testnum, testerr, set, false, 0);
+  RemoveMin(testnum, testerr, set, false);
+  MinNRemove(testnum, testerr, set, false, 0);
+  
+  Max(testnum, testerr, set, false, 0);
+  RemoveMax(testnum, testerr, set, false);
+  MaxNRemove(testnum, testerr, set, false, 0);
+  
+  Predecessor(testnum, testerr, set, false, 0, 1);
+  RemovePredecessor(testnum, testerr, set, false, 0);
+  PredecessorNRemove(testnum, testerr, set, false, 0, 1);
+
+  Successor(testnum, testerr, set, false, 0, 1);
+  RemoveSuccessor(testnum, testerr, set, false, 0);
+  SuccessorNRemove(testnum, testerr, set, false, 0, 1);
+
+  set.Clear();
+
+  Empty(testnum, testerr, set, true);
+  Size(testnum, testerr, set, true, 0);
+
+  GetAt(testnum, testerr, set, false, 0, 0);
+  GetFront(testnum, testerr, set, false, 0);
+  GetBack(testnum, testerr, set, false, 0);
+
+  Exists(testnum, testerr, set, false, 0);
+
+  lasd::List<int> lst;
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+
+  lasd::List<int> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<int> lst2;
+
+  InsertAtFront(testnum, testerr, lst2, true, 1);
+  InsertAtBack(testnum, testerr, lst2, true, 2);
+
+  lasd::List<int> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<int>);
+  Fold(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  Min(testnum, testerr, set, false, 0);
+  RemoveMin(testnum, testerr, set, false);
+  MinNRemove(testnum, testerr, set, false, 0);
+  
+  Max(testnum, testerr, set, false, 0);
+  RemoveMax(testnum, testerr, set, false);
+  MaxNRemove(testnum, testerr, set, false, 0);
+  
+  Predecessor(testnum, testerr, set, false, 0, 1);
+  RemovePredecessor(testnum, testerr, set, false, 0);
+  PredecessorNRemove(testnum, testerr, set, false, 0, 1);
+
+  Successor(testnum, testerr, set, false, 0, 1);
+  RemoveSuccessor(testnum, testerr, set, false, 0);
+  SuccessorNRemove(testnum, testerr, set, false, 0, 1);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  set.Clear();
+
+}
+
+void testSingleSetInt(lasd::Set<int> & set, unsigned int & testnum, unsigned int & testerr) {
+ 
+  Empty(testnum, testerr, set, false);
+  Size(testnum, testerr, set, true, 1);
+
+  GetAt(testnum, testerr, set, true, 0, 1);
+  GetFront(testnum, testerr, set, true, 1);
+  GetBack(testnum, testerr, set, true, 1);
+
+  Exists(testnum, testerr, set, true, 1);
+
+  lasd::Vector<int> vec(1);
+
+  SetFront(testnum, testerr, vec, true, 0);
+
+  lasd::Vector<int> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<int> vec2(2);
+
+  SetFront(testnum, testerr, vec2, true, 1);
+  SetBack(testnum, testerr, vec2, true, 2);
+
+  lasd::Vector<int> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  vec2 = vec2R;
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Min(testnum, testerr, set, true, 1);
+  RemoveMin(testnum, testerr, set, true);
+  
+  Min(testnum, testerr, set, true, 2);
+  MinNRemove(testnum, testerr, set, true, 2);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Max(testnum, testerr, set, true, 2);
+  RemoveMax(testnum, testerr, set, true);
+
+  Max(testnum, testerr, set, true, 1);
+  MaxNRemove(testnum, testerr, set, true, 1);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, true, 2, 1);
+  RemovePredecessor(testnum, testerr, set, true, 2);
+
+  Predecessor(testnum, testerr, set, true, 3, 2);
+  PredecessorNRemove(testnum, testerr, set, true, 3, 2);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Successor(testnum, testerr, set, true, 0, 1);
+  RemoveSuccessor(testnum, testerr, set, true, 0);
+
+  Successor(testnum, testerr, set, true, 1, 2);
+  SuccessorNRemove(testnum, testerr, set, true, 1, 2);
+
+  set.Clear();
+
+  testEmptySetInt(set, testnum, testerr);
+
+  lasd::List<int> lst;
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+
+  lasd::List<int> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<int> lst2;
+
+  InsertAtFront(testnum, testerr, lst2, true, 1);
+  InsertAtBack(testnum, testerr, lst2, true, 2);
+
+  lasd::List<int> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  lst2 = lst2R;
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<int>);
+  Fold(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Min(testnum, testerr, set, true, 1);
+  RemoveMin(testnum, testerr, set, true);
+  
+  Min(testnum, testerr, set, true, 2);
+  MinNRemove(testnum, testerr, set, true, 2);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Max(testnum, testerr, set, true, 2);
+  RemoveMax(testnum, testerr, set, true);
+
+  Max(testnum, testerr, set, true, 1);
+  MaxNRemove(testnum, testerr, set, true, 1);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+  
+  Predecessor(testnum, testerr, set, true, 2, 1);
+  RemovePredecessor(testnum, testerr, set, true, 2);
+
+  Predecessor(testnum, testerr, set, true, 3, 2);
+  PredecessorNRemove(testnum, testerr, set, true, 3, 2);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Successor(testnum, testerr, set, true, 0, 1);
+  RemoveSuccessor(testnum, testerr, set, true, 0);
+
+  Successor(testnum, testerr, set, true, 1, 2);
+  SuccessorNRemove(testnum, testerr, set, true, 1, 2);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  InsertC(testnum, testerr, set, true, 1);
+}
+
+void testMultipleSetInt(lasd::Set<int> & set, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, set, false);
+  Size(testnum, testerr, set, true, 20);
+
+  GetFront(testnum, testerr, set, true, 1);
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, set, true, index, index + 1);
+
+  GetBack(testnum, testerr, set, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, set, true, index);
+
+  set.Clear();
+
+  lasd::Vector<int> vec(10);
+
+  for (int index = 0; index < 10; index++)
+    SetAt(testnum, testerr, vec, true, index, index + 1);
+
+  lasd::Vector<int> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<int> vec2(20);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec2, true, index, index + 1);
+
+  lasd::Vector<int> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  vec2 = vec2R;
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, index + 1);
+    RemoveMin(testnum, testerr, set, true);
+  }
+
+  Min(testnum, testerr, set, false, 0);
+  RemoveMin(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, index + 1);
+    MinNRemove(testnum, testerr, set, true, index + 1);
+  }
+
+  Min(testnum, testerr, set, false, 0);
+  MinNRemove(testnum, testerr, set, false, 0);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 20; index > 0; index--) {
+    Max(testnum, testerr, set, true, index);
+    RemoveMax(testnum, testerr, set, true);
+  }
+
+  Max(testnum, testerr, set, false, 0);
+  RemoveMax(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 20; index > 0; index--) {
+    Max(testnum, testerr, set, true, index);
+    MaxNRemove(testnum, testerr, set, true, index);
+  }
+
+  Max(testnum, testerr, set, false, 0);
+  MaxNRemove(testnum, testerr, set, false, 0);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, false, 22, 21);
+  Predecessor(testnum, testerr, set, false, 0, -1);
+
+  for (int index = 20; index > 0; index--) {
+    Predecessor(testnum, testerr, set, true, index + 1, index);
+    RemovePredecessor(testnum, testerr, set, true, index + 1);
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 20; index > 0; index--) {
+    Predecessor(testnum, testerr, set, true, index + 1, index);
+    PredecessorNRemove(testnum, testerr, set, true, index + 1, index);
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Successor(testnum, testerr, set, false, 20, 21);
+  Successor(testnum, testerr, set, false, -1, 0);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, index, index + 1);
+    RemoveSuccessor(testnum, testerr, set, true, index);
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, index, index + 1);
+    SuccessorNRemove(testnum, testerr, set, true, index, index + 1);
+  }
+
+  set.Clear();
+
+  InsertC(testnum, testerr, set, true, 1);
+
+  testSingleSetInt(set, testnum, testerr);
+
+  set.Clear();
+
+  lasd::List<int> lst;
+
+  for (int index = 1; index <= 10; index++)
+    InsertAtFront(testnum, testerr, lst, true, index);
+
+  lasd::List<int> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<int> lst2;
+
+  for (int index = 1; index <= 20; index++)
+    InsertAtFront(testnum, testerr, lst2, true, index);
+
+  lasd::List<int> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  lst2 = lst2R;
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, index + 1);
+    RemoveMin(testnum, testerr, set, true);
+  }
+
+  Min(testnum, testerr, set, false, 0);
+  RemoveMin(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, index + 1);
+    MinNRemove(testnum, testerr, set, true, index + 1);
+  }
+
+  Min(testnum, testerr, set, false, 0);
+  MinNRemove(testnum, testerr, set, false, 0);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 20; index > 0; index--) {
+    Max(testnum, testerr, set, true, index);
+    RemoveMax(testnum, testerr, set, true);
+  }
+
+  Max(testnum, testerr, set, false, 0);
+  RemoveMax(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 20; index > 0; index--) {
+    Max(testnum, testerr, set, true, index);
+    MaxNRemove(testnum, testerr, set, true, index);
+  }
+
+  Max(testnum, testerr, set, false, 0);
+  MaxNRemove(testnum, testerr, set, false, 0);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, false, 22, 21);
+  Predecessor(testnum, testerr, set, false, 0, -1);
+
+  for (int index = 20; index > 0; index--) {
+    Predecessor(testnum, testerr, set, true, index + 1, index);
+    RemovePredecessor(testnum, testerr, set, true, index + 1);
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 20; index > 0; index--) {
+    Predecessor(testnum, testerr, set, true, index + 1, index);
+    PredecessorNRemove(testnum, testerr, set, true, index + 1, index);
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Successor(testnum, testerr, set, false, 20, 21);
+  Successor(testnum, testerr, set, false, -1, 0);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, index, index + 1);
+    RemoveSuccessor(testnum, testerr, set, true, index);
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, index, index + 1);
+    SuccessorNRemove(testnum, testerr, set, true, index, index + 1);
+  }
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<int>);
+  Fold(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+}
+
+void testSetInt(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of Set<int> Test" << endl;
+  try {
+    {
+      cout << endl << "Empty SetVector" << endl;
+
+      lasd::List<int> list;
+
+      lasd::SetVec<int> setVec;
+
+      testEmptySetInt(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<int> copyCSetVec(list);
+
+      testEmptySetInt(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> copySetVec = setVec;
+
+      testEmptySetInt(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<int> moveCSetVec(std::move(list));
+
+      testEmptySetInt(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> moveSetVec = std::move(setVec);
+
+      testEmptySetInt(moveSetVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 SetVector" << endl;
+
+      lasd::List<int> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, 1);
+
+      lasd::SetVec<int> setVec;
+
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);
+
+      cout << endl << "Size 1 SetVector" << endl;
+
+      testSingleSetInt(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<int> copyCSetVec(list);
+
+      testSingleSetInt(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> copySetVec = setVec;
+
+      testSingleSetInt(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<int> moveCSetVec(std::move(list));
+
+      testSingleSetInt(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> moveSetVec = std::move(setVec);
+
+      testSingleSetInt(moveSetVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 SetVector" << endl;
+
+      lasd::List<int> list;
+
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, index);
+      
+      lasd::SetVec<int> setVec;
+      
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);
+
+      cout << endl << "Size 20 SetVector" << endl;
+
+      testMultipleSetInt(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<int> copyCSetVec(list);
+
+      testMultipleSetInt(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> copySetVec = setVec;
+
+      testMultipleSetInt(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<int> moveCSetVec(std::move(list));
+
+      testMultipleSetInt(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> moveSetVec = std::move(setVec);
+
+      testMultipleSetInt(moveSetVec, loctestnum, loctesterr);
+    }
+     {
+      cout << endl << "Empty SetList" << endl;
+
+      lasd::Vector<int> vec;
+
+      lasd::SetLst<int> setList;
+
+      testEmptySetInt(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<int> copyCSetList(vec);
+
+      testEmptySetInt(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> copySetList = setList;
+
+      testEmptySetInt(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<int> moveCSetList(std::move(vec));
+
+      testEmptySetInt(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> moveSetList = std::move(setList);
+
+      testEmptySetInt(moveSetList, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 SetList" << endl;
+
+      lasd::Vector<int> vec(1);
+
+      SetFront(loctestnum, loctesterr, vec, true, 1);
+
+      lasd::SetLst<int> setList;
+
+      InsertC(loctestnum, loctesterr, setList, true, 1);
+
+      cout << endl << "Size 1 SetList" << endl;
+
+      testSingleSetInt(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<int> copyCSetList(vec);
+
+      testSingleSetInt(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> copySetList = setList;
+
+      testSingleSetInt(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<int> moveCSetList(std::move(vec));
+
+      testSingleSetInt(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> moveSetList = std::move(setList);
+
+      testSingleSetInt(moveSetList, loctestnum, loctesterr);
+
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 SetList" << endl;
+
+      lasd::Vector<int> vec(20);
+
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vec, true, index, index + 1);
+      
+      lasd::SetLst<int> setList;
+      
+      for (int index = 1; index <= 20; index++)
+        InsertC(loctestnum, loctesterr, setList, true, index);
+
+      cout << endl << "Size 20 SetList" << endl;
+
+      testMultipleSetInt(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<int> copyCSetList(vec);
+
+      testMultipleSetInt(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> copySetList = setList;
+
+      testMultipleSetInt(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<int> moveCSetList(std::move(vec));
+
+      testMultipleSetInt(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> moveSetList = std::move(setList);
+
+      testMultipleSetInt(moveSetList, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of Set<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void testEmptySetString(lasd::Set<string> & set, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, set, true);
+  Size(testnum, testerr, set, true, 0);
+
+  GetAt(testnum, testerr, set, false, 0, string(""));
+  GetFront(testnum, testerr, set, false, string(""));
+  GetBack(testnum, testerr, set, false, string(""));
+
+  Exists(testnum, testerr, set, false, string(""));
+ 
+  lasd::Vector<string> vec(1);
+
+  SetFront(testnum, testerr, vec, true, string("a"));
+
+  lasd::Vector<string> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<string> vec2(2);
+
+  SetFront(testnum, testerr, vec2, true, string("a"));
+  SetBack(testnum, testerr, vec2, true, string("b"));
+
+  lasd::Vector<string> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  Min(testnum, testerr, set, false, string(""));
+  RemoveMin(testnum, testerr, set, false);
+  MinNRemove(testnum, testerr, set, false, string(""));
+  
+  Max(testnum, testerr, set, false, string(""));
+  RemoveMax(testnum, testerr, set, false);
+  MaxNRemove(testnum, testerr, set, false, string(""));
+  
+  Predecessor(testnum, testerr, set, false, string(""), string("a"));
+  RemovePredecessor(testnum, testerr, set, false, string(""));
+  PredecessorNRemove(testnum, testerr, set, false, string(""), string("a"));
+
+  Successor(testnum, testerr, set, false, string(""), string("a"));
+  RemoveSuccessor(testnum, testerr, set, false, string(""));
+  SuccessorNRemove(testnum, testerr, set, false, string(""), string("a"));
+
+  set.Clear();
+
+  Empty(testnum, testerr, set, true);
+  Size(testnum, testerr, set, true, 0);
+
+  GetAt(testnum, testerr, set, false, 0, string(""));
+  GetFront(testnum, testerr, set, false, string(""));
+  GetBack(testnum, testerr, set, false, string(""));
+
+  Exists(testnum, testerr, set, false, string(""));
+
+  lasd::List<string> lst;
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+
+  lasd::List<string> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<string> lst2;
+
+  InsertAtFront(testnum, testerr, lst2, true, string("a"));
+  InsertAtBack(testnum, testerr, lst2, true, string("b"));
+
+  lasd::List<string> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<string>);
+  Fold(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string(""));
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string(""));
+
+}
+
+void testSingleSetString(lasd::Set<string> & set, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, set, false);
+  Size(testnum, testerr, set, true, 1);
+
+  GetAt(testnum, testerr, set, false, 0, string(""));
+  GetFront(testnum, testerr, set, false, string(""));
+  GetBack(testnum, testerr, set, false, string(""));
+
+  Exists(testnum, testerr, set, false, string(""));
+
+  set.Clear();
+
+  lasd::Vector<string> vec(1);
+
+  SetFront(testnum, testerr, vec, true, string("a"));
+
+  lasd::Vector<string> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<string> vec2(2);
+
+  SetFront(testnum, testerr, vec2, true, string("a"));
+  SetBack(testnum, testerr, vec2, true, string("b"));
+
+  lasd::Vector<string> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  vec2 = vec2R;
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("ba"));
+
+  Min(testnum, testerr, set, true, string("a"));
+  RemoveMin(testnum, testerr, set, true);
+  
+  Min(testnum, testerr, set, true, string("b"));
+  MinNRemove(testnum, testerr, set, true, string("b"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Max(testnum, testerr, set, true, string("b"));
+  RemoveMax(testnum, testerr, set, true);
+
+  Max(testnum, testerr, set, true, string("a"));
+  MaxNRemove(testnum, testerr, set, true, string("a"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, true, string("b"), string("a"));
+  RemovePredecessor(testnum, testerr, set, true, string("b"));
+
+  Predecessor(testnum, testerr, set, true, string("c"), string("b"));
+  PredecessorNRemove(testnum, testerr, set, true, string("c"), string("b"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Successor(testnum, testerr, set, true, string("?"), string("a"));
+  RemoveSuccessor(testnum, testerr, set, true, string("?"));
+
+  Successor(testnum, testerr, set, true, string("a"), string("b"));
+  SuccessorNRemove(testnum, testerr, set, true, string("a"), string("b"));
+
+  set.Clear();
+
+  testEmptySetString(set, testnum, testerr);
+
+  lasd::List<string> lst;
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+
+  lasd::List<string> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<string> lst2;
+
+  InsertAtFront(testnum, testerr, lst2, true, string("a"));
+  InsertAtBack(testnum, testerr, lst2, true, string("b"));
+
+  lasd::List<string> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  lst2 = lst2R;
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<string>);
+  Fold(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("ab"));
+
+  Min(testnum, testerr, set, true, string("a"));
+  RemoveMin(testnum, testerr, set, true);
+  
+  Min(testnum, testerr, set, true, string("b"));
+  MinNRemove(testnum, testerr, set, true, string("b"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Max(testnum, testerr, set, true, string("b"));
+  RemoveMax(testnum, testerr, set, true);
+
+  Max(testnum, testerr, set, true, string("a"));
+  MaxNRemove(testnum, testerr, set, true, string("a"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+  
+  Predecessor(testnum, testerr, set, true, string("b"), string("a"));
+  RemovePredecessor(testnum, testerr, set, true, string("b"));
+
+  Predecessor(testnum, testerr, set, true, string("c"), string("b"));
+  PredecessorNRemove(testnum, testerr, set, true, string("c"), string("b"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Successor(testnum, testerr, set, true, string("?"), string("a"));
+  RemoveSuccessor(testnum, testerr, set, true, string("?"));
+
+  Successor(testnum, testerr, set, true, string("a"), string("b"));
+  SuccessorNRemove(testnum, testerr, set, true, string("a"), string("b"));
+
+  InsertC(testnum, testerr, set, true, string("a"));
+  
+}
+
+void testMultipleSetString(lasd::Set<string> & set, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, set, false);
+  Size(testnum, testerr, set, true, 20);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<string>);
+  Fold(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("abcdefghijklmnopqrst"));
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, set, true, string(1, char (97 + index)));
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, set, true, index, string(1, char (97 + index)));
+
+  set.Clear();
+
+  lasd::Vector<string> vec(10);
+
+  for (int index = 0; index < 10; index++)
+    SetAt(testnum, testerr, vec, true, index, string(1, char (97 + index)));
+
+  lasd::Vector<string> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<string> vec2(20);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec2, true, index, string(1, char (97 + index)));
+
+  lasd::Vector<string> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  vec2 = vec2R;
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<string>);
+  Fold(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("abcdefghijklmnopqrst"));
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, string(1, char (97 + index)));
+    RemoveMin(testnum, testerr, set, true);
+  }
+
+  Min(testnum, testerr, set, false, string("?"));
+  RemoveMin(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, string(1, char (97 + index)));
+    MinNRemove(testnum, testerr, set, true, string(1, char (97 + index)));
+  }
+
+  Min(testnum, testerr, set, false, string("?"));
+  MinNRemove(testnum, testerr, set, false, string("?"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 19; index >= 0; index--) {
+    Max(testnum, testerr, set, true, string(1, char (97 + index)));
+    RemoveMax(testnum, testerr, set, true);
+  }
+
+  Max(testnum, testerr, set, false, string("?"));
+  RemoveMax(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 19; index >= 0; index--) {
+    Max(testnum, testerr, set, true, string(1, char (97 + index)));
+    MaxNRemove(testnum, testerr, set, true, string(1, char (97 + index)));
+  }
+
+  Max(testnum, testerr, set, false, string("?"));
+  MaxNRemove(testnum, testerr, set, false, string("?"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, false, string("v"), string("u"));
+  Predecessor(testnum, testerr, set, false, string("a"), string("?"));
+
+  for (int index = 19; index >= 0; index--) {
+    Predecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+    RemovePredecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 19; index >= 0; index--) {
+    Predecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+    PredecessorNRemove(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Successor(testnum, testerr, set, false, string("u"), string("v"));
+  Successor(testnum, testerr, set, false, string("!"), string("?"));
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+    RemoveSuccessor(testnum, testerr, set, true, string(1, char (97 + index - 1)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+    SuccessorNRemove(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+  }
+
+  set.Clear();
+
+  InsertC(testnum, testerr, set, true, string("a"));
+
+  testSingleSetString(set, testnum, testerr);
+
+  set.Clear();
+
+  lasd::List<string> lst;
+
+  for (int index = 0; index < 10; index++)
+    InsertAtFront(testnum, testerr, lst, true, string(1, char (97 + index)));
+
+  lasd::List<string> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<string> lst2;
+
+  for (int index = 0; index < 20; index++)
+    InsertAtFront(testnum, testerr, lst2, true, string(1, char (97 + index)));
+
+  lasd::List<string> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  lst2 = lst2R;
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, string(1, char (97 + index)));
+    RemoveMin(testnum, testerr, set, true);
+  }
+
+  Min(testnum, testerr, set, false, string("?"));
+  RemoveMin(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, string(1, char (97 + index)));
+    MinNRemove(testnum, testerr, set, true, string(1, char (97 + index)));
+  }
+
+  Min(testnum, testerr, set, false, string("?"));
+  MinNRemove(testnum, testerr, set, false, string("?"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 19; index >= 0; index--) {
+    Max(testnum, testerr, set, true, string(1, char (97 + index)));
+    RemoveMax(testnum, testerr, set, true);
+  }
+
+  Max(testnum, testerr, set, false, string("?"));
+  RemoveMax(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 19; index >= 0; index--) {
+    Max(testnum, testerr, set, true, string(1, char (97 + index)));
+    MaxNRemove(testnum, testerr, set, true, string(1, char (97 + index)));
+  }
+
+  Max(testnum, testerr, set, false, string("?"));
+  MaxNRemove(testnum, testerr, set, false, string("?"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+  
+  Predecessor(testnum, testerr, set, false, string("v"), string("u"));
+  Predecessor(testnum, testerr, set, false, string("a"), string("?"));
+
+  for (int index = 19; index >= 0; index--) {
+    Predecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+    RemovePredecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 19; index >= 0; index--) {
+    Predecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+    PredecessorNRemove(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Successor(testnum, testerr, set, false, string("u"), string("v"));
+  Successor(testnum, testerr, set, false, string("!"), string("?"));
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+    RemoveSuccessor(testnum, testerr, set, true, string(1, char (97 + index - 1)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+    SuccessorNRemove(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("tsrqponmlkjihgfedcba"));
+
+}
+
+void testSetString(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of Set<string> Test" << endl;
+  try {
+    {
+      cout << endl << "Empty SetVector" << endl;
+
+      lasd::List<string> list;
+
+      lasd::SetVec<string> setVec;
+
+      testEmptySetString(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<string> copyCSetVec(list);
+
+      testEmptySetString(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> copySetVec = setVec;
+
+      testEmptySetString(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<string> moveCSetVec(std::move(list));
+
+      testEmptySetString(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> moveSetVec = std::move(setVec);
+
+      testEmptySetString(moveSetVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 SetVector" << endl;
+
+      lasd::List<string> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, string("a"));
+
+      lasd::SetVec<string> setVec;
+
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);
+
+      cout << endl << "Size 1 SetVector" << endl;
+
+      testSingleSetString(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<string> copyCSetVec(list);
+
+      testSingleSetString(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> copySetVec = setVec;
+
+      testSingleSetString(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<string> moveCSetVec(std::move(list));
+
+      testSingleSetString(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> moveSetVec = std::move(setVec);
+
+      testSingleSetString(moveSetVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 SetVector" << endl;
+
+      lasd::List<string> list;
+
+      for (int index = 0; index < 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, string(1, char (97 + index)));
+      
+      lasd::SetVec<string> setVec;
+      
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);
+
+      cout << endl << "Size 20 SetVector" << endl;
+
+      testMultipleSetString(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<string> copyCSetVec(list);
+
+      testMultipleSetString(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> copySetVec = setVec;
+
+      testMultipleSetString(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<string> moveCSetVec(std::move(list));
+
+      testMultipleSetString(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> moveSetVec = std::move(setVec);
+
+      testMultipleSetString(moveSetVec, loctestnum, loctesterr);
+    }
+     {
+      cout << endl << "Empty SetList" << endl;
+
+      lasd::Vector<string> vec;
+
+      lasd::SetLst<string> setList;
+
+      testEmptySetString(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<string> copyCSetList(vec);
+
+      testEmptySetString(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> copySetList = setList;
+
+      testEmptySetString(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<string> moveCSetList(std::move(vec));
+
+      testEmptySetString(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> moveSetList = std::move(setList);
+
+      testEmptySetString(moveSetList, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 SetList" << endl;
+
+      lasd::Vector<string> vec(1);
+
+      SetFront(loctestnum, loctesterr, vec, true, string("a"));
+
+      lasd::SetLst<string> setList;
+
+      InsertAllC(loctestnum, loctesterr, setList, true, vec);
+
+      cout << endl << "Size 1 SetList" << endl;
+
+      testSingleSetString(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<string> copyCSetList(vec);
+
+      testSingleSetString(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> copySetList = setList;
+
+      testSingleSetString(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<string> moveCSetList(std::move(vec));
+
+      testSingleSetString(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> moveSetList = std::move(setList);
+
+      testSingleSetString(moveSetList, loctestnum, loctesterr);
+
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 SetList" << endl;
+
+      lasd::Vector<string> vec(20);
+
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vec, true, index, string(1, char (97 + index)));
+      
+      lasd::SetLst<string> setList;
+      
+      InsertAllC(loctestnum, loctesterr, setList, true, vec);
+
+      cout << endl << "Size 20 SetList" << endl;
+
+      testMultipleSetString(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<string> copyCSetList(vec);
+
+      testMultipleSetString(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> copySetList = setList;
+
+      testMultipleSetString(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<string> moveCSetList(std::move(vec));
+
+      testMultipleSetString(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> moveSetList = std::move(setList);
+
+      testMultipleSetString(moveSetList, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of Set<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+/* ************************************************************************** */
+
+void testExercise1B(unsigned int & testnum, unsigned int & testerr) {
+  testSetInt(testnum, testerr);
+  testSetString(testnum, testerr);
+  cout << endl << "Exercise 1B (Student Test) (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
+}
+
+/* ************************************************************************** */
+
+void mytestGaetano() {
+  cout << endl << "~*~#~*~ Welcome to the \"It works on my machine!\" Test Suite ~*~#~*~" << endl;
+
+  unsigned int loctestnum, loctesterr;
+  unsigned int stestnum = 0, stesterr = 0;
+
+  loctestnum = 0; loctesterr = 0;
+  testExercise1A(loctestnum, loctesterr);
+  stestnum += loctestnum; stesterr += loctesterr;
+
+  loctestnum = 0; loctesterr = 0;
+  testExercise1B(loctestnum, loctesterr);
+  stestnum += loctestnum; stesterr += loctesterr;
+
+  cout << endl << "Exercise 1 (Student Test) (Errors/Tests: " << stesterr << "/" << stestnum << ") \n";
+
+  cout << endl << "«It's not a bug, it's a feature» - Steve Jobs" << endl;
+
+}

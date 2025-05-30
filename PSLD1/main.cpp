@@ -83,6 +83,7 @@ int main()
     std::cout << "5)Test n°5 mySetVecExtendedTests" << std::endl;
     std::cout << "6)Test n°6 SetVec" << std::endl;
     std::cout << "7)Test n°7 SetList" << std::endl;
+    std::cout << "8)Test n°8 mytestGaetano" << std::endl;
     
 
     std::cout << "0)Exit" << std::endl;
@@ -101,6 +102,8 @@ int main()
       testSetVec();
     if (scelta == 7)
       testSetLst();
+    if (scelta == 8)
+      mytestGaetano();
   }
   return 0;
 

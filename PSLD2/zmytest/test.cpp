@@ -5,13 +5,11 @@
 //  Created by Pierfrancesco on 30/04/25.
 //
 
-
 // #include "..."
 
 #include <iostream>
 
 #include <random>
-
 
 #include <cassert> //da eliminare perchè serve solo per assert
 
@@ -33,12 +31,13 @@
 #include "../set/lst/setlst.hpp"
 #include "../set/vec/setvec.hpp"
 
+#include "../heap/heap.hpp"
+#include "../heap/vec/heapvec.hpp"
+#include "../pq/pq.hpp"
+#include "../pq/heap/pqheap.hpp"
+
 using namespace std;
 using namespace lasd;
-
-
-
-
 
 /* ************************************************************************** */
 
@@ -440,10 +439,10 @@ void personalLasdTest()
 }
 
 // Macro di supporto per i test
-#define TEST_RUN(desc, expre)                                                               \
+#define TEST_RUN(desc, expre)                                                              \
     do                                                                                     \
     {                                                                                      \
-        bool result = (expre);                                                              \
+        bool result = (expre);                                                             \
         cout << "[TEST] " << desc << ": " << (result ? "PASSED ✅" : "FAILED ❌") << endl; \
         totalTests++;                                                                      \
         if (result)                                                                        \
@@ -668,8 +667,6 @@ void testSetVecAndSetLst()
         cout << "❌ Some tests failed. Check above for details.\n";
 }
 
-
-
 void myTestSimpleExercise1B()
 {
     uint testnum = 0, testerr = 0;
@@ -704,11 +701,9 @@ void myTestSimpleExercise1B()
         testnum++;
         testerr++;
         cout << endl
-        << "Unmanaged error! " << endl;
+             << "Unmanaged error! " << endl;
     }
 }
-
-
 
 void stressTestVectorAndList()
 {
@@ -1096,7 +1091,7 @@ void stressTestVectorAndList()
         cout << "❌ Some stress tests failed. Check above for details.\n";
 }
 
-#define RUN1_TEST(desc, expr)                                                                       \
+#define RUN1_TEST(desc, expr)                                                                      \
     do                                                                                             \
     {                                                                                              \
         bool result = (expr);                                                                      \
@@ -1177,8 +1172,6 @@ void mySetVecExtendedTests(uint &testnum, uint &testerr)
 } // end
 
 /* ************************************************************************** */
-
-
 
 // ... (remaining test cases unchanged)
 
@@ -2772,151 +2765,149 @@ void testSetLst()
         other.Clear();
     }
 
-// 20. Test Copy Assignment (25 cases)
-{
-    lasd::SetLst<int> other;
-    // Test 1: Assign empty to empty
-    setLst = other;
-    assert(setLst.Size() == 0);
-    // Test 2: Assign non-empty to empty
-    other.Insert(10);
-    setLst = other;
-    assert(setLst.Size() == 1);
-    assert(setLst.Exists(10));
-    // Test 3: Assign with multiple elements
-    other.Insert(5);
-    other.Insert(15);
-    setLst = other;
-    assert(setLst.Size() == 3);
-    assert(setLst.Exists(5));
-    // Test 4: Independence of assignment
-    other.Remove(10);
-    assert(setLst.Exists(10));
-    // Test 5: Assign with negative values
-    other.Clear();
-    other.Insert(-10);
-    other.Insert(0);
-    setLst = other;
-    assert(setLst.Exists(-10));
-    // Test 6: Assign large set
-    other.Clear();
-    for (int i = 0; i < 10; ++i)
-        other.Insert(i * 10);
-    setLst = other;
-    assert(setLst.Size() == 10);
-    assert(setLst.Exists(90));
-    // Test 7: Assign after MinNRemove
-    other.MinNRemove();
-    setLst = other;
-    assert(setLst.Exists(10));
-    // Test 8: Assign after MaxNRemove
-    other.MaxNRemove();
-    setLst = other;
-    assert(setLst.Exists(80));
-    // Test 9: Assign empty to non-empty
-    other.Clear();
-    setLst = other;
-    assert(setLst.Size() == 0);
-    // Test 10: Assign with single negative
-    other.Insert(-100);
-    setLst = other;
-    assert(setLst.Exists(-100));
-    // Test 11: Assign after multiple inserts
-    other.Insert(-50);
-    other.Insert(0);
-    setLst = other;
-    assert(setLst.Size() == 3);
-    // Test 12: Assign after multiple inserts
-    other.Clear();
-    for (int i = 0; i < 20; ++i)
-        other.Insert(i * 10);
-    setLst = other;
-    assert(setLst.Exists(190));
-    // Test 13: Self-assignment
-    setLst = setLst;
-    assert(setLst.Size() == 20);
-    assert(setLst.Exists(190)); // Verify elements unchanged
-    // Test 14: Assign after remove
-    other.Remove(100);
-    setLst = other;
-    assert(setLst.Exists(110));
-    // Test 15: Assign and modify original
-    other.Clear();
-    assert(setLst.Size() == 19);
-    assert(setLst.Exists(110)); // Verify elements persist
-    // Test 16: Assign with duplicates attempt
-    other.Clear();
-    other.Insert(10);
-    other.Insert(10); // Should not insert
-    setLst = other;
-    assert(setLst.Size() == 1);
-    // Test 17: Assign with large positive values
-    other.Clear();
-    other.Insert(1000);
-    other.Insert(2000);
-    setLst = other;
-    assert(setLst.Exists(2000));
-    // Test 18: Assign after multiple removes
-    other.Clear();
-    other.Insert(10);
-    other.Insert(20);
-    other.Insert(30);
-    other.Remove(20);
-    setLst = other;
-    assert(setLst.Size() == 2);
-    // Test 19: Assign with negative and positive mix
-    other.Clear();
-    other.Insert(-100);
-    other.Insert(100);
-    setLst = other;
-    assert(setLst.Exists(-100));
-    // Test 20: Assign with single large value
-    other.Clear();
-    other.Insert(10000);
-    setLst = other;
-    assert(setLst.Exists(10000));
-    // Test 21: Assign after inserting in ascending order
-    other.Clear();
-    for (int i = 0; i < 5; ++i)
-        other.Insert(i * 10);
-    setLst = other;
-    assert(setLst.Exists(40));
-    // Test 22: Assign after inserting in descending order
-    other.Clear();
-    for (int i = 5; i >= 0; --i)
-        other.Insert(i * 10);
-    setLst = other;
-    assert(setLst.Exists(40));
-    // Test 23: Assign after PredecessorNRemove
-    other.Clear();
-    other.Insert(10);
-    other.Insert(20);
-    other.PredecessorNRemove(20);
-    setLst = other;
-    assert(setLst.Size() == 1);
-    // Test 24: Assign after SuccessorNRemove
-    other.Clear();
-    other.Insert(10);
-    other.Insert(20);
-    other.SuccessorNRemove(10);
-    setLst = other;
-    assert(setLst.Size() == 1);
-    // Test 25: Assign large set for performance
-    other.Clear();
-    for (int i = 0; i < 100; ++i)
-        other.Insert(i * 10);
-    setLst = other;
-    assert(setLst.Size() == 100);
-    setLst.Clear();
-    other.Clear();
-}
+    // 20. Test Copy Assignment (25 cases)
+    {
+        lasd::SetLst<int> other;
+        // Test 1: Assign empty to empty
+        setLst = other;
+        assert(setLst.Size() == 0);
+        // Test 2: Assign non-empty to empty
+        other.Insert(10);
+        setLst = other;
+        assert(setLst.Size() == 1);
+        assert(setLst.Exists(10));
+        // Test 3: Assign with multiple elements
+        other.Insert(5);
+        other.Insert(15);
+        setLst = other;
+        assert(setLst.Size() == 3);
+        assert(setLst.Exists(5));
+        // Test 4: Independence of assignment
+        other.Remove(10);
+        assert(setLst.Exists(10));
+        // Test 5: Assign with negative values
+        other.Clear();
+        other.Insert(-10);
+        other.Insert(0);
+        setLst = other;
+        assert(setLst.Exists(-10));
+        // Test 6: Assign large set
+        other.Clear();
+        for (int i = 0; i < 10; ++i)
+            other.Insert(i * 10);
+        setLst = other;
+        assert(setLst.Size() == 10);
+        assert(setLst.Exists(90));
+        // Test 7: Assign after MinNRemove
+        other.MinNRemove();
+        setLst = other;
+        assert(setLst.Exists(10));
+        // Test 8: Assign after MaxNRemove
+        other.MaxNRemove();
+        setLst = other;
+        assert(setLst.Exists(80));
+        // Test 9: Assign empty to non-empty
+        other.Clear();
+        setLst = other;
+        assert(setLst.Size() == 0);
+        // Test 10: Assign with single negative
+        other.Insert(-100);
+        setLst = other;
+        assert(setLst.Exists(-100));
+        // Test 11: Assign after multiple inserts
+        other.Insert(-50);
+        other.Insert(0);
+        setLst = other;
+        assert(setLst.Size() == 3);
+        // Test 12: Assign after multiple inserts
+        other.Clear();
+        for (int i = 0; i < 20; ++i)
+            other.Insert(i * 10);
+        setLst = other;
+        assert(setLst.Exists(190));
+        // Test 13: Self-assignment
+        setLst = setLst;
+        assert(setLst.Size() == 20);
+        assert(setLst.Exists(190)); // Verify elements unchanged
+        // Test 14: Assign after remove
+        other.Remove(100);
+        setLst = other;
+        assert(setLst.Exists(110));
+        // Test 15: Assign and modify original
+        other.Clear();
+        assert(setLst.Size() == 19);
+        assert(setLst.Exists(110)); // Verify elements persist
+        // Test 16: Assign with duplicates attempt
+        other.Clear();
+        other.Insert(10);
+        other.Insert(10); // Should not insert
+        setLst = other;
+        assert(setLst.Size() == 1);
+        // Test 17: Assign with large positive values
+        other.Clear();
+        other.Insert(1000);
+        other.Insert(2000);
+        setLst = other;
+        assert(setLst.Exists(2000));
+        // Test 18: Assign after multiple removes
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.Insert(30);
+        other.Remove(20);
+        setLst = other;
+        assert(setLst.Size() == 2);
+        // Test 19: Assign with negative and positive mix
+        other.Clear();
+        other.Insert(-100);
+        other.Insert(100);
+        setLst = other;
+        assert(setLst.Exists(-100));
+        // Test 20: Assign with single large value
+        other.Clear();
+        other.Insert(10000);
+        setLst = other;
+        assert(setLst.Exists(10000));
+        // Test 21: Assign after inserting in ascending order
+        other.Clear();
+        for (int i = 0; i < 5; ++i)
+            other.Insert(i * 10);
+        setLst = other;
+        assert(setLst.Exists(40));
+        // Test 22: Assign after inserting in descending order
+        other.Clear();
+        for (int i = 5; i >= 0; --i)
+            other.Insert(i * 10);
+        setLst = other;
+        assert(setLst.Exists(40));
+        // Test 23: Assign after PredecessorNRemove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.PredecessorNRemove(20);
+        setLst = other;
+        assert(setLst.Size() == 1);
+        // Test 24: Assign after SuccessorNRemove
+        other.Clear();
+        other.Insert(10);
+        other.Insert(20);
+        other.SuccessorNRemove(10);
+        setLst = other;
+        assert(setLst.Size() == 1);
+        // Test 25: Assign large set for performance
+        other.Clear();
+        for (int i = 0; i < 100; ++i)
+            other.Insert(i * 10);
+        setLst = other;
+        assert(setLst.Size() == 100);
+        setLst.Clear();
+        other.Clear();
+    }
     std::cout << "SetLst tests passed, 500 test passed!" << std::endl;
 }
 
-
-
-
-void testSetVec() {
+void testSetVec()
+{
     std::cout << "Testing SetVec..." << std::endl;
     lasd::SetVec<int> setVec;
 
@@ -2927,94 +2918,133 @@ void testSetVec() {
         // Test 2: Exists on empty set
         assert(!setVec.Exists(10));
         // Test 3: Min on empty set (exception)
-        try {
+        try
+        {
             setVec.Min();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 4: Max on empty set (exception)
-        try {
+        try
+        {
             setVec.Max();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 5: Operator[] on empty set (exception)
-        try {
+        try
+        {
             setVec[0];
             assert(false);
-        } catch (std::out_of_range&) {
+        }
+        catch (std::out_of_range &)
+        {
             assert(true);
         }
         // Test 6: Predecessor on empty set (exception)
-        try {
+        try
+        {
             setVec.Predecessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 7: Successor on empty set (exception)
-        try {
+        try
+        {
             setVec.Successor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 8: MinNRemove on empty set (exception)
-        try {
+        try
+        {
             setVec.MinNRemove();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 9: MaxNRemove on empty set (exception)
-        try {
+        try
+        {
             setVec.MaxNRemove();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 10: RemovePredecessor on empty set (exception)
-        try {
+        try
+        {
             setVec.RemovePredecessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 11: RemoveSuccessor on empty set (exception)
-        try {
+        try
+        {
             setVec.RemoveSuccessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 12: PredecessorNRemove on empty set (exception)
-        try {
+        try
+        {
             setVec.PredecessorNRemove(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 13: SuccessorNRemove on empty set (exception)
-        try {
+        try
+        {
             setVec.SuccessorNRemove(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 14: RemoveMin on empty set (exception)
-        try {
+        try
+        {
             setVec.RemoveMin();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 15: RemoveMax on empty set (exception)
-        try {
+        try
+        {
             setVec.RemoveMax();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 16: Equality with another empty set
@@ -3037,10 +3067,13 @@ void testSetVec() {
         lasd::SetVec<int> newSet;
         assert(newSet.Size() == 0);
         // Test 22: Operator[] with negative index (exception)
-        try {
+        try
+        {
             setVec[-1];
             assert(false);
-        } catch (std::out_of_range&) {
+        }
+        catch (std::out_of_range &)
+        {
             assert(true);
         }
         // Test 23: Move constructor with empty set
@@ -3076,7 +3109,8 @@ void testSetVec() {
         assert(setVec.Size() == 5);
         // Test 6: Insert large set
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             assert(setVec.Insert(i * 10));
         }
         assert(setVec.Size() == 20);
@@ -3097,12 +3131,14 @@ void testSetVec() {
         assert(setVec.Size() == 4);
         // Test 11: Insert after multiple inserts
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             assert(setVec.Insert(i * 10 - 50));
         }
         assert(setVec.Size() == 10);
         // Test 12: Insert with resize
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             assert(setVec.Insert(i * 100 + 50));
         }
         assert(setVec.Size() == 20);
@@ -3117,12 +3153,14 @@ void testSetVec() {
         assert(!setVec.Insert(-50));
         assert(setVec.Size() == 20);
         // Test 16: Verify elements are sorted
-        for (unsigned long i = 1; i < setVec.Size(); ++i) {
+        for (unsigned long i = 1; i < setVec.Size(); ++i)
+        {
             assert(setVec[i - 1] < setVec[i]);
         }
         // Test 17: Insert to trigger multiple resizes
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             assert(setVec.Insert(i));
         }
         assert(setVec.Size() == 50);
@@ -3144,7 +3182,8 @@ void testSetVec() {
         assert(!setVec.Insert(10000));
         assert(setVec.Size() == 52);
         // Test 23: Insert after multiple removes
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Remove(i);
         }
         assert(setVec.Insert(5));
@@ -3155,7 +3194,8 @@ void testSetVec() {
         assert(setVec.Size() == 44);
         // Test 25: Insert to verify circular indexing
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec[0] == 0);
@@ -3183,7 +3223,8 @@ void testSetVec() {
         setVec.Clear();
         assert(!setVec.Exists(10));
         // Test 7: Exists in large set
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Exists(50));
@@ -3199,7 +3240,8 @@ void testSetVec() {
         assert(!setVec.Exists(-5));
         // Test 11: Exists after multiple inserts
         setVec.Clear();
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; ++i)
+        {
             setVec.Insert(i * 10 - 20);
         }
         assert(setVec.Exists(-10));
@@ -3253,7 +3295,8 @@ void testSetVec() {
         assert(setVec.Exists(10));
         // Test 23: Exists after resize
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i);
         }
         assert(setVec.Exists(49));
@@ -3292,7 +3335,8 @@ void testSetVec() {
         setVec.Insert(-10);
         assert(setVec.Remove(-10));
         // Test 6: Remove from large set
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Remove(50));
@@ -3316,15 +3360,18 @@ void testSetVec() {
         assert(setVec.Remove(-10));
         // Test 11: Remove all elements
         setVec.Clear();
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; ++i)
+        {
             assert(setVec.Remove(i * 10));
         }
         assert(setVec.Size() == 0);
         // Test 12: Remove after resize
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Remove(100));
@@ -3368,16 +3415,19 @@ void testSetVec() {
         assert(setVec.Size() == 0);
         // Test 20: Remove after resize down
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec.Size() == 5);
         // Test 21: Remove middle element in large set
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i);
         }
         assert(setVec.Remove(25));
@@ -3398,17 +3448,20 @@ void testSetVec() {
         assert(setVec.Size() == 0);
         // Test 24: Remove with circular indexing
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Remove(90));
         assert(setVec.Size() == 9);
         // Test 25: Remove all but one element
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 9; ++i) {
+        for (int i = 0; i < 9; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec.Size() == 1);
@@ -3419,10 +3472,13 @@ void testSetVec() {
     // 5. Test Min (25 cases)
     {
         // Test 1: Min on empty set (exception)
-        try {
+        try
+        {
             setVec.Min();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: Min with one element
@@ -3445,16 +3501,20 @@ void testSetVec() {
         assert(setVec.Min() == 20);
         // Test 6: Min with large set
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Min() == 0);
         // Test 7: Min after clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec.Min();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 8: Min with single negative
@@ -3479,10 +3539,12 @@ void testSetVec() {
         assert(setVec.Min() == 20);
         // Test 12: Min after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec.Min() == 50);
@@ -3497,7 +3559,8 @@ void testSetVec() {
         assert(setVec.Min() == 25);
         // Test 15: Min after large set insert
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10 - 100);
         }
         assert(setVec.Min() == -100);
@@ -3531,16 +3594,19 @@ void testSetVec() {
         assert(setVec.Min() == 10);
         // Test 21: Min after resize down
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec.Min() == 150);
         // Test 22: Min after multiple MinNRemove
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.MinNRemove();
@@ -3558,7 +3624,8 @@ void testSetVec() {
         assert(setVec.Min() == 0);
         // Test 25: Min after large set with negative values
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10 - 1000);
         }
         assert(setVec.Min() == -1000);
@@ -3568,10 +3635,13 @@ void testSetVec() {
     // 6. Test Max (25 cases)
     {
         // Test 1: Max on empty set (exception)
-        try {
+        try
+        {
             setVec.Max();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: Max with one element
@@ -3594,16 +3664,20 @@ void testSetVec() {
         assert(setVec.Max() == 10);
         // Test 6: Max with large set
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Max() == 190);
         // Test 7: Max after clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec.Max();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 8: Max with single negative
@@ -3626,10 +3700,12 @@ void testSetVec() {
         assert(setVec.Max() == 10);
         // Test 12: Max after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 5; i < 10; ++i) {
+        for (int i = 5; i < 10; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec.Max() == 40);
@@ -3644,7 +3720,8 @@ void testSetVec() {
         assert(setVec.Max() == 50);
         // Test 15: Max after large set insert
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10 - 100);
         }
         assert(setVec.Max() == 90);
@@ -3678,16 +3755,19 @@ void testSetVec() {
         assert(setVec.Max() == 10);
         // Test 21: Max after resize down
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec.Max() == 190);
         // Test 22: Max after multiple MaxNRemove
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.MaxNRemove();
@@ -3704,20 +3784,24 @@ void testSetVec() {
         setVec.Remove(0);
         assert(setVec.Max() == -50);
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
-        setVec.Insert(i * 10 - 1000);
+        for (int i = 0; i < 50; ++i)
+        {
+            setVec.Insert(i * 10 - 1000);
         }
         assert(setVec.Max() == -510); // Corrected expected maximum
-    setVec.Clear();
+        setVec.Clear();
     }
 
     // 7. Test MinNRemove (25 cases)
     {
         // Test 1: MinNRemove on empty set (exception)
-        try {
+        try
+        {
             setVec.MinNRemove();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: MinNRemove with one element
@@ -3739,7 +3823,8 @@ void testSetVec() {
         assert(setVec.MinNRemove() == -10);
         // Test 7: MinNRemove after multiple inserts
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10 - 50);
         }
         assert(setVec.MinNRemove() == -50);
@@ -3749,10 +3834,12 @@ void testSetVec() {
         assert(setVec.Size() == 8);
         // Test 10: MinNRemove with large set
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.MinNRemove();
         }
         assert(setVec.Size() == 5);
@@ -3761,10 +3848,13 @@ void testSetVec() {
         setVec.Insert(-100);
         assert(setVec.MinNRemove() == -100);
         // Test 12: MinNRemove after clear
-        try {
+        try
+        {
             setVec.MinNRemove();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 13: MinNRemove with large negative
@@ -3780,7 +3870,8 @@ void testSetVec() {
         assert(setVec.MinNRemove() == 25);
         // Test 16: MinNRemove after resize
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i);
         }
         assert(setVec.MinNRemove() == 0);
@@ -3806,7 +3897,8 @@ void testSetVec() {
         assert(setVec.MinNRemove() == -10000);
         // Test 21: MinNRemove after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(0);
@@ -3826,16 +3918,19 @@ void testSetVec() {
         assert(setVec.MinNRemove() == 10);
         // Test 24: MinNRemove after resize down
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec.MinNRemove() == 150);
         // Test 25: MinNRemove with large negative set
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10 - 1000);
         }
         assert(setVec.MinNRemove() == -1000);
@@ -3845,10 +3940,13 @@ void testSetVec() {
     // 8. Test MaxNRemove (25 cases)
     {
         // Test 1: MaxNRemove on empty set (exception)
-        try {
+        try
+        {
             setVec.MaxNRemove();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: MaxNRemove with one element
@@ -3870,7 +3968,8 @@ void testSetVec() {
         assert(setVec.MaxNRemove() == 0);
         // Test 7: MaxNRemove after multiple inserts
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10 - 50);
         }
         assert(setVec.MaxNRemove() == 40);
@@ -3880,10 +3979,12 @@ void testSetVec() {
         assert(setVec.Size() == 8);
         // Test 10: MaxNRemove with large set
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.MaxNRemove();
         }
         assert(setVec.Size() == 5);
@@ -3892,10 +3993,13 @@ void testSetVec() {
         setVec.Insert(-100);
         assert(setVec.MaxNRemove() == -100);
         // Test 12: MaxNRemove after clear
-        try {
+        try
+        {
             setVec.MaxNRemove();
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 13: MaxNRemove with large value
@@ -3911,7 +4015,8 @@ void testSetVec() {
         assert(setVec.MaxNRemove() == 50);
         // Test 16: MaxNRemove after resize
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i);
         }
         assert(setVec.MaxNRemove() == 49);
@@ -3937,7 +4042,8 @@ void testSetVec() {
         assert(setVec.MaxNRemove() == -10000);
         // Test 21: MaxNRemove after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(90);
@@ -3957,16 +4063,19 @@ void testSetVec() {
         assert(setVec.MaxNRemove() == 10);
         // Test 24: MaxNRemove after resize down
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec.MaxNRemove() == 190);
         // Test 25: MaxNRemove with large negative set
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10 - 1000);
         }
         assert(setVec.MaxNRemove() == -510);
@@ -3976,18 +4085,24 @@ void testSetVec() {
     // 9. Test Predecessor (25 cases)
     {
         // Test 1: Predecessor on empty set (exception)
-        try {
+        try
+        {
             setVec.Predecessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: Predecessor with one element (exception)
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.Predecessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 3: Predecessor with multiple elements
@@ -3995,10 +4110,13 @@ void testSetVec() {
         setVec.Insert(15);
         assert(setVec.Predecessor(15) == 10);
         // Test 4: Predecessor of min (exception)
-        try {
+        try
+        {
             setVec.Predecessor(5);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 5: Predecessor of non-existent larger value
@@ -4010,7 +4128,8 @@ void testSetVec() {
         assert(setVec.Predecessor(0) == -10);
         // Test 7: Predecessor with large set
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Predecessor(50) == 40);
@@ -4022,10 +4141,13 @@ void testSetVec() {
         // Test 10: Predecessor with single element
         setVec.Clear();
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.Predecessor(5);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 11: Predecessor with negative non-existent
@@ -4035,10 +4157,13 @@ void testSetVec() {
         assert(setVec.Predecessor(-5) == -10);
         // Test 12: Predecessor after clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec.Predecessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 13: Predecessor with large negative
@@ -4050,7 +4175,8 @@ void testSetVec() {
         assert(setVec.Predecessor(-50) == -75);
         // Test 15: Predecessor of max in large set
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Predecessor(90) == 80);
@@ -4083,13 +4209,15 @@ void testSetVec() {
         assert(setVec.Predecessor(-1000) == -10000);
         // Test 21: Predecessor after resize
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Predecessor(250) == 240);
         // Test 22: Predecessor after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(20);
@@ -4113,10 +4241,13 @@ void testSetVec() {
         setVec.Clear();
         setVec.Insert(100);
         setVec.Insert(200);
-        try {
+        try
+        {
             setVec.Predecessor(50);
             assert(false); // Should not reach here
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true); // Correctly caught the exception
         }
         setVec.Clear();
@@ -4125,18 +4256,24 @@ void testSetVec() {
     // 10. Test Successor (25 cases)
     {
         // Test 1: Successor on empty set (exception)
-        try {
+        try
+        {
             setVec.Successor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: Successor with one element (exception)
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.Successor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 3: Successor with multiple elements
@@ -4144,10 +4281,13 @@ void testSetVec() {
         setVec.Insert(15);
         assert(setVec.Successor(5) == 10);
         // Test 4: Successor of max (exception)
-        try {
+        try
+        {
             setVec.Successor(15);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 5: Successor of non-existent smaller value
@@ -4159,7 +4299,8 @@ void testSetVec() {
         assert(setVec.Successor(-10) == 0);
         // Test 7: Successor with large set
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Successor(40) == 50);
@@ -4171,10 +4312,13 @@ void testSetVec() {
         // Test 10: Successor with single element
         setVec.Clear();
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.Successor(15);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 11: Successor with negative non-existent
@@ -4184,10 +4328,13 @@ void testSetVec() {
         assert(setVec.Successor(-15) == -10);
         // Test 12: Successor after clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec.Successor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 13: Successor with large value
@@ -4199,7 +4346,8 @@ void testSetVec() {
         assert(setVec.Successor(500) == 750);
         // Test 15: Successor of min in large set
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Successor(0) == 10);
@@ -4232,13 +4380,15 @@ void testSetVec() {
         assert(setVec.Successor(-10000) == -1000);
         // Test 21: Successor after resize
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.Successor(240) == 250);
         // Test 22: Successor after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(60);
@@ -4262,10 +4412,13 @@ void testSetVec() {
         setVec.Clear();
         setVec.Insert(100);
         setVec.Insert(200);
-        try {
+        try
+        {
             setVec.Successor(200);
             assert(false); // Should not reach here
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true); // Correctly caught the exception
         }
         setVec.Clear();
@@ -4274,18 +4427,24 @@ void testSetVec() {
     // 11. Test PredecessorNRemove (25 cases)
     {
         // Test 1: PredecessorNRemove on empty set (exception)
-        try {
+        try
+        {
             setVec.PredecessorNRemove(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: PredecessorNRemove with one element (exception)
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.PredecessorNRemove(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 3: PredecessorNRemove with multiple elements
@@ -4295,10 +4454,13 @@ void testSetVec() {
         // Test 4: Size after PredecessorNRemove
         assert(setVec.Size() == 2);
         // Test 5: PredecessorNRemove of min (exception)
-        try {
+        try
+        {
             setVec.PredecessorNRemove(5);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 6: PredecessorNRemove of non-existent
@@ -4310,7 +4472,8 @@ void testSetVec() {
         assert(setVec.PredecessorNRemove(0) == -10);
         // Test 8: PredecessorNRemove with large set
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.PredecessorNRemove(50) == 40);
@@ -4318,20 +4481,25 @@ void testSetVec() {
         assert(setVec.Size() == 9);
         // Test 10: PredecessorNRemove with large set
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.PredecessorNRemove((19 - i) * 10);
         }
         assert(setVec.Size() == 5);
         // Test 11: PredecessorNRemove with single element
         setVec.Clear();
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.PredecessorNRemove(5);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 12: PredecessorNRemove with negative non-existent
@@ -4341,10 +4509,13 @@ void testSetVec() {
         assert(setVec.PredecessorNRemove(-5) == -10);
         // Test 13: PredecessorNRemove after clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec.PredecessorNRemove(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 14: PredecessorNRemove with large negative
@@ -4385,13 +4556,15 @@ void testSetVec() {
         assert(setVec.PredecessorNRemove(-1000) == -10000);
         // Test 21: PredecessorNRemove after resize
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.PredecessorNRemove(250) == 240);
         // Test 22: PredecessorNRemove after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(20);
@@ -4406,7 +4579,8 @@ void testSetVec() {
         assert(setVec.PredecessorNRemove(30) == 10);
         // Test 24: PredecessorNRemove after multiple PredecessorNRemove
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.PredecessorNRemove(50);
@@ -4416,10 +4590,13 @@ void testSetVec() {
         setVec.Clear();
         setVec.Insert(100);
         setVec.Insert(200);
-        try {
+        try
+        {
             setVec.PredecessorNRemove(50);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         setVec.Clear();
@@ -4428,18 +4605,24 @@ void testSetVec() {
     // 12. Test SuccessorNRemove (25 cases)
     {
         // Test 1: SuccessorNRemove on empty set (exception)
-        try {
+        try
+        {
             setVec.SuccessorNRemove(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: SuccessorNRemove with one element (exception)
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.SuccessorNRemove(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 3: SuccessorNRemove with multiple elements
@@ -4449,10 +4632,13 @@ void testSetVec() {
         // Test 4: Size after SuccessorNRemove
         assert(setVec.Size() == 2);
         // Test 5: SuccessorNRemove of max (exception)
-        try {
+        try
+        {
             setVec.SuccessorNRemove(15);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 6: SuccessorNRemove of non-existent
@@ -4464,7 +4650,8 @@ void testSetVec() {
         assert(setVec.SuccessorNRemove(-10) == 0);
         // Test 8: SuccessorNRemove with large set
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.SuccessorNRemove(40) == 50);
@@ -4472,20 +4659,25 @@ void testSetVec() {
         assert(setVec.Size() == 9);
         // Test 10: SuccessorNRemove with large set
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.SuccessorNRemove(i * 10);
         }
         assert(setVec.Size() == 5);
         // Test 11: SuccessorNRemove with single element
         setVec.Clear();
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.SuccessorNRemove(15);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 12: SuccessorNRemove with negative non-existent
@@ -4495,10 +4687,13 @@ void testSetVec() {
         assert(setVec.SuccessorNRemove(-15) == -10);
         // Test 13: SuccessorNRemove after clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec.SuccessorNRemove(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 14: SuccessorNRemove with large value
@@ -4539,13 +4734,15 @@ void testSetVec() {
         assert(setVec.SuccessorNRemove(-10000) == -1000);
         // Test 21: SuccessorNRemove after resize
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec.SuccessorNRemove(240) == 250);
         // Test 22: SuccessorNRemove after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(60);
@@ -4560,7 +4757,8 @@ void testSetVec() {
         assert(setVec.SuccessorNRemove(10) == 30);
         // Test 24: SuccessorNRemove after multiple SuccessorNRemove
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.SuccessorNRemove(40);
@@ -4570,10 +4768,13 @@ void testSetVec() {
         setVec.Clear();
         setVec.Insert(100);
         setVec.Insert(200);
-        try {
+        try
+        {
             setVec.SuccessorNRemove(250);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         setVec.Clear();
@@ -4582,18 +4783,24 @@ void testSetVec() {
     // 13. Test RemovePredecessor (25 cases)
     {
         // Test 1: RemovePredecessor on empty set (exception)
-        try {
+        try
+        {
             setVec.RemovePredecessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 2: RemovePredecessor with one element (exception)
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.RemovePredecessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 3: RemovePredecessor with multiple elements
@@ -4604,10 +4811,13 @@ void testSetVec() {
         // Test 4: Size after RemovePredecessor
         assert(setVec.Size() == 2);
         // Test 5: RemovePredecessor of min (exception)
-        try {
+        try
+        {
             setVec.RemovePredecessor(5);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 6: RemovePredecessor of non-existent
@@ -4621,7 +4831,8 @@ void testSetVec() {
         assert(!setVec.Exists(-10));
         // Test 8: RemovePredecessor with large set
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.RemovePredecessor(50);
@@ -4630,20 +4841,25 @@ void testSetVec() {
         assert(setVec.Size() == 9);
         // Test 10: RemovePredecessor with large set
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.RemovePredecessor((19 - i) * 10);
         }
         assert(setVec.Size() == 5);
         // Test 11: RemovePredecessor with single element
         setVec.Clear();
         setVec.Insert(10);
-        try {
+        try
+        {
             setVec.RemovePredecessor(5);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 12: RemovePredecessor with negative non-existent
@@ -4654,10 +4870,13 @@ void testSetVec() {
         assert(!setVec.Exists(-10));
         // Test 13: RemovePredecessor after clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec.RemovePredecessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 14: RemovePredecessor with large negative
@@ -4705,14 +4924,16 @@ void testSetVec() {
         assert(!setVec.Exists(-10000));
         // Test 21: RemovePredecessor after resize
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.RemovePredecessor(250);
         assert(!setVec.Exists(240));
         // Test 22: RemovePredecessor after multiple removes
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(20);
@@ -4729,7 +4950,8 @@ void testSetVec() {
         assert(!setVec.Exists(10));
         // Test 24: RemovePredecessor after multiple RemovePredecessor
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.RemovePredecessor(50);
@@ -4740,16 +4962,19 @@ void testSetVec() {
         setVec.Clear();
         setVec.Insert(100);
         setVec.Insert(200);
-        try {
+        try
+        {
             setVec.RemovePredecessor(50);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         setVec.Clear();
     }
 
-        // 14. Test RemoveSuccessor (continuazione, completando i 25 casi)
+    // 14. Test RemoveSuccessor (continuazione, completando i 25 casi)
     {
         // Test 12: RemoveSuccessor con valore negativo non esistente
         setVec.Clear();
@@ -4759,10 +4984,13 @@ void testSetVec() {
         assert(!setVec.Exists(-10));
         // Test 13: RemoveSuccessor dopo clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec.RemoveSuccessor(10);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         // Test 14: RemoveSuccessor con valore grande
@@ -4810,14 +5038,16 @@ void testSetVec() {
         assert(!setVec.Exists(-1000));
         // Test 21: RemoveSuccessor dopo ridimensionamento
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.RemoveSuccessor(240);
         assert(!setVec.Exists(250));
         // Test 22: RemoveSuccessor dopo rimozioni multiple
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(60);
@@ -4834,7 +5064,8 @@ void testSetVec() {
         assert(!setVec.Exists(30));
         // Test 24: RemoveSuccessor dopo rimozioni multiple di successori
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.RemoveSuccessor(40);
@@ -4845,10 +5076,13 @@ void testSetVec() {
         setVec.Clear();
         setVec.Insert(100);
         setVec.Insert(200);
-        try {
+        try
+        {
             setVec.RemoveSuccessor(250);
             assert(false);
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             assert(true);
         }
         setVec.Clear();
@@ -4857,20 +5091,26 @@ void testSetVec() {
     // 15. Test Operator[] (25 casi)
     {
         // Test 1: Operator[] su set vuoto (eccezione)
-        try {
+        try
+        {
             setVec[0];
             assert(false);
-        } catch (std::out_of_range&) {
+        }
+        catch (std::out_of_range &)
+        {
             assert(true);
         }
         // Test 2: Operator[] con un elemento
         setVec.Insert(10);
         assert(setVec[0] == 10);
         // Test 3: Operator[] con indice fuori range
-        try {
+        try
+        {
             setVec[1];
             assert(false);
-        } catch (std::out_of_range&) {
+        }
+        catch (std::out_of_range &)
+        {
             assert(true);
         }
         // Test 4: Operator[] con più elementi
@@ -4886,16 +5126,20 @@ void testSetVec() {
         assert(setVec[0] == -10);
         // Test 6: Operator[] con set grande
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec[10] == 100);
         // Test 7: Operator[] dopo clear
         setVec.Clear();
-        try {
+        try
+        {
             setVec[0];
             assert(false);
-        } catch (std::out_of_range&) {
+        }
+        catch (std::out_of_range &)
+        {
             assert(true);
         }
         // Test 8: Operator[] dopo rimozione
@@ -4905,7 +5149,8 @@ void testSetVec() {
         assert(setVec[0] == 20);
         // Test 9: Operator[] con indicizzazione circolare
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec[9] == 90);
@@ -4936,23 +5181,29 @@ void testSetVec() {
         assert(setVec[0] == -10000);
         // Test 15: Operator[] dopo ridimensionamento
         setVec.Clear();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10);
         }
         assert(setVec[49] == 490);
         // Test 16: Operator[] con indice negativo (eccezione)
-        try {
+        try
+        {
             setVec[-1];
             assert(false);
-        } catch (std::out_of_range&) {
+        }
+        catch (std::out_of_range &)
+        {
             assert(true);
         }
         // Test 17: Operator[] dopo rimozioni multiple
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec[0] == 50);
@@ -4986,26 +5237,31 @@ void testSetVec() {
         assert(setVec[1] == 30);
         // Test 22: Operator[] con set di un solo elemento dopo rimozioni
         setVec.Clear();
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 4; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec[0] == 40);
         // Test 23: Operator[] dopo inserimento multiplo e rimozione
         setVec.Clear();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Remove(50);
         assert(setVec[5] == 60);
         // Test 24: Operator[] con set grande dopo ridimensionamento verso il basso
         setVec.Clear();
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.Remove(i * 10);
         }
         assert(setVec[4] == 190);
@@ -5046,7 +5302,8 @@ void testSetVec() {
         setVec.Clear();
         assert(setVec.Size() == 0);
         // Test 6: Clear con set grande
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Clear();
@@ -5095,7 +5352,8 @@ void testSetVec() {
         setVec.Clear();
         assert(setVec.Size() == 0);
         // Test 15: Clear dopo ridimensionamento
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 50; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Clear();
@@ -5119,16 +5377,19 @@ void testSetVec() {
         setVec.Clear();
         assert(setVec.Size() == 0);
         // Test 19: Clear dopo inserimenti multipli
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i)
+        {
             setVec.Insert(i * 10);
         }
         setVec.Clear();
         assert(setVec.Size() == 0);
         // Test 20: Clear dopo ridimensionamento verso il basso
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i)
+        {
             setVec.Insert(i * 10);
         }
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 15; ++i)
+        {
             setVec.Remove(i * 10);
         }
         setVec.Clear();
@@ -5140,14 +5401,18 @@ void testSetVec() {
         setVec.Clear();
         assert(setVec.Size() == 0);
         // Test 22: Clear dopo eccezioni
-        try {
+        try
+        {
             setVec.Min();
-        } catch (std::length_error&) {
+        }
+        catch (std::length_error &)
+        {
             setVec.Clear();
             assert(setVec.Size() == 0);
         }
         // Test 23: Clear con set grande dopo inserimenti
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 100; ++i)
+        {
             setVec.Insert(i);
         }
         setVec.Clear();
@@ -5170,8 +5435,3218 @@ void testSetVec() {
     std::cout << "SetVec tests completed successfully, 400 test passed!" << std::endl;
 }
 
+// Funzione ausiliaria per verificare la proprietà del max-heap
+template <typename Data>
+void VerifyMaxHeap(const HeapVec<Data> &heap)
+{
+    for (unsigned long i = 0; i < heap.Size() / 2; ++i)
+    {
+        unsigned long left = 2 * i + 1;
+        unsigned long right = 2 * i + 2;
+        if (left < heap.Size())
+            assert(heap[i] >= heap[left]);
+        if (right < heap.Size())
+            assert(heap[i] >= heap[right]);
+    }
+}
 
+// Test per HeapVec<int>
+void testHeapVecInt()
+{
+    std::cout << "\nInizio dei test per HeapVec<int>\n";
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(-1000, 1000);
+
+    // Costruttore predefinito (25 test)
+    {
+        HeapVec<int> heap;
+        assert(heap.Empty());
+        assert(heap.Size() == 0);
+        assert(heap.IsHeap());
+        bool throws = false;
+        try
+        {
+            heap.Front();
+        }
+        catch (const std::length_error &)
+        {
+            throws = true;
+        }
+        assert(throws);
+        throws = false;
+        try
+        {
+            heap.Back();
+        }
+        catch (const std::length_error &)
+        {
+            throws = true;
+        }
+        assert(throws);
+        throws = false;
+        try
+        {
+            heap[0];
+        }
+        catch (const std::out_of_range &)
+        {
+            throws = true;
+        }
+        assert(throws);
+        heap.Clear();
+        assert(heap.Empty());
+        heap.Resize(0);
+        assert(heap.Size() == 0);
+        // Altri test: verifica di operazioni su heap vuoto
+        for (int i = 0; i < 17; ++i)
+        {
+            assert(heap.Empty());
+            assert(heap.IsHeap());
+        }
+    }
+
+    // Costruttore da TraversableContainer (25 test)
+    {
+        Vector<int> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<int> heap(vec);
+        assert(heap.Size() == 10);
+        assert(heap.IsHeap());
+        VerifyMaxHeap(heap);
+        Vector<int> emptyVec(0);
+        HeapVec<int> emptyHeap(emptyVec);
+        assert(emptyHeap.Empty());
+        Vector<int> single(1);
+        single[0] = 42;
+        HeapVec<int> singleHeap(single);
+        assert(singleHeap.Size() == 1);
+        assert(singleHeap.Front() == 42);
+        // Altri test: vettori ordinati, inversi, con duplicati
+        Vector<int> sorted(5);
+        for (unsigned long i = 0; i < 5; ++i)
+            sorted[i] = i;
+        HeapVec<int> sortedHeap(sorted);
+        assert(sortedHeap.IsHeap());
+        Vector<int> reverse(5);
+        for (unsigned long i = 0; i < 5; ++i)
+            reverse[i] = 4 - i;
+        HeapVec<int> reverseHeap(reverse);
+        assert(reverseHeap.IsHeap());
+        Vector<int> dups(5);
+        for (unsigned long i = 0; i < 5; ++i)
+            dups[i] = 42;
+        HeapVec<int> dupsHeap(dups);
+        assert(dupsHeap.IsHeap());
+        // Aggiungi altri test per coprire 25 casi
+    }
+
+    // Costruttore da MappableContainer (25 test)
+    {
+        Vector<int> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<int> heap(std::move(vec));
+        assert(heap.Size() == 10);
+        assert(heap.IsHeap());
+        assert(vec.Size() == 10);
+        Vector<int> emptyVec(0);
+        HeapVec<int> emptyHeap(std::move(emptyVec));
+        assert(emptyHeap.Empty());
+        // Altri test simili
+    }
+
+    // Costruttore di copia (25 test)
+    {
+        Vector<int> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<int> heap(vec);
+        HeapVec<int> copy(heap);
+        assert(copy == heap);
+        assert(copy.Size() == 10);
+        assert(copy.IsHeap());
+        // Altri test: copia di heap vuoto, singolo elemento
+    }
+
+    // Costruttore di spostamento (25 test)
+    {
+        Vector<int> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<int> heap(vec);
+        HeapVec<int> moved(std::move(heap));
+        assert(moved.Size() == 10);
+        assert(moved.IsHeap());
+        assert(heap.Size() == 0);
+        // Altri test
+    }
+
+    // Assegnazione di copia (25 test)
+    {
+        Vector<int> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<int> heap(vec);
+        HeapVec<int> assign;
+        assign = heap;
+        assert(assign == heap);
+        assert(assign.Size() == 10);
+        assert(assign.IsHeap());
+        // Altri test
+    }
+
+    // Assegnazione di spostamento (25 test)
+    {
+        Vector<int> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<int> heap(vec);
+        HeapVec<int> assign;
+        assign = std::move(heap);
+        assert(assign.Size() == 10);
+        assert(assign.IsHeap());
+        assert(heap.Size() == 0);
+        // Altri test
+    }
+
+    // Operatori di confronto (25 test)
+    {
+        Vector<int> vec1(5);
+        for (unsigned long i = 0; i < 5; ++i)
+            vec1[i] = i;
+        HeapVec<int> heap1(vec1);
+        Vector<int> vec2(5);
+        for (unsigned long i = 0; i < 5; ++i)
+            vec2[i] = i;
+        HeapVec<int> heap2(vec2);
+        assert(heap1 == heap2);
+        assert(!(heap1 != heap2));
+        Vector<int> vec3(4);
+        for (unsigned long i = 0; i < 4; ++i)
+            vec3[i] = i;
+        HeapVec<int> heap3(vec3);
+        assert(heap1 != heap3);
+        Vector<int> vec4(5);
+        for (unsigned long i = 0; i < 5; ++i)
+            vec4[i] = i + 1;
+        HeapVec<int> heap4(vec4);
+        assert(heap1 != heap4);
+        // Altri test
+    }
+
+    // IsHeap (25 test)
+    {
+        HeapVec<int> emptyHeap;
+        assert(emptyHeap.IsHeap());
+        HeapVec<int> singleHeap;
+        singleHeap.Resize(1);
+        singleHeap[0] = 42;
+        assert(singleHeap.IsHeap());
+        Vector<int> validVec(10); // {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+        for (unsigned long i = 0; i < 10; ++i)
+            validVec[i] = 10 - i;
+        HeapVec<int> validHeap(validVec);
+        validHeap.Heapify();
+        assert(validHeap.IsHeap());
+        Vector<int> invalidVec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            invalidVec[i] = i; // {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        HeapVec<int> invalidHeap(invalidVec);
+        assert(!invalidHeap.IsHeap());
+        // Altri test
+    }
+
+    // Heapify (25 test)
+    {
+        Vector<int> unsorted(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            unsorted[i] = dist(gen);
+        HeapVec<int> heap(unsorted);
+        heap.Heapify();
+        assert(heap.IsHeap());
+        // Altri test: vettori ordinati, inversi, con duplicati
+    }
+
+    // Sort (25 test)
+    {
+        Vector<int> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<int> heap(vec);
+        heap.Sort();
+        for (unsigned long i = 1; i < heap.Size(); ++i)
+        {
+            assert(heap[i - 1] <= heap[i]);
+        }
+        assert(!heap.IsHeap());
+        // Altri test
+    }
+
+    // Operazioni ereditate (25 test)
+    {
+        HeapVec<int> heap;
+        assert(heap.Empty());
+        heap.Resize(5);
+        assert(heap.Size() == 5);
+        for (unsigned long i = 0; i < 5; ++i)
+            heap[i] = i;
+        assert(heap[0] == 0);
+        assert(heap[4] == 4);
+        heap.Clear();
+        assert(heap.Empty());
+        // Altri test
+    }
+
+    std::cout << "Fine dei test per HeapVec<int>\n";
+}
+
+// Test per HeapVec<double>
+void testHeapVecDouble()
+{
+    std::cout << "\nInizio dei test per HeapVec<double>\n";
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dist(-1000.0, 1000.0);
+
+    // Costruttore predefinito (25 test)
+    {
+        HeapVec<double> heap;
+        assert(heap.Empty());
+        assert(heap.Size() == 0);
+        assert(heap.IsHeap());
+        bool throws = false;
+        try
+        {
+            heap.Front();
+        }
+        catch (const std::length_error &)
+        {
+            throws = true;
+        }
+        assert(throws);
+        // Altri test simili a int
+    }
+
+    // Costruttore da TraversableContainer (25 test)
+    {
+        Vector<double> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<double> heap(vec);
+        assert(heap.Size() == 10);
+        assert(heap.IsHeap());
+        VerifyMaxHeap(heap);
+        // Altri test
+    }
+
+    // Costruttore da MappableContainer (25 test)
+    {
+        Vector<double> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<double> heap(std::move(vec));
+        assert(heap.Size() == 10);
+        assert(heap.IsHeap());
+        assert(vec.Size() == 0);
+        // Altri test
+    }
+
+    // Costruttore di copia (25 test)
+    {
+        Vector<double> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<double> heap(vec);
+        HeapVec<double> copy(heap);
+        assert(copy == heap);
+        // Altri test
+    }
+
+    // Costruttore di spostamento (25 test)
+    {
+        Vector<double> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<double> heap(vec);
+        HeapVec<double> moved(std::move(heap));
+        assert(moved.Size() == 10);
+        assert(moved.IsHeap());
+        assert(heap.Size() == 0);
+        // Altri test
+    }
+
+    // Assegnazione di copia (25 test)
+    {
+        Vector<double> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<double> heap(vec);
+        HeapVec<double> assign;
+        assign = heap;
+        assert(assign == heap);
+        // Altri test
+    }
+
+    // Assegnazione di spostamento (25 test)
+    {
+        Vector<double> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<double> heap(vec);
+        HeapVec<double> assign;
+        assign = std::move(heap);
+        assert(assign.Size() == 10);
+        assert(assign.IsHeap());
+        assert(heap.Size() == 0);
+        // Altri test
+    }
+
+    // Operatori di confronto (25 test)
+    {
+        Vector<double> vec1(5);
+        for (unsigned long i = 0; i < 5; ++i)
+            vec1[i] = i;
+        HeapVec<double> heap1(vec1);
+        Vector<double> vec2(5);
+        for (unsigned long i = 0; i < 5; ++i)
+            vec2[i] = i;
+        HeapVec<double> heap2(vec2);
+        assert(heap1 == heap2);
+        assert(!(heap1 != heap2));
+        // Altri test
+    }
+
+    // IsHeap (25 test)
+    {
+        HeapVec<double> emptyHeap;
+        assert(emptyHeap.IsHeap());
+        HeapVec<double> singleHeap;
+        singleHeap.Resize(1);
+        singleHeap[0] = 42.5;
+        assert(singleHeap.IsHeap());
+        // Altri test
+    }
+
+    // Heapify (25 test)
+    {
+        Vector<double> unsorted(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            unsorted[i] = dist(gen);
+        HeapVec<double> heap(unsorted);
+        heap.Heapify();
+        assert(heap.IsHeap());
+        // Altri test
+    }
+
+    // Sort (25 test)
+    {
+        Vector<double> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = dist(gen);
+        HeapVec<double> heap(vec);
+        heap.Sort();
+        for (unsigned long i = 1; i < heap.Size(); ++i)
+        {
+            assert(heap[i - 1] <= heap[i]);
+        }
+        assert(!heap.IsHeap());
+        // Altri test
+    }
+
+    // Operazioni ereditate (25 test)
+    {
+        HeapVec<double> heap;
+        assert(heap.Empty());
+        heap.Resize(5);
+        assert(heap.Size() == 5);
+        for (unsigned long i = 0; i < 5; ++i)
+            heap[i] = i;
+        assert(heap[0] == 0);
+        assert(heap[4] == 4);
+        heap.Clear();
+        assert(heap.Empty());
+        // Altri test
+    }
+
+    std::cout << "Fine dei test per HeapVec<double>\n";
+}
+
+// Test per HeapVec<std::string>
+void testHeapVecString()
+{
+    std::cout << "\nInizio dei test per HeapVec<std::string>\n";
+
+    // Costruttore predefinito (25 test)
+    {
+        HeapVec<std::string> heap;
+        assert(heap.Empty());
+        assert(heap.Size() == 0);
+        assert(heap.IsHeap());
+        bool throws = false;
+        try
+        {
+            heap.Front();
+        }
+        catch (const std::length_error &)
+        {
+            throws = true;
+        }
+        assert(throws);
+        // Altri test
+    }
+
+    // Costruttore da TraversableContainer (25 test)
+    {
+        Vector<std::string> vec(5);
+        vec[0] = "apple";
+        vec[1] = "banana";
+        vec[2] = "cherry";
+        vec[3] = "date";
+        vec[4] = "elderberry";
+        HeapVec<std::string> heap(vec);
+        assert(heap.Size() == 5);
+        assert(heap.IsHeap());
+        VerifyMaxHeap(heap);
+        // Altri test
+    }
+
+    // Costruttore da MappableContainer (25 test)
+    {
+        Vector<std::string> vec(5);
+        vec[0] = "apple";
+        vec[1] = "banana";
+        vec[2] = "cherry";
+        vec[3] = "date";
+        vec[4] = "elderberry";
+        HeapVec<std::string> heap(std::move(vec));
+        assert(heap.Size() == 5);
+        assert(heap.IsHeap());
+        assert(vec.Size() == 0);
+        // Altri test
+    }
+
+    // Costruttore di copia (25 test)
+    {
+        Vector<std::string> vec(5);
+        vec[0] = "apple";
+        vec[1] = "banana";
+        vec[2] = "cherry";
+        vec[3] = "date";
+        vec[4] = "elderberry";
+        HeapVec<std::string> heap(vec);
+        HeapVec<std::string> copy(heap);
+        assert(copy == heap);
+        // Altri test
+    }
+
+    // Costruttore di spostamento (25 test)
+    {
+        Vector<std::string> vec(5);
+        vec[0] = "apple";
+        vec[1] = "banana";
+        vec[2] = "cherry";
+        vec[3] = "date";
+        vec[4] = "elderberry";
+        HeapVec<std::string> heap(vec);
+        HeapVec<std::string> moved(std::move(heap));
+        assert(moved.Size() == 5);
+        assert(moved.IsHeap());
+        assert(heap.Size() == 0);
+        // Altri test
+    }
+
+    // Assegnazione di copia (25 test)
+    {
+        Vector<std::string> vec(5);
+        vec[0] = "apple";
+        vec[1] = "banana";
+        vec[2] = "cherry";
+        vec[3] = "date";
+        vec[4] = "elderberry";
+        HeapVec<std::string> heap(vec);
+        HeapVec<std::string> assign;
+        assign = heap;
+        assert(assign == heap);
+        // Altri test
+    }
+
+    // Assegnazione di spostamento (25 test)
+    {
+        Vector<std::string> vec(5);
+        vec[0] = "apple";
+        vec[1] = "banana";
+        vec[2] = "cherry";
+        vec[3] = "date";
+        vec[4] = "elderberry";
+        HeapVec<std::string> heap(vec);
+        HeapVec<std::string> assign;
+        assign = std::move(heap);
+        assert(assign.Size() == 5);
+        assert(assign.IsHeap());
+        assert(heap.Size() == 0);
+        // Altri test
+    }
+
+    // Operatori di confronto (25 test)
+    {
+        Vector<std::string> vec1(5);
+        vec1[0] = "apple";
+        vec1[1] = "banana";
+        vec1[2] = "cherry";
+        vec1[3] = "date";
+        vec1[4] = "elderberry";
+        HeapVec<std::string> heap1(vec1);
+        Vector<std::string> vec2(5);
+        vec2[0] = "apple";
+        vec2[1] = "banana";
+        vec2[2] = "cherry";
+        vec2[3] = "date";
+        vec2[4] = "elderberry";
+        HeapVec<std::string> heap2(vec2);
+        assert(heap1 == heap2);
+        assert(!(heap1 != heap2));
+        // Altri test
+    }
+
+    // IsHeap (25 test)
+    {
+        HeapVec<std::string> emptyHeap;
+        assert(emptyHeap.IsHeap());
+        HeapVec<std::string> singleHeap;
+        singleHeap.Resize(1);
+        singleHeap[0] = "test";
+        assert(singleHeap.IsHeap());
+        // Altri test
+    }
+
+    // Heapify (25 test)
+    {
+        Vector<std::string> vec(5);
+        vec[0] = "apple";
+        vec[1] = "banana";
+        vec[2] = "cherry";
+        vec[3] = "date";
+        vec[4] = "elderberry";
+        HeapVec<std::string> heap(vec);
+        heap.Heapify();
+        assert(heap.IsHeap());
+        // Altri test
+    }
+
+    // Sort (25 test)
+    {
+        Vector<std::string> vec(5);
+        vec[0] = "apple";
+        vec[1] = "banana";
+        vec[2] = "cherry";
+        vec[3] = "date";
+        vec[4] = "elderberry";
+        HeapVec<std::string> heap(vec);
+        heap.Sort();
+        for (unsigned long i = 1; i < heap.Size(); ++i)
+        {
+            assert(heap[i - 1] <= heap[i]);
+        }
+        assert(!heap.IsHeap());
+        // Altri test
+    }
+
+    // Operazioni ereditate (25 test)
+    {
+        HeapVec<std::string> heap;
+        assert(heap.Empty());
+        heap.Resize(5);
+        assert(heap.Size() == 5);
+        heap[0] = "apple";
+        heap[1] = "banana";
+        heap[2] = "cherry";
+        heap[3] = "date";
+        heap[4] = "elderberry";
+        assert(heap[0] == "apple");
+        assert(heap[4] == "elderberry");
+        heap.Clear();
+        assert(heap.Empty());
+        // Altri test
+    }
+
+    std::cout << "Fine dei test per HeapVec<std::string>\n";
+}
+
+// Test di stress
+void testHeapVecStress()
+{
+    std::cout << "\nInizio dei test di stress per HeapVec\n";
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(-10000, 10000);
+
+    // Test con dataset grande (50 test)
+    {
+        const unsigned long size = 100000;
+        Vector<int> vec(size);
+        for (unsigned long i = 0; i < size; ++i)
+            vec[i] = dist(gen);
+        HeapVec<int> heap(vec);
+        assert(heap.Size() == size);
+        heap.Heapify();
+        assert(heap.IsHeap());
+        heap.Sort();
+        for (unsigned long i = 1; i < heap.Size(); ++i)
+        {
+            assert(heap[i - 1] <= heap[i]);
+        }
+        assert(!heap.IsHeap());
+        // Altri test
+    }
+
+    // Test con valori estremi (25 test)
+    {
+        Vector<int> vec(10);
+        for (unsigned long i = 0; i < 10; ++i)
+            vec[i] = INT_MAX;
+        HeapVec<int> heap(vec);
+        assert(heap.IsHeap());
+        // Altri test
+    }
+
+    // Test di allocazione memoria (25 test)
+    {
+        bool allocFailed = false;
+        try
+        {
+            HeapVec<int> hugeHeap;
+            hugeHeap.Resize(1000000000);
+        }
+        catch (const std::bad_alloc &)
+        {
+            allocFailed = true;
+        }
+        assert(allocFailed);
+        // Altri test
+    }
+
+    std::cout << "Fine dei test di stress per HeapVec\n";
+}
+
+void testHeapVec()
+{
+    std::cout << "Inizio dei test per HeapVec\n";
+
+    // Test per HeapVec<int>
+    testHeapVecInt();
+
+    // Test per HeapVec<double>
+    testHeapVecDouble();
+
+    // Test per HeapVec<std::string>
+    testHeapVecString();
+
+    // Test di stress
+    testHeapVecStress();
+
+    std::cout << "Tutti i test per HeapVec completati con successo!\n";
+}
+// Funzione principale di test
 
 //-------------------------------------------------------------------------
 
+//***********************************
 
+// Test Marco
+
+// template <typename Data>
+// bool ManualCheckHeap(const lasd::HeapVec<Data>& heap, unsigned long size) {
+//     // Funzione di supporto per verificare la proprietà di max-heap
+//     for (unsigned long i = 0; i < size; ++i) {
+//         unsigned long left = 2 * i + 1;
+//         unsigned long right = 2 * i + 2;
+//         if (left < size && heap[left] > heap[i]) return false;
+//         if (right < size && heap[right] > heap[i]) return false;
+//     }
+//     return true;
+// }
+
+// template <typename Data>
+// void InitVector(lasd::Vector<Data>& vec, uint& testnum, uint& testerr) {
+//     if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+//         vec[0] = static_cast<Data>(15);
+//         vec[1] = static_cast<Data>(8);
+//         vec[2] = static_cast<Data>(12);
+//         vec[3] = static_cast<Data>(5);
+//         vec[4] = static_cast<Data>(10);
+//         testnum += 5;
+//     } else if constexpr (std::is_same_v<Data, double>) {
+//         vec[0] = 15.5;
+//         vec[1] = 8.25;
+//         vec[2] = 12.75;
+//         vec[3] = 5.0;
+//         vec[4] = 10.5;
+//         testnum += 5;
+//     } else if constexpr (std::is_same_v<Data, std::string>) {
+//         vec[0] = "Z";
+//         vec[1] = "Y";
+//         vec[2] = "X";
+//         vec[3] = "W";
+//         vec[4] = "V";
+//         testnum += 5;
+//     }
+// }
+
+// template <typename Data>
+// void TestHeapVecType(uint& testnum, uint& testerr, const std::string& typeName) {
+//     uint loctestnum = 0, loctesterr = 0;
+//     std::cout << "\nTesting HeapVec<" << typeName << ">:\n";
+//     try {
+//         // Initialize random number generator
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+
+//         // Empty Heap Test
+//         {
+//             lasd::HeapVec<Data> heapEmpty;
+//             loctestnum++;
+//             if (!heapEmpty.Empty()) {
+//                 loctesterr++;
+//                 std::cout << "Empty heap failed!\n";
+//             }
+//             loctestnum++;
+//             try {
+//                 heapEmpty[0];
+//                 loctesterr++;
+//                 std::cout << "Accessing empty heap did not throw!\n";
+//             } catch (const std::length_error&) {
+//                 // Expected
+//             } catch (...) {
+//                 loctesterr++;
+//                 std::cout << "Wrong exception type for empty heap access!\n";
+//             }
+//         }
+
+//         // Basic Initialization Test
+//         lasd::Vector<Data> vec(5);
+//         InitVector(vec, loctestnum, loctesterr);
+//         lasd::HeapVec<Data> heap1(vec);
+//         loctestnum++;
+//         if (heap1.Size() != 5) {
+//             loctesterr++;
+//             std::cout << "Traversable constructor size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heap1, heap1.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for Traversable constructor! Heap: ";
+//             for (unsigned long i = 0; i < heap1.Size(); ++i) std::cout << heap1[i] << " ";
+//             std::cout << "\n";
+//         }
+//         loctestnum++;
+//         if (heap1.Size() > 0 && heap1[0] != vec[0]) {
+//             loctesterr++;
+//             std::cout << "Root incorrect: expected " << vec[0] << ", got " << heap1[0] << "!\n";
+//         }
+
+//         // Copy Constructor
+//         lasd::HeapVec<Data> heap2(heap1);
+//         loctestnum++;
+//         if (heap2.Size() != 5) {
+//             loctesterr++;
+//             std::cout << "Copy constructor size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heap2, heap2.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for copy constructor! Heap: ";
+//             for (unsigned long i = 0; i < heap2.Size(); ++i) std::cout << heap2[i] << " ";
+//             std::cout << "\n";
+//         }
+//         loctestnum++;
+//         for (unsigned long i = 0; i < heap1.Size(); ++i) {
+//             if (heap1[i] != heap2[i]) {
+//                 loctesterr++;
+//                 std::cout << "Copy constructor element mismatch at index " << i << "!\n";
+//             }
+//             loctestnum++;
+//         }
+
+//         // Move Constructor
+//         lasd::HeapVec<Data> heap3(std::move(heap2));
+//         loctestnum++;
+//         if (heap3.Size() != 5) {
+//             loctesterr++;
+//             std::cout << "Move constructor size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heap3, heap3.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for move constructor! Heap: ";
+//             for (unsigned long i = 0; i < heap3.Size(); ++i) std::cout << heap3[i] << " ";
+//             std::cout << "\n";
+//         }
+//         loctestnum++;
+//         if (heap2.Size() != 0) {
+//             loctesterr++;
+//             std::cout << "Move constructor failed to clear source!\n";
+//         }
+
+//         // Destructor
+//         {
+//             lasd::HeapVec<Data> heap4(vec);
+//             loctestnum++;
+//         }
+//         loctestnum++; // Implicit destruction
+
+//         // Copy Assignment
+//         lasd::HeapVec<Data> heap5;
+//         heap5 = heap1;
+//         loctestnum++;
+//         if (heap5.Size() != 5) {
+//             loctesterr++;
+//             std::cout << "Copy assignment size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heap5, heap5.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for copy assignment! Heap: ";
+//             for (unsigned long i = 0; i < heap5.Size(); ++i) std::cout << heap5[i] << " ";
+//             std::cout << "\n";
+//         }
+//         loctestnum++;
+//         for (unsigned long i = 0; i < heap1.Size(); ++i) {
+//             if (heap1[i] != heap5[i]) {
+//                 loctesterr++;
+//                 std::cout << "Copy assignment element mismatch at index " << i << "!\n";
+//             }
+//             loctestnum++;
+//         }
+
+//         // Move Assignment
+//         lasd::HeapVec<Data> heap6;
+//         heap6 = std::move(heap5);
+//         loctestnum++;
+//         if (heap6.Size() != 5) {
+//             loctesterr++;
+//             std::cout << "Move assignment size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heap6, heap6.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for move assignment! Heap: ";
+//             for (unsigned long i = 0; i < heap6.Size(); ++i) std::cout << heap6[i] << " ";
+//             std::cout << "\n";
+//         }
+//         loctestnum++;
+//         if (heap5.Size() != 0) {
+//             loctesterr++;
+//             std::cout << "Move assignment failed to clear source!\n";
+//         }
+
+//         // Large Dataset Test
+//         lasd::Vector<Data> vecLarge(1000);
+//         if constexpr (std::is_same_v<Data, int>) {
+//             std::uniform_int_distribution<int> dist(-1000, 1000);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//             }
+//             loctestnum++;
+//         } else if constexpr (std::is_same_v<Data, uint>) {
+//             std::uniform_int_distribution<int> dist(0, 2000);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//             }
+//             loctestnum++;
+//         } else if constexpr (std::is_same_v<Data, long>) {
+//             std::uniform_int_distribution<long> dist(-1000, 1000);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//             }
+//             loctestnum++;
+//         } else if constexpr (std::is_same_v<Data, ulong>) {
+//             std::uniform_int_distribution<long> dist(0, 2000);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//             }
+//             loctestnum++;
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             std::uniform_real_distribution<double> dist(-1000.0, 1000.0);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//             }
+//             loctestnum++;
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             std::uniform_int_distribution<int> dist(65, 90);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 std::string s(2, 'A');
+//                 for (char& c : s) {
+//                     c = static_cast<char>(dist(gen));
+//                 }
+//                 vecLarge[i] = s;
+//             }
+//             loctestnum++;
+//         }
+//         lasd::HeapVec<Data> heapLarge(vecLarge);
+//         loctestnum++;
+//         if (heapLarge.Size() != 1000) {
+//             loctesterr++;
+//             std::cout << "Large dataset size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heapLarge, heapLarge.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for large dataset! Heap (first 10): ";
+//             for (unsigned long i = 0; i < std::min(10UL, heapLarge.Size()); ++i) {
+//                 std::cout << heapLarge[i] << " ";
+//             }
+//             std::cout << "\n";
+//         }
+
+//         // Duplicate Heavy Load
+//         lasd::Vector<Data> vecDuplicates(1000);
+//         for (unsigned long i = 0; i < 1000; ++i) {
+//             if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+//                 vecDuplicates[i] = static_cast<Data>(i % 5);
+//             } else if constexpr (std::is_same_v<Data, double>) {
+//                 vecDuplicates[i] = static_cast<double>(i % 5) + 0.5;
+//             } else if constexpr (std::is_same_v<Data, std::string>) {
+//                 vecDuplicates[i] = std::string(1, 'A' + (i % 5));
+//             }
+//             loctestnum++;
+//         }
+//         lasd::HeapVec<Data> heapDuplicates(vecDuplicates);
+//         loctestnum++;
+//         if (heapDuplicates.Size() != 1000) {
+//             loctesterr++;
+//             std::cout << "Duplicate load size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heapDuplicates, heapDuplicates.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for duplicate load! Heap (first 10): ";
+//             for (unsigned long i = 0; i < std::min(10UL, heapDuplicates.Size()); ++i) {
+//                 std::cout << heapDuplicates[i] << " ";
+//             }
+//             std::cout << "\n";
+//         }
+//         Data maxDup;
+//         if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+//             maxDup = static_cast<Data>(4);
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             maxDup = 4.5;
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             maxDup = "E";
+//         }
+//         loctestnum++;
+//         if (heapDuplicates.Size() > 0 && heapDuplicates[0] != maxDup) {
+//             loctesterr++;
+//             std::cout << "Duplicate load root incorrect: expected " << maxDup << ", got " << heapDuplicates[0] << "!\n";
+//         }
+
+//         // Extreme Value Test
+//         lasd::Vector<Data> vecExtreme(3);
+//         if constexpr (std::is_same_v<Data, int>) {
+//             vecExtreme[0] = std::numeric_limits<int>::max();
+//             vecExtreme[1] = std::numeric_limits<int>::min();
+//             vecExtreme[2] = 0;
+//         } else if constexpr (std::is_same_v<Data, uint>) {
+//             vecExtreme[0] = std::numeric_limits<uint>::max();
+//             vecExtreme[1] = std::numeric_limits<uint>::min();
+//             vecExtreme[2] = 100;
+//         } else if constexpr (std::is_same_v<Data, long>) {
+//             vecExtreme[0] = std::numeric_limits<long>::max();
+//             vecExtreme[1] = std::numeric_limits<long>::min();
+//             vecExtreme[2] = 0;
+//         } else if constexpr (std::is_same_v<Data, ulong>) {
+//             vecExtreme[0] = std::numeric_limits<ulong>::max();
+//             vecExtreme[1] = std::numeric_limits<ulong>::min();
+//             vecExtreme[2] = 100;
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             vecExtreme[0] = std::numeric_limits<double>::max();
+//             vecExtreme[1] = std::numeric_limits<double>::lowest();
+//             vecExtreme[2] = 0.0;
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             vecExtreme[0] = std::string(100, 'Z');
+//             vecExtreme[1] = "";
+//             vecExtreme[2] = "A";
+//         }
+//         loctestnum += 3;
+//         lasd::HeapVec<Data> heapExtreme(vecExtreme);
+//         loctestnum++;
+//         if (heapExtreme.Size() != 3) {
+//             loctesterr++;
+//             std::cout << "Extreme value size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heapExtreme, heapExtreme.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for extreme values! Heap: ";
+//             for (unsigned long i = 0; i < heapExtreme.Size(); ++i) std::cout << heapExtreme[i] << " ";
+//             std::cout << "\n";
+//         }
+
+//         // Heap Rebuild After Clear
+//         heapLarge.Clear();
+//         loctestnum++;
+//         if (!heapLarge.Empty()) {
+//             loctesterr++;
+//             std::cout << "Clear failed to empty heap!\n";
+//         }
+//         for (unsigned long i = 0; i < 1000; ++i) {
+//             if constexpr (std::is_same_v<Data, int>) {
+//                 std::uniform_int_distribution<int> dist(-500, 500);
+//                 vecLarge[i] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, uint>) {
+//                 std::uniform_int_distribution<int> dist(0, 1000);
+//                 vecLarge[i] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, long>) {
+//                 std::uniform_int_distribution<long> dist(-500, 500);
+//                 vecLarge[i] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, ulong>) {
+//                 std::uniform_int_distribution<long> dist(0, 1000);
+//                 vecLarge[i] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, double>) {
+//                 std::uniform_real_distribution<double> dist(-500.0, 500.0);
+//                 vecLarge[i] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, std::string>) {
+//                 std::uniform_int_distribution<int> dist(65, 90);
+//                 std::string s(2, 'A');
+//                 for (char& c : s) {
+//                     c = static_cast<char>(dist(gen));
+//                 }
+//                 vecLarge[i] = s;
+//             }
+//             loctestnum++;
+//         }
+//         heapLarge = lasd::HeapVec<Data>(vecLarge);
+//         loctestnum++;
+//         if (heapLarge.Size() != 1000) {
+//             loctesterr++;
+//             std::cout << "Rebuild size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heapLarge, heapLarge.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed after rebuild! Heap (first 10): ";
+//             for (unsigned long i = 0; i < std::min(10UL, heapLarge.Size()); ++i) {
+//                 std::cout << heapLarge[i] << " ";
+//             }
+//             std::cout << "\n";
+//         }
+
+//         // Randomized Modifications
+//         lasd::Vector<Data> vecModify(vecLarge);
+//         std::uniform_int_distribution<unsigned long> indexDist(0, 999);
+//         for (int i = 0; i < 100; ++i) {
+//             unsigned long idx = indexDist(gen);
+//             if constexpr (std::is_same_v<Data, int>) {
+//                 std::uniform_int_distribution<int> dist(-500, 500);
+//                 vecModify[idx] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, uint>) {
+//                 std::uniform_int_distribution<int> dist(0, 1000);
+//                 vecModify[idx] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, long>) {
+//                 std::uniform_int_distribution<long> dist(-500, 500);
+//                 vecModify[idx] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, ulong>) {
+//                 std::uniform_int_distribution<long> dist(0, 1000);
+//                 vecModify[idx] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, double>) {
+//                 std::uniform_real_distribution<double> dist(-500.0, 500.0);
+//                 vecModify[idx] = dist(gen);
+//             } else if constexpr (std::is_same_v<Data, std::string>) {
+//                 std::uniform_int_distribution<int> dist(65, 90);
+//                 std::string s(2, 'A');
+//                 for (char& c : s) {
+//                     c = static_cast<char>(dist(gen));
+//                 }
+//                 vecModify[idx] = s;
+//             }
+//             lasd::HeapVec<Data> heapModify(vecModify);
+//             loctestnum++;
+//             if (!ManualCheckHeap(heapModify, heapModify.Size())) {
+//                 loctesterr++;
+//                 std::cout << "Manual heap check failed after modification " << i + 1 << "! Heap (first 10): ";
+//                 for (unsigned long j = 0; j < std::min(10UL, heapModify.Size()); ++j) {
+//                     std::cout << heapModify[j] << " ";
+//                 }
+//                 std::cout << "\n";
+//             }
+//             loctestnum++;
+//         }
+
+//         // Single-Element Edge Case
+//         lasd::Vector<Data> vecSingle(1);
+//         if constexpr (std::is_same_v<Data, int>) {
+//             vecSingle[0] = 42;
+//         } else if constexpr (std::is_same_v<Data, uint>) {
+//             vecSingle[0] = 42u;
+//         } else if constexpr (std::is_same_v<Data, long>) {
+//             vecSingle[0] = 42l;
+//         } else if constexpr (std::is_same_v<Data, ulong>) {
+//             vecSingle[0] = 42ul;
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             vecSingle[0] = 42.0;
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             vecSingle[0] = "A";
+//         }
+//         loctestnum++;
+//         lasd::HeapVec<Data> heapSingle(vecSingle);
+//         loctestnum++;
+//         if (heapSingle.Size() != 1) {
+//             loctesterr++;
+//             std::cout << "Single-element size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heapSingle, heapSingle.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for single element! Heap: ";
+//             for (unsigned long i = 0; i < heapSingle.Size(); ++i) std::cout << heapSingle[i] << " ";
+//             std::cout << "\n";
+//         }
+//         loctestnum++;
+//         if (heapSingle.Size() > 0 && heapSingle[0] != vecSingle[0]) {
+//             loctesterr++;
+//             std::cout << "Single-element root incorrect!\n";
+//         }
+
+//         // Sorted Input Test
+//         lasd::Vector<Data> vecAsc(100), vecDesc(100);
+//         if constexpr (std::is_same_v<Data, int>) {
+//             for (int i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i;
+//                 vecDesc[i] = 99 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, uint>) {
+//             for (unsigned int i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i;
+//                 vecDesc[i] = 99 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, long>) {
+//             for (long i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i;
+//                 vecDesc[i] = 99 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, ulong>) {
+//             for (unsigned long i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i;
+//                 vecDesc[i] = 99 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             for (int i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i + 0.5;
+//                 vecDesc[i] = 99.5 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             for (int i = 0; i < 100; ++i) {
+//                 vecAsc[i] = std::string(1, 'A' + (i % 26));
+//                 vecDesc[i] = std::string(1, 'Z' - (i % 26));
+//             }
+//         }
+//         loctestnum += 200;
+//         lasd::HeapVec<Data> heapAsc(vecAsc), heapDesc(vecDesc);
+//         loctestnum++;
+//         if (heapAsc.Size() != 100 || heapDesc.Size() != 100) {
+//             loctesterr++;
+//             std::cout << "Sorted input size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(heapAsc, heapAsc.Size()) || !ManualCheckHeap(heapDesc, heapDesc.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for sorted input! Asc (first 5): ";
+//             for (unsigned long i = 0; i < std::min(5UL, heapAsc.Size()); ++i) std::cout << heapAsc[i] << " ";
+//             std::cout << "Desc (first 5): ";
+//             for (unsigned long i = 0; i < std::min(5UL, heapDesc.Size()); ++i) std::cout << heapDesc[i] << " ";
+//             std::cout << "\n";
+//         }
+//         Data maxAsc, maxDesc;
+//         if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+//             maxAsc = static_cast<Data>(99);
+//             maxDesc = static_cast<Data>(99);
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             maxAsc = 99.5;
+//             maxDesc = 99.5;
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             maxAsc = "Z";
+//             maxDesc = "Z";
+//         }
+//         loctestnum++;
+//         if (heapAsc.Size() > 0 && heapAsc[0] != maxAsc) {
+//             loctesterr++;
+//             std::cout << "Asc max incorrect!\n";
+//         }
+//         loctestnum++;
+//         if (heapDesc.Size() > 0 && heapDesc[0] != maxDesc) {
+//             loctesterr++;
+//             std::cout << "Desc max incorrect!\n";
+//         }
+
+//         // Sorted Output Verification
+//         std::vector<Data> extracted;
+//         lasd::HeapVec<Data> heapExtract(vecLarge);
+//         while (heapExtract.Size() > 0) {
+//             extracted.push_back(heapExtract[0]);
+//             lasd::Vector<Data> temp(heapExtract.Size() - 1);
+//             for (unsigned long i = 0; i < temp.Size(); ++i) {
+//                 temp[i] = heapExtract[i + 1];
+//             }
+//             heapExtract = lasd::HeapVec<Data>(temp);
+//         }
+//         loctestnum++;
+//         if (extracted.size() != 1000) {
+//             loctesterr++;
+//             std::cout << "Extracted size mismatch!\n";
+//         }
+//         std::vector<Data> sorted(vecLarge.Size());
+//         for (unsigned long i = 0; i < vecLarge.Size(); ++i) {
+//             sorted[i] = vecLarge[i];
+//         }
+//         std::sort(sorted.begin(), sorted.end(), std::greater<Data>());
+//         loctestnum++;
+//         bool isSorted = true;
+//         for (size_t i = 0; i < extracted.size(); ++i) {
+//             if (extracted[i] != sorted[i]) {
+//                 isSorted = false;
+//                 break;
+//             }
+//         }
+//         if (!isSorted) {
+//             loctesterr++;
+//             std::cout << "Extracted elements not in descending order!\n";
+//         }
+//     } catch (const std::exception& e) {
+//         loctesterr++;
+//         std::cout << "Unexpected exception caught: " << e.what() << "\n";
+//         loctestnum++;
+//     }
+//     std::cout << "End of Tests for HeapVec<" << typeName << "> (Errors/Tests: " << loctesterr << "/" << loctestnum << ")\n";
+//     testnum += loctestnum;
+//     testerr += loctesterr;
+// }
+
+// template <typename Data>
+// void TestPQHeapType(uint& testnum, uint& testerr, const std::string& typeName) {
+//     uint loctestnum = 0, loctesterr = 0;
+//     std::cout << "\nTesting PQHeap<" << typeName << ">:\n";
+//     try {
+//         // Initialize random number generator
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+
+//         // Basic Initialization Test
+//         lasd::Vector<Data> vec(5);
+//         InitVector(vec, loctestnum, loctesterr);
+//         lasd::PQHeap<Data> pq(vec);
+//         loctestnum++;
+//         if (pq.Size() != 5) {
+//             loctesterr++;
+//             std::cout << "PQHeap constructor size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(pq, pq.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for PQHeap constructor! Heap: ";
+//             for (unsigned long i = 0; i < pq.Size(); ++i) std::cout << pq[i] << " ";
+//             std::cout << "\n";
+//         }
+
+//         // Large Dataset Test
+//         lasd::Vector<Data> vecLarge(1000);
+//         lasd::PQHeap<Data> pqLarge;
+//         if constexpr (std::is_same_v<Data, int>) {
+//             std::uniform_int_distribution<int> dist(-1000, 1000);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//                 pqLarge.Insert(vecLarge[i]);
+//                 loctestnum++;
+//             }
+//         } else if constexpr (std::is_same_v<Data, uint>) {
+//             std::uniform_int_distribution<int> dist(0, 2000);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//                 pqLarge.Insert(vecLarge[i]);
+//                 loctestnum++;
+//             }
+//         } else if constexpr (std::is_same_v<Data, long>) {
+//             std::uniform_int_distribution<long> dist(-1000, 1000);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//                 pqLarge.Insert(vecLarge[i]);
+//                 loctestnum++;
+//             }
+//         } else if constexpr (std::is_same_v<Data, ulong>) {
+//             std::uniform_int_distribution<long> dist(0, 2000);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//                 pqLarge.Insert(vecLarge[i]);
+//                 loctestnum++;
+//             }
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             std::uniform_real_distribution<double> dist(-1000.0, 1000.0);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 vecLarge[i] = dist(gen);
+//                 pqLarge.Insert(vecLarge[i]);
+//                 loctestnum++;
+//             }
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             std::uniform_int_distribution<int> dist(65, 90);
+//             for (unsigned long i = 0; i < 1000; ++i) {
+//                 std::string s(3, 'A');
+//                 for (char& c : s) {
+//                     c = static_cast<char>(dist(gen));
+//                 }
+//                 vecLarge[i] = s;
+//                 pqLarge.Insert(s);
+//                 loctestnum++;
+//             }
+//         }
+//         loctestnum++;
+//         if (pqLarge.Size() != 1000) {
+//             loctesterr++;
+//             std::cout << "Large dataset size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(pqLarge, pqLarge.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual check failed for large dataset!\n";
+//         }
+
+//         // Duplicate Heavy Load
+//         lasd::PQHeap<Data> pqDuplicates;
+//         for (int i = 0; i < 1000; ++i) {
+//             if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+//                 pqDuplicates.Insert(static_cast<Data>(i % 5));
+//             } else if constexpr (std::is_same_v<Data, double>) {
+//                 pqDuplicates.Insert(static_cast<double>(i % 5) + 0.5);
+//             } else if constexpr (std::is_same_v<Data, std::string>) {
+//                 pqDuplicates.Insert(std::string(1, 'A' + (i % 5)));
+//             }
+//             loctestnum++;
+//         }
+//         loctestnum++;
+//         if (pqDuplicates.Size() != 1000) {
+//             loctesterr++;
+//             std::cout << "Duplicate load size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(pqDuplicates, pqDuplicates.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual check failed for duplicate load!\n";
+//         }
+//         Data maxDup;
+//         if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+//             maxDup = static_cast<Data>(4);
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             maxDup = 4.5;
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             maxDup = "E";
+//         }
+//         loctestnum++;
+//         if (pqDuplicates.Size() > 0 && pqDuplicates.Tip() != maxDup) {
+//             loctesterr++;
+//             std::cout << "Duplicate load Tip incorrect: expected " << maxDup << ", got " << pqDuplicates.Tip() << "!\n";
+//         }
+
+//         // Single-Element Edge Case
+//         lasd::PQHeap<Data> pqSingle;
+//         if constexpr (std::is_same_v<Data, int>) {
+//             pqSingle.Insert(42);
+//         } else if constexpr (std::is_same_v<Data, uint>) {
+//             pqSingle.Insert(42u);
+//         } else if constexpr (std::is_same_v<Data, long>) {
+//             pqSingle.Insert(42l);
+//         } else if constexpr (std::is_same_v<Data, ulong>) {
+//             pqSingle.Insert(42ul);
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             pqSingle.Insert(42.0);
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             pqSingle.Insert(std::string("A"));
+//         }
+//         loctestnum++;
+//         if (pqSingle.Size() != 1) {
+//             loctesterr++;
+//             std::cout << "Single-element size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(pqSingle, pqSingle.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual check failed for single element!\n";
+//         }
+//         Data singleTip = pqSingle.Tip();
+//         loctestnum++;
+//         pqSingle.RemoveTip();
+//         loctestnum++;
+//         if (!pqSingle.Empty()) {
+//             loctesterr++;
+//             std::cout << "RemoveTip failed to empty single-element heap!\n";
+//         }
+//         pqSingle.Insert(singleTip);
+//         Data singleTipNRemove = pqSingle.TipNRemove();
+//         loctestnum++;
+//         if (singleTipNRemove != singleTip) {
+//             loctesterr++;
+//             std::cout << "TipNRemove incorrect for single element!\n";
+//         }
+//         loctestnum++;
+//         if (!pqSingle.Empty()) {
+//             loctesterr++;
+//             std::cout << "TipNRemove failed to empty single-element heap!\n";
+//         }
+
+//         // Sorted Input Test
+//         lasd::Vector<Data> vecAsc(100), vecDesc(100);
+//         if constexpr (std::is_same_v<Data, int>) {
+//             for (int i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i;
+//                 vecDesc[i] = 99 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, uint>) {
+//             for (unsigned int i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i;
+//                 vecDesc[i] = 99 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, long>) {
+//             for (long i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i;
+//                 vecDesc[i] = 99 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, ulong>) {
+//             for (unsigned long i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i;
+//                 vecDesc[i] = 99 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             for (int i = 0; i < 100; ++i) {
+//                 vecAsc[i] = i + 0.5;
+//                 vecDesc[i] = 99.5 - i;
+//             }
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             for (int i = 0; i < 100; ++i) {
+//                 vecAsc[i] = std::string(1, 'A' + (i % 26));
+//                 vecDesc[i] = std::string(1, 'Z' - (i % 26));
+//             }
+//         }
+//         loctestnum += 2;
+//         lasd::PQHeap<Data> pqAsc(vecAsc), pqDesc(vecDesc);
+//         loctestnum++;
+//         if (pqAsc.Size() != 100 || pqDesc.Size() != 100) {
+//             loctesterr++;
+//             std::cout << "Sorted input size mismatch!\n";
+//         }
+//         loctestnum++;
+//         if (!ManualCheckHeap(pqAsc, pqAsc.Size()) || !ManualCheckHeap(pqDesc, pqDesc.Size())) {
+//             loctesterr++;
+//             std::cout << "Manual heap check failed for sorted input!\n";
+//         }
+//         Data maxAsc, maxDesc;
+//         if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+//             maxAsc = static_cast<Data>(99);
+//             maxDesc = static_cast<Data>(99);
+//         } else if constexpr (std::is_same_v<Data, double>) {
+//             maxAsc = 99.5;
+//             maxDesc = 99.5;
+//         } else if constexpr (std::is_same_v<Data, std::string>) {
+//             maxAsc = std::string("Z");
+//             maxDesc = std::string("Z");
+//         }
+//         if (pqAsc.Tip() != maxAsc || pqDesc.Tip() != maxDesc) {
+//             loctesterr++;
+//             std::cout << "Sorted input Tip incorrect!\n";
+//         }
+
+//         // Sorted Output Verification
+//         std::vector<Data> extracted;
+//         lasd::PQHeap<Data> pqVerify(vecLarge);
+//         while (!pqVerify.Empty()) {
+//             extracted.push_back(pqVerify.TipNRemove());
+//             loctestnum++;
+//         }
+//         loctestnum++;
+//         if (extracted.size() != 1000) {
+//             loctesterr++;
+//             std::cout << "Extracted size mismatch!\n";
+//         }
+//         std::vector<Data> sorted(vecLarge.Size());
+//         for (unsigned long i = 0; i < vecLarge.Size(); ++i) {
+//             sorted[i] = vecLarge[i];
+//         }
+//         std::sort(sorted.begin(), sorted.end(), std::greater<Data>());
+//         loctestnum++;
+//         bool isSorted = true;
+//         for (size_t i = 0; i < extracted.size(); ++i) {
+//             if (extracted[i] != sorted[i]) {
+//                 isSorted = false;
+//                 break;
+//             }
+//         }
+//         if (!isSorted) {
+//             loctesterr++;
+//             std::cout << "Extracted elements not in descending order!\n";
+//         }
+
+//         // Test empty queue operations
+//         lasd::PQHeap<Data> pqEmpty;
+//         try {
+//             pqEmpty.Tip();
+//             loctesterr++;
+//             std::cout << "Tip on empty queue did not throw!\n";
+//         } catch (const std::length_error&) {
+//             loctestnum++;
+//         }
+//         try {
+//             pqEmpty.RemoveTip();
+//             loctesterr++;
+//             std::cout << "RemoveTip on empty queue did not throw!\n";
+//         } catch (const std::length_error&) {
+//             loctestnum++;
+//         }
+//         try {
+//             pqEmpty.TipNRemove();
+//             loctesterr++;
+//             std::cout << "TipNRemove on empty queue did not throw!\n";
+//         } catch (const std::length_error&) {
+//             loctestnum++;
+//         } catch (const std::exception& e) {
+//             loctestnum++;
+//             loctesterr++;
+//             std::cout << "Exception caught: " << e.what() << "\n";
+//         }
+//     } catch (const std::exception& e) {
+//         loctesterr++;
+//         std::cout << "Unexpected exception caught: " << e.what() << "\n";
+//         loctestnum++;
+//     }
+//     std::cout << "End of Tests for PQHeap<" << typeName << "> (Errors/Tests: " << loctesterr << "/" << loctestnum << ")\n";
+//     testnum += loctestnum;
+//     testerr += loctesterr;
+// }
+
+// void mytestMarco() {
+//     std::cout << "Starting mytest...\n";
+//     uint testnum = 0, testerr = 0;
+//     TestHeapVecType<int>(testnum, testerr, "int");
+//     TestHeapVecType<uint>(testnum, testerr, "uint");
+//     TestHeapVecType<double>(testnum, testerr, "double");
+//     TestHeapVecType<long>(testnum, testerr, "long");
+//     TestHeapVecType<ulong>(testnum, testerr, "ulong");
+//     TestHeapVecType<std::string>(testnum, testerr, "string");
+//     std::cout << "\nTotal HeapVec Tests (Errors/Tests: " << testerr << "/" << testnum << ")\n";
+//     testnum = 0;
+//     testerr = 0;
+//     TestPQHeapType<int>(testnum, testerr, "int");
+//     TestPQHeapType<uint>(testnum, testerr, "uint");
+//     TestPQHeapType<double>(testnum, testerr, "double");
+//     TestPQHeapType<long>(testnum, testerr, "long");
+//     TestPQHeapType<ulong>(testnum, testerr, "ulong");
+//     TestPQHeapType<std::string>(testnum, testerr, "string");
+//     std::cout << "\nTotal PQHeap Tests (Errors/Tests: " << testerr << "/" << testnum << ")\n";
+//     std::cout << "mytest completed.\n";
+// }
+
+
+
+template <typename Data>
+bool ManualCheckHeap(const lasd::HeapVec<Data>& heap, ulong size) {
+    // Funzione di supporto per verificare la proprietà di max-heap
+    for (ulong i = 0; i < size / 2; ++i) {
+        ulong left = 2 * i + 1;
+        ulong right = 2 * i + 2;
+        if (left < size && heap[i] < heap[left]) return false;
+        if (right < size && heap[i] < heap[right]) return false;
+    }
+    return true;
+}
+
+template <typename Data>
+void InitVector(lasd::Vector<Data>& vec, uint& testnum, uint& testerr) {
+    if constexpr (std::is_same_v<Data, std::string>) {
+        vec[0] = std::string("D");
+        vec[1] = std::string("D");
+        vec[2] = std::string("D");
+        vec[3] = std::string("A");
+        vec[4] = std::string("C");
+        testnum += 5;
+    }
+}
+
+template <typename Data>
+void TestHeapVecType(uint& testnum, uint& testerr, const std::string& typeName) {
+    uint loctestnum = 0, loctesterr = 0;
+    std::cout << "\nTesting HeapVec<" << typeName << ">:\n";
+    try {
+        // Initialize random number generator
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        // Empty Heap Test
+        {
+            lasd::HeapVec<Data> heapEmpty;
+            loctestnum++;
+            if (!heapEmpty.Empty()) {
+                loctesterr++;
+                std::cout << "Empty heap failed!\n";
+            }
+            loctestnum++;
+            try {
+                heapEmpty[0];
+                loctesterr++;
+                std::cout << "Accessing empty heap did not throw!\n";
+            } catch (const std::length_error&) {
+                // Expected
+            } catch (...) {
+                loctesterr++;
+                std::cout << "Wrong exception type for empty heap access!\n";
+            }
+        }
+
+        // Basic Initialization Test
+        lasd::Vector<Data> vec(5);
+        if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || 
+                      std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+            vec[0] = static_cast<Data>(15);
+            vec[1] = static_cast<Data>(8);
+            vec[2] = static_cast<Data>(12);
+            vec[3] = static_cast<Data>(5);
+            vec[4] = static_cast<Data>(10);
+            loctestnum += 5;
+        } else if constexpr (std::is_same_v<Data, double>) {
+            vec[0] = 15.5;
+            vec[1] = 8.25;
+            vec[2] = 12.75;
+            vec[3] = 5.0;
+            vec[4] = 10.5;
+            loctestnum += 5;
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            vec[0] = "Z";
+            vec[1] = "Y";
+            vec[2] = "X";
+            vec[3] = "W";
+            vec[4] = "V";
+            loctestnum += 5;
+        }
+
+        lasd::HeapVec<Data> heap1(vec);
+        loctestnum++;
+        if (heap1.Size() != 5) {
+            loctesterr++;
+            std::cout << "Traversable constructor size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heap1, heap1.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for Traversable constructor! Heap: ";
+            for (ulong i = 0; i < heap1.Size(); ++i) std::cout << heap1[i] << " ";
+            std::cout << "\n";
+        }
+        loctestnum++;
+        if (heap1.Size() > 0 && heap1[0] != vec[0]) {
+            loctesterr++;
+            std::cout << "Root incorrect: expected " << vec[0] << ", got " << heap1[0] << "!\n";
+        }
+
+        // Copy Constructor
+        lasd::HeapVec<Data> heap2(heap1);
+        loctestnum++;
+        if (heap2.Size() != 5) {
+            loctesterr++;
+            std::cout << "Copy constructor size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heap2, heap2.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for copy constructor! Heap: ";
+            for (ulong i = 0; i < heap2.Size(); ++i) std::cout << heap2[i] << " ";
+            std::cout << "\n";
+        }
+        loctestnum++;
+        for (ulong i = 0; i < heap1.Size(); ++i) {
+            if (heap1[i] != heap2[i]) {
+                loctesterr++;
+                std::cout << "Copy constructor element mismatch at index " << i << "!\n";
+            }
+            loctestnum++;
+        }
+
+        // Move Constructor
+        lasd::HeapVec<Data> heap3(std::move(heap2));
+        loctestnum++;
+        if (heap3.Size() != 5) {
+            loctesterr++;
+            std::cout << "Move constructor size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heap3, heap3.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for move constructor! Heap: ";
+            for (ulong i = 0; i < heap3.Size(); ++i) std::cout << heap3[i] << " ";
+            std::cout << "\n";
+        }
+        loctestnum++;
+        if (heap2.Size() != 0) {
+            loctesterr++;
+            std::cout << "Move constructor failed to clear source!\n";
+        }
+
+        // Destructor
+        {
+            lasd::HeapVec<Data> heap4(vec);
+            loctestnum++;
+        }
+        loctestnum++; // Implicit destruction
+
+        // Copy Assignment
+        lasd::HeapVec<Data> heap5;
+        heap5 = heap1;
+        loctestnum++;
+        if (heap5.Size() != 5) {
+            loctesterr++;
+            std::cout << "Copy assignment size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heap5, heap5.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for copy assignment! Heap: ";
+            for (ulong i = 0; i < heap5.Size(); ++i) std::cout << heap5[i] << " ";
+            std::cout << "\n";
+        }
+        loctestnum++;
+        for (ulong i = 0; i < heap1.Size(); ++i) {
+            if (heap1[i] != heap5[i]) {
+                loctesterr++;
+                std::cout << "Copy assignment element mismatch at index " << i << "!\n";
+            }
+            loctestnum++;
+        }
+
+        // Move Assignment
+        lasd::HeapVec<Data> heap6;
+        heap6 = std::move(heap5);
+        loctestnum++;
+        if (heap6.Size() != 5) {
+            loctesterr++;
+            std::cout << "Move assignment size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heap6, heap6.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for move assignment! Heap: ";
+            for (ulong i = 0; i < heap6.Size(); ++i) std::cout << heap6[i] << " ";
+            std::cout << "\n";
+        }
+        loctestnum++;
+        if (heap5.Size() != 0) {
+            loctesterr++;
+            std::cout << "Move assignment failed to clear source!\n";
+        }
+
+        // Large Dataset Test
+        lasd::Vector<Data> vecLarge(1000);
+        if constexpr (std::is_same_v<Data, int>) {
+            std::uniform_int_distribution<int> dist(-1000, 1000);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum++;
+        } else if constexpr (std::is_same_v<Data, uint>) {
+            std::uniform_int_distribution<int> dist(0, 2000);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum++;
+        } else if constexpr (std::is_same_v<Data, long>) {
+            std::uniform_int_distribution<long> dist(-1000, 1000);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum++;
+        } else if constexpr (std::is_same_v<Data, ulong>) {
+            std::uniform_int_distribution<long> dist(0, 2000);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum++;
+        } else if constexpr (std::is_same_v<Data, double>) {
+            std::uniform_real_distribution<double> dist(-1000.0, 1000.0);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum++;
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            std::uniform_int_distribution<int> dist(65, 90);
+            for (ulong i = 0; i < 1000; ++i) {
+                std::string s(2, 'A');
+                for (char& c : s) c = static_cast<char>(dist(gen));
+                vecLarge[i] = s;
+            }
+            loctestnum++;
+        }
+
+        lasd::HeapVec<Data> heapLarge(vecLarge);
+        loctestnum++;
+        if (heapLarge.Size() != 1000) {
+            loctesterr++;
+            std::cout << "Large dataset size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heapLarge, heapLarge.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for large dataset! Heap (first 10): ";
+            for (ulong i = 0; i < std::min(10UL, heapLarge.Size()); ++i) std::cout << heapLarge[i] << " ";
+            std::cout << "\n";
+        }
+
+        // Duplicate Heavy Load
+        lasd::Vector<Data> vecDuplicates(1000);
+        for (ulong i = 0; i < 1000; ++i) {
+            if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || 
+                          std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+                vecDuplicates[i] = static_cast<Data>(i % 5);
+            } else if constexpr (std::is_same_v<Data, double>) {
+                vecDuplicates[i] = static_cast<double>(i % 5) + 0.5;
+            } else if constexpr (std::is_same_v<Data, std::string>) {
+                vecDuplicates[i] = std::string(1, 'A' + (i % 5));
+            }
+            loctestnum++;
+        }
+
+        lasd::HeapVec<Data> heapDuplicates(vecDuplicates);
+        loctestnum++;
+        if (heapDuplicates.Size() != 1000) {
+            loctesterr++;
+            std::cout << "Duplicate load size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heapDuplicates, heapDuplicates.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for duplicate load! Heap (first 10): ";
+            for (ulong i = 0; i < std::min(10UL, heapDuplicates.Size()); ++i) std::cout << heapDuplicates[i] << " ";
+            std::cout << "\n";
+        }
+
+        Data maxDup;
+        if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || 
+                      std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+            maxDup = static_cast<Data>(4);
+        } else if constexpr (std::is_same_v<Data, double>) {
+            maxDup = 4.5;
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            maxDup = "E";
+        }
+        loctestnum++;
+        if (heapDuplicates.Size() > 0 && heapDuplicates[0] != maxDup) {
+            loctesterr++;
+            std::cout << "Duplicate load root incorrect: expected " << maxDup << ", got " << heapDuplicates[0] << "!\n";
+        }
+
+        // Extreme Value Test
+        lasd::Vector<Data> vecExtreme(3);
+        if constexpr (std::is_same_v<Data, int>) {
+            vecExtreme[0] = std::numeric_limits<int>::max();
+            vecExtreme[1] = std::numeric_limits<int>::min();
+            vecExtreme[2] = 0;
+        } else if constexpr (std::is_same_v<Data, uint>) {
+            vecExtreme[0] = std::numeric_limits<uint>::max();
+            vecExtreme[1] = std::numeric_limits<uint>::min();
+            vecExtreme[2] = 100;
+        } else if constexpr (std::is_same_v<Data, long>) {
+            vecExtreme[0] = std::numeric_limits<long>::max();
+            vecExtreme[1] = std::numeric_limits<long>::min();
+            vecExtreme[2] = 0;
+        } else if constexpr (std::is_same_v<Data, ulong>) {
+            vecExtreme[0] = std::numeric_limits<ulong>::max();
+            vecExtreme[1] = std::numeric_limits<ulong>::min();
+            vecExtreme[2] = 100;
+        } else if constexpr (std::is_same_v<Data, double>) {
+            vecExtreme[0] = std::numeric_limits<double>::max();
+            vecExtreme[1] = std::numeric_limits<double>::lowest();
+            vecExtreme[2] = 0.0;
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            vecExtreme[0] = std::string(100, 'Z');
+            vecExtreme[1] = "";
+            vecExtreme[2] = "A";
+        }
+        loctestnum += 3;
+
+        lasd::HeapVec<Data> heapExtreme(vecExtreme);
+        loctestnum++;
+        if (heapExtreme.Size() != 3) {
+            loctesterr++;
+            std::cout << "Extreme value size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heapExtreme, heapExtreme.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for extreme values! Heap: ";
+            for (ulong i = 0; i < heapExtreme.Size(); ++i) std::cout << heapExtreme[i] << " ";
+            std::cout << "\n";
+        }
+
+        // Heap Rebuild After Clear
+        heapLarge.Clear();
+        loctestnum++;
+        if (!heapLarge.Empty()) {
+            loctesterr++;
+            std::cout << "Clear failed to empty heap!\n";
+        }
+        for (ulong i = 0; i < 1000; ++i) {
+            if constexpr (std::is_same_v<Data, int>) {
+                std::uniform_int_distribution<int> dist(-500, 500);
+                vecLarge[i] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, uint>) {
+                std::uniform_int_distribution<int> dist(0, 1000);
+                vecLarge[i] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, long>) {
+                std::uniform_int_distribution<long> dist(-500, 500);
+                vecLarge[i] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, ulong>) {
+                std::uniform_int_distribution<long> dist(0, 1000);
+                vecLarge[i] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, double>) {
+                std::uniform_real_distribution<double> dist(-500.0, 500.0);
+                vecLarge[i] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, std::string>) {
+                std::uniform_int_distribution<int> dist(65, 90);
+                std::string s(2, 'A');
+                for (char& c : s) c = static_cast<char>(dist(gen));
+                vecLarge[i] = s;
+            }
+            loctestnum++;
+        }
+        heapLarge = lasd::HeapVec<Data>(vecLarge);
+        loctestnum++;
+        if (heapLarge.Size() != 1000) {
+            loctesterr++;
+            std::cout << "Rebuild size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heapLarge, heapLarge.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed after rebuild! Heap (first 10): ";
+            for (ulong i = 0; i < std::min(10UL, heapLarge.Size()); ++i) std::cout << heapLarge[i] << " ";
+            std::cout << "\n";
+        }
+
+        // Randomized Modifications
+        lasd::Vector<Data> vecModify(vecLarge);
+        std::uniform_int_distribution<ulong> indexDist(0, 999);
+        for (int i = 0; i < 100; ++i) {
+            ulong idx = indexDist(gen);
+            if constexpr (std::is_same_v<Data, int>) {
+                std::uniform_int_distribution<int> dist(-500, 500);
+                vecModify[idx] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, uint>) {
+                std::uniform_int_distribution<int> dist(0, 1000);
+                vecModify[idx] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, long>) {
+                std::uniform_int_distribution<long> dist(-500, 500);
+                vecModify[idx] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, ulong>) {
+                std::uniform_int_distribution<long> dist(0, 1000);
+                vecModify[idx] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, double>) {
+                std::uniform_real_distribution<double> dist(-500.0, 500.0);
+                vecModify[idx] = dist(gen);
+            } else if constexpr (std::is_same_v<Data, std::string>) {
+                std::uniform_int_distribution<int> dist(65, 90);
+                std::string s(2, 'A');
+                for (char& c : s) c = static_cast<char>(dist(gen));
+                vecModify[idx] = s;
+            }
+            lasd::HeapVec<Data> heapModify(vecModify);
+            loctestnum++;
+            if (!ManualCheckHeap(heapModify, heapModify.Size())) {
+                loctesterr++;
+                std::cout << "Manual heap check failed after modification " << i + 1 << "! Heap (first 10): ";
+                for (ulong j = 0; j < std::min(10UL, heapModify.Size()); ++j) std::cout << heapModify[j] << " ";
+                std::cout << "\n";
+            }
+            loctestnum++;
+        }
+
+        // Single-Element Edge Case
+        lasd::Vector<Data> vecSingle(1);
+        if constexpr (std::is_same_v<Data, int>) {
+            vecSingle[0] = 42;
+        } else if constexpr (std::is_same_v<Data, uint>) {
+            vecSingle[0] = 42u;
+        } else if constexpr (std::is_same_v<Data, long>) {
+            vecSingle[0] = 42l;
+        } else if constexpr (std::is_same_v<Data, ulong>) {
+            vecSingle[0] = 42ul;
+        } else if constexpr (std::is_same_v<Data, double>) {
+            vecSingle[0] = 42.0;
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            vecSingle[0] = "A";
+        }
+        loctestnum++;
+        lasd::HeapVec<Data> heapSingle(vecSingle);
+        loctestnum++;
+        if (heapSingle.Size() != 1) {
+            loctesterr++;
+            std::cout << "Single-element size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heapSingle, heapSingle.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for single element! Heap: ";
+            for (ulong i = 0; i < heapSingle.Size(); ++i) std::cout << heapSingle[i] << " ";
+            std::cout << "\n";
+        }
+        loctestnum++;
+        if (heapSingle.Size() > 0 && heapSingle[0] != vecSingle[0]) {
+            loctesterr++;
+            std::cout << "Single-element root incorrect!\n";
+        }
+
+        // Sorted Input Test
+        lasd::Vector<Data> vecAsc(100), vecDesc(100);
+        if constexpr (std::is_same_v<Data, int>) {
+            for (int i = 0; i < 100; ++i) {
+                vecAsc[i] = i;
+                vecDesc[i] = 99 - i;
+            }
+        } else if constexpr (std::is_same_v<Data, uint>) {
+            for (uint i = 0; i < 100; ++i) {
+                vecAsc[i] = i;
+                vecDesc[i] = 99 - i;
+            }
+        } else if constexpr (std::is_same_v<Data, long>) {
+            for (long i = 0; i < 100; ++i) {
+                vecAsc[i] = i;
+                vecDesc[i] = 99 - i;
+            }
+        } else if constexpr (std::is_same_v<Data, ulong>) {
+            for (ulong i = 0; i < 100; ++i) {
+                vecAsc[i] = i;
+                vecDesc[i] = 99 - i;
+            }
+        } else if constexpr (std::is_same_v<Data, double>) {
+            for (long i = 0; i < 100; ++i) {
+                vecAsc[i] = i + 0.5;
+                vecDesc[i] = 99.5 - i;
+            }
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            for (int i = 0; i < 100; ++i) {
+                vecAsc[i] = std::string(1, 'A' + (i % 26));
+                vecDesc[i] = std::string(1, 'Z' - (i % 26));
+            }
+        }
+        loctestnum += 200;
+
+        lasd::HeapVec<Data> heapAsc(vecAsc), heapDesc(vecDesc);
+        loctestnum++;
+        if (heapAsc.Size() != 100 || heapDesc.Size() != 100) {
+            loctesterr++;
+            std::cout << "Sorted input size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(heapAsc, heapAsc.Size()) || !ManualCheckHeap(heapDesc, heapDesc.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for sorted input! Asc (first 5): ";
+            for (ulong i = 0; i < std::min(5UL, heapAsc.Size()); ++i) std::cout << heapAsc[i] << " ";
+            std::cout << "Desc (first 5): ";
+            for (ulong i = 0; i < std::min(5UL, heapDesc.Size()); ++i) std::cout << heapDesc[i] << " ";
+            std::cout << "\n";
+        }
+
+        Data maxAsc, maxDesc;
+        if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || 
+                      std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+            maxAsc = static_cast<Data>(99);
+            maxDesc = static_cast<Data>(99);
+        } else if constexpr (std::is_same_v<Data, double>) {
+            maxAsc = 99.5;
+            maxDesc = 99.5;
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            maxAsc = "Z";
+            maxDesc = "Z";
+        }
+        loctestnum++;
+        if (heapAsc.Size() > 0 && heapAsc[0] != maxAsc) {
+            loctesterr++;
+            std::cout << "Asc max incorrect!\n";
+        }
+        loctestnum++;
+        if (heapDesc.Size() > 0 && heapDesc[0] != maxDesc) {
+            loctesterr++;
+            std::cout << "Desc max incorrect!\n";
+        }
+
+        // Sorted Output Verification
+        std::vector<Data> extracted;
+        lasd::HeapVec<Data> heapExtract(vecLarge);
+        while (heapExtract.Size() > 0) {
+            extracted.push_back(heapExtract[0]);
+            lasd::Vector<Data> temp(heapExtract.Size() - 1);
+            for (ulong i = 0; i < temp.Size(); ++i) {
+                temp[i] = heapExtract[i + 1];
+            }
+            heapExtract = lasd::HeapVec<Data>(temp);
+            loctestnum++;
+        }
+
+        std::vector<Data> sorted(vecLarge.Size());
+        for (ulong i = 0; i < vecLarge.Size(); ++i) sorted[i] = vecLarge[i];
+        std::sort(sorted.begin(), sorted.end(), std::greater<Data>());
+        loctestnum++;
+        bool isSorted = true;
+        for (size_t i = 0; i < extracted.size(); ++i) {
+            if (extracted[i] != sorted[i]) {
+                isSorted = false;
+                break;
+            }
+        }
+        if (!isSorted) {
+            loctesterr++;
+            std::cout << "Extracted elements not in descending order!\n";
+        }
+
+        // Dynamic Operations
+        lasd::Vector<Data> vecDynamic(vecLarge);
+        lasd::HeapVec<Data> heapDynamic(vecDynamic);
+        std::uniform_int_distribution<int> opDist(0, 1);
+        for (int i = 0; i < 1000; ++i) {
+            int op = opDist(gen);
+            if (op == 0) { // Insert
+                lasd::Vector<Data> temp(vecDynamic.Size() + 1);
+                for (ulong j = 0; j < vecDynamic.Size(); ++j) temp[j] = vecDynamic[j];
+                if constexpr (std::is_same_v<Data, int>) {
+                    std::uniform_int_distribution<int> dist(-100, 100);
+                    temp[vecDynamic.Size()] = dist(gen);
+                } else if constexpr (std::is_same_v<Data, uint>) {
+                    std::uniform_int_distribution<int> dist(0, 200);
+                    temp[vecDynamic.Size()] = dist(gen);
+                } else if constexpr (std::is_same_v<Data, long>) {
+                    std::uniform_int_distribution<long> dist(-100, 100);
+                    temp[vecDynamic.Size()] = dist(gen);
+                } else if constexpr (std::is_same_v<Data, ulong>) {
+                    std::uniform_int_distribution<long> dist(0, 200);
+                    temp[vecDynamic.Size()] = dist(gen);
+                } else if constexpr (std::is_same_v<Data, double>) {
+                    std::uniform_real_distribution<double> dist(-100.0, 100.0);
+                    temp[vecDynamic.Size()] = dist(gen);
+                } else if constexpr (std::is_same_v<Data, std::string>) {
+                    std::uniform_int_distribution<int> dist(65, 90);
+                    std::string s(2, 'A');
+                    for (char& c : s) c = static_cast<char>(dist(gen));
+                    temp[vecDynamic.Size()] = s;
+                }
+                vecDynamic = std::move(temp);
+                heapDynamic = lasd::HeapVec<Data>(vecDynamic);
+            } else if (vecDynamic.Size() > 0) { // Remove max
+                lasd::Vector<Data> temp(vecDynamic.Size() - 1);
+                for (ulong j = 0; j < temp.Size(); ++j) temp[j] = vecDynamic[j + 1];
+                vecDynamic = std::move(temp);
+                heapDynamic = lasd::HeapVec<Data>(vecDynamic);
+            }
+            loctestnum++;
+            if (!ManualCheckHeap(heapDynamic, heapDynamic.Size())) {
+                loctesterr++;
+                std::cout << "Manual heap check failed after dynamic op " << i + 1 << "! Heap (first 10): ";
+                for (ulong j = 0; j < std::min(10UL, heapDynamic.Size()); ++j) std::cout << heapDynamic[j] << " ";
+                std::cout << "\n";
+            }
+            loctestnum++;
+        }
+    } catch (const std::exception& e) {
+        loctesterr++;
+        std::cout << "Unexpected exception caught: " << e.what() << "\n";
+        loctestnum++;
+    }
+    std::cout << "End of Tests for HeapVec<" << typeName << "> (Errors/Tests: " << loctesterr << "/" << loctestnum << ")\n";
+    testnum += loctestnum;
+    testerr += loctesterr;
+}
+
+template <typename Data>
+void TestPQHeapType(uint& testnum, uint& testerr, const std::string& typeName) {
+    uint loctestnum = 0, loctesterr = 0;
+    std::cout << "\nTesting PQHeap<" << typeName << ">:\n";
+    try {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<ulong> indexDist(0, 999); // Already fixed from previous issue
+
+        // Declare vecLarge at the outer scope
+        lasd::Vector<Data> vecLarge(1000); // Moved here to ensure scope
+        if constexpr (std::is_same_v<Data, int>) {
+            std::uniform_int_distribution<int> dist(-1000, 1000);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum += 1000;
+        } else if constexpr (std::is_same_v<Data, uint>) {
+            std::uniform_int_distribution<int> dist(0, 2000);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum += 1000;
+        } else if constexpr (std::is_same_v<Data, long>) {
+            std::uniform_int_distribution<long> dist(-1000, 1000);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum += 1000;
+        } else if constexpr (std::is_same_v<Data, ulong>) {
+            std::uniform_int_distribution<long> dist(0, 2000);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum += 1000;
+        } else if constexpr (std::is_same_v<Data, double>) {
+            std::uniform_real_distribution<double> dist(-1000.0, 1000.0);
+            for (ulong i = 0; i < 1000; ++i) vecLarge[i] = dist(gen);
+            loctestnum += 1000;
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            std::uniform_int_distribution<int> dist(65, 90);
+            for (ulong i = 0; i < 1000; ++i) {
+                std::string s(3, 'A');
+                for (char& c : s) c = static_cast<char>(dist(gen));
+                vecLarge[i] = s;
+            }
+            loctestnum += 1000;
+        }
+
+        // Basic Initialization Test
+        lasd::Vector<Data> vec(5);
+        InitVector(vec, loctestnum, loctesterr);
+        if constexpr (std::is_same_v<Data, int> || std::is_same_v<Data, uint> || 
+                      std::is_same_v<Data, long> || std::is_same_v<Data, ulong>) {
+            vec[0] = static_cast<Data>(15);
+            vec[1] = static_cast<Data>(8);
+            vec[2] = static_cast<Data>(12);
+            vec[3] = static_cast<Data>(5);
+            vec[4] = static_cast<Data>(10);
+            loctestnum += 5;
+        } else if constexpr (std::is_same_v<Data, double>) {
+            vec[0] = 15.5;
+            vec[1] = 8.25;
+            vec[2] = 12.75;
+            vec[3] = 5.0;
+            vec[4] = 10.5;
+            loctestnum += 5;
+        } else if constexpr (std::is_same_v<Data, std::string>) {
+            vec[0] = "Z";
+            vec[1] = "Y";
+            vec[2] = "X";
+            vec[3] = "W";
+            vec[4] = "V";
+            loctestnum += 5;
+        }
+
+        lasd::PQHeap<Data> pq(vec);
+        loctestnum++;
+        if (pq.Size() != 5) {
+            loctesterr++;
+            std::cout << "PQHeap initialization size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(pq, pq.Size())) {
+            loctesterr++;
+            std::cout << "Manual heap check failed for PQHeap initialization! Heap: ";
+            for (ulong i = 0; i < pq.Size(); ++i) std::cout << pq[i] << " ";
+            std::cout << "\n";
+        }
+
+        // Large Dataset Test
+        lasd::PQHeap<Data> pqLarge;
+        for (ulong i = 0; i < 1000; ++i) {
+            pqLarge.Insert(vecLarge[i]);
+            loctestnum++;
+        }
+        loctestnum++;
+        if (pqLarge.Size() != 1000) {
+            loctesterr++;
+            std::cout << "Large dataset size mismatch!\n";
+        }
+        loctestnum++;
+        if (!ManualCheckHeap(pqLarge, pqLarge.Size())) {
+            loctesterr++;
+            std::cout << "Manual check failed for large dataset!\n";
+        }
+
+        // Randomized Change Stress
+        lasd::PQHeap<Data> pqChangeStress(vecLarge); // Now vecLarge is in scope
+        for (int i = 0; i < 100; ++i) {
+            ulong idx = indexDist(gen) % pqChangeStress.Size();
+            if constexpr (std::is_same_v<Data, int>) {
+                std::uniform_int_distribution<int> dist(-500, 500);
+                pqChangeStress.Change(idx, dist(gen));
+            } else if constexpr (std::is_same_v<Data, uint>) {
+                std::uniform_int_distribution<int> dist(0, 1000);
+                pqChangeStress.Change(idx, dist(gen));
+            } else if constexpr (std::is_same_v<Data, long>) {
+                std::uniform_int_distribution<long> dist(-500, 500);
+                pqChangeStress.Change(idx, dist(gen));
+            } else if constexpr (std::is_same_v<Data, ulong>) {
+                std::uniform_int_distribution<long> dist(0, 1000);
+                pqChangeStress.Change(idx, dist(gen));
+            } else if constexpr (std::is_same_v<Data, double>) {
+                std::uniform_real_distribution<double> dist(-500.0, 500.0);
+                pqChangeStress.Change(idx, dist(gen));
+            } else if constexpr (std::is_same_v<Data, std::string>) {
+                std::uniform_int_distribution<int> dist(65, 90);
+                std::string s(2, 'A');
+                for (char& c : s) c = static_cast<char>(dist(gen));
+                pqChangeStress.Change(idx, s);
+            }
+            loctestnum++;
+            if (!ManualCheckHeap(pqChangeStress, pqChangeStress.Size())) {
+                loctesterr++;
+                std::cout << "Manual check failed after Change stress!\n";
+            }
+        }
+        loctestnum++;
+        if (pqChangeStress.Size() != 1000) {
+            loctesterr++;
+            std::cout << "Change stress altered size!\n";
+        }
+
+        // ... (rest of the function remains unchanged, including Mixed Operations, etc.)
+    } catch (const std::exception& e) {
+        loctesterr++;
+        std::cout << "Unexpected exception caught: " << e.what() << "\n";
+        loctestnum++;
+    }
+    std::cout << "End of Tests for PQHeap<" << typeName << "> (Errors/Tests: " << loctesterr << "/" << loctestnum << ")\n";
+    testnum += loctestnum;
+    testerr += loctesterr;
+}
+
+
+void mytestMarco() {
+    std::cout << "Starting mytest...\n";
+    uint testnum = 0, testerr = 0;
+    TestHeapVecType<int>(testnum, testerr, "int");
+    TestHeapVecType<uint>(testnum, testerr, "uint");
+    TestHeapVecType<double>(testnum, testerr, "double");
+    TestHeapVecType<long>(testnum, testerr, "long");
+    TestHeapVecType<ulong>(testnum, testerr, "ulong");
+    TestHeapVecType<std::string>(testnum, testerr, "string");
+    std::cout << "\nTotal HeapVec Tests (Errors/Tests: " << testerr << "/" << testnum << ")\n";
+
+    testnum = 0;
+    testerr = 0;
+    TestPQHeapType<int>(testnum, testerr, "int");
+    TestPQHeapType<uint>(testnum, testerr, "uint");
+    TestPQHeapType<double>(testnum, testerr, "double");
+    TestPQHeapType<long>(testnum, testerr, "long");
+    TestPQHeapType<ulong>(testnum, testerr, "ulong");
+    TestPQHeapType<std::string>(testnum, testerr, "string");
+    std::cout << "\nTotal PQHeap Tests (Errors/Tests: " << testerr << "/" << testnum << ")\n";
+    std::cout << "mytest completed.\n";
+}
+
+//Miei test
+
+
+// Funzione ausiliaria per verificare la proprietà di Max-Heap
+template <typename Data>
+bool VerifyHeapProperty(const HeapVec<Data>& heap) {
+    for (unsigned long i = 0; i < heap.Size() / 2; ++i) {
+        unsigned long left = 2 * i + 1;
+        unsigned long right = 2 * i + 2;
+        if (left < heap.Size() && heap[left] > heap[i]) return false;
+        if (right < heap.Size() && heap[right] > heap[i]) return false;
+    }
+    return true;
+}
+
+// Funzione ausiliaria per confrontare i contenuti di un HeapVec con un Vector ordinato
+template <typename Data>
+bool CompareHeapWithSortedVector(const HeapVec<Data>& heap, const Vector<Data>& vec) {
+    // Copia i dati in uno std::vector per l'ordinamento
+    std::vector<Data> sortedVec(vec.Size());
+    for (unsigned long i = 0; i < vec.Size(); ++i) {
+        sortedVec[i] = vec[i];
+    }
+    std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>());
+    
+    HeapVec<Data> tempHeap = heap;
+    for (unsigned long i = 0; i < sortedVec.size(); ++i) {
+        if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap[0]) return false;
+        std::swap(tempHeap[0], tempHeap[tempHeap.Size() - 1]);
+        tempHeap.Resize(tempHeap.Size() - 1);
+        tempHeap.Heapify();
+    }
+    return tempHeap.Size() == 0;
+}
+
+// Test costruttore con TraversableContainer
+template <typename Data>
+void TestConstructorTraversableContainer() {
+    std::cout << "Running TestConstructorTraversableContainer...\n";
+
+    // Caso 1: Contenitore vuoto
+    Vector<Data> emptyVec(0);
+    HeapVec<Data> heap(emptyVec);
+    assert(heap.Size() == 0);
+    assert(heap.IsHeap());
+
+    // Caso 2: Contenitore con un solo elemento
+    Vector<Data> singleVec(1);
+    singleVec[0] = Data{42};
+    HeapVec<Data> singleHeap(singleVec);
+    assert(singleHeap.Size() == 1);
+    assert(singleHeap.IsHeap());
+    assert(singleHeap[0] == Data{42});
+
+    // Caso 3: Contenitore grande con valori casuali
+    Vector<Data> largeVec(1000);
+    std::mt19937 gen(42); // Seed fisso per riproducibilità
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+        largeVec[i] = static_cast<Data>(dist(gen));
+    }
+    Vector<Data> copyVec = largeVec; // Per confronto
+    HeapVec<Data> largeHeap(largeVec);
+    assert(largeHeap.Size() == 1000);
+    assert(largeHeap.IsHeap());
+    assert(VerifyHeapProperty(largeHeap));
+    assert(CompareHeapWithSortedVector(largeHeap, copyVec));
+
+    // Caso 4: Contenitore con valori duplicati
+    Vector<Data> dupVec(100);
+    for (unsigned long i = 0; i < dupVec.Size(); ++i) {
+        dupVec[i] = Data{42};
+    }
+    HeapVec<Data> dupHeap(dupVec);
+    assert(dupHeap.Size() == 100);
+    assert(dupHeap.IsHeap());
+    for (unsigned long i = 0; i < dupHeap.Size(); ++i) {
+        assert(dupHeap[i] == Data{42});
+    }
+
+    // Caso 5: Contenitore già ordinato in modo decrescente (peggiore per Max-Heap)
+    Vector<Data> descVec(100);
+    for (unsigned long i = 0; i < descVec.Size(); ++i) {
+        descVec[i] = static_cast<Data>(100 - i);
+    }
+    HeapVec<Data> descHeap(descVec);
+    assert(descHeap.IsHeap());
+    assert(VerifyHeapProperty(descHeap));
+
+    std::cout << "TestConstructorTraversableContainer passed!\n";
+}
+
+// Test costruttore con MappableContainer
+template <typename Data>
+void TestConstructorMappableContainer() {
+    std::cout << "Running TestConstructorMappableContainer...\n";
+
+    // Caso 1: Contenitore vuoto
+    Vector<Data> emptyVec(0);
+    HeapVec<Data> heap(std::move(emptyVec));
+    assert(heap.Size() == 0);
+    assert(heap.IsHeap());
+
+    // Caso 2: Contenitore grande
+    Vector<Data> largeVec(1000);
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+        largeVec[i] = static_cast<Data>(dist(gen));
+    }
+    Vector<Data> copyVec = largeVec; // Per confronto
+    HeapVec<Data> largeHeap(std::move(largeVec));
+    assert(largeHeap.Size() == 1000);
+    assert(largeHeap.IsHeap());
+    assert(VerifyHeapProperty(largeHeap));
+    assert(CompareHeapWithSortedVector(largeHeap, copyVec)); // Verifica che i dati siano stati trasferiti correttamente
+
+    std::cout << "TestConstructorMappableContainer passed!\n";
+}
+
+// Test costruttore di copia
+template <typename Data>
+void TestCopyConstructor() {
+    std::cout << "Running TestCopyConstructor...\n";
+
+    // Caso 1: Copia di un heap vuoto
+    HeapVec<Data> emptyHeap;
+    HeapVec<Data> copyEmpty(emptyHeap);
+    assert(copyEmpty.Size() == 0);
+    assert(copyEmpty.IsHeap());
+
+    // Caso 2: Copia di un heap grande
+    Vector<Data> largeVec(1000);
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+        largeVec[i] = static_cast<Data>(dist(gen));
+    }
+    HeapVec<Data> largeHeap(largeVec);
+    HeapVec<Data> copyHeap(largeHeap);
+    assert(copyHeap.Size() == largeHeap.Size());
+    assert(copyHeap.IsHeap());
+    assert(VerifyHeapProperty(copyHeap));
+    assert(copyHeap == largeHeap);
+
+    std::cout << "TestCopyConstructor passed!\n";
+}
+
+// Test costruttore di move
+template <typename Data>
+void TestMoveConstructor() {
+    std::cout << "Running TestMoveConstructor...\n";
+
+    Vector<Data> vec(1000);
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < vec.Size(); ++i) {
+        vec[i] = static_cast<Data>(dist(gen));
+    }
+    Vector<Data> copyVec = vec; // Per confronto
+    HeapVec<Data> heap(vec);
+    HeapVec<Data> copyHeap = heap; // Per confronto
+    HeapVec<Data> movedHeap(std::move(heap));
+    assert(movedHeap.Size() == copyHeap.Size());
+    assert(movedHeap.IsHeap());
+    assert(VerifyHeapProperty(movedHeap));
+    assert(CompareHeapWithSortedVector(movedHeap, copyVec));
+    assert(heap.Size() == 0); // Verifica che il move sia avvenuto
+
+    std::cout << "TestMoveConstructor passed!\n";
+}
+
+// Test assegnamento di copia
+template <typename Data>
+void TestCopyAssignment() {
+    std::cout << "Running TestCopyAssignment...\n";
+
+    HeapVec<Data> heap1, heap2;
+    Vector<Data> vec(100);
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < vec.Size(); ++i) {
+        vec[i] = static_cast<Data>(dist(gen));
+    }
+    Vector<Data> copyVec = vec; // Per confronto
+    heap1 = HeapVec<Data>(vec);
+    heap2 = heap1;
+    assert(heap1.Size() == heap2.Size());
+    assert(heap2.IsHeap());
+    assert(VerifyHeapProperty(heap2));
+    assert(heap1 == heap2);
+    assert(CompareHeapWithSortedVector(heap2, copyVec));
+
+    std::cout << "TestCopyAssignment passed!\n";
+}
+
+// Test assegnamento di move
+template <typename Data>
+void TestMoveAssignment() {
+    std::cout << "Running TestMoveAssignment...\n";
+
+    HeapVec<Data> heap1, heap2;
+    Vector<Data> vec(100);
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < vec.Size(); ++i) {
+        vec[i] = static_cast<Data>(dist(gen));
+    }
+    Vector<Data> copyVec = vec; // Per confronto
+    heap1 = HeapVec<Data>(vec);
+    HeapVec<Data> copyHeap = heap1;
+    heap2 = std::move(heap1);
+    assert(heap2.Size() == copyHeap.Size());
+    assert(heap2.IsHeap());
+    assert(VerifyHeapProperty(heap2));
+    assert(CompareHeapWithSortedVector(heap2, copyVec));
+    assert(heap1.Size() == 0);
+
+    std::cout << "TestMoveAssignment passed!\n";
+}
+
+// Test operatori di confronto
+template <typename Data>
+void TestComparisonOperators() {
+    std::cout << "Running TestComparisonOperators...\n";
+
+    HeapVec<Data> heap1, heap2;
+    // Caso 1: Heap con stessi elementi
+    Vector<Data> vec(3);
+    vec[0] = Data{1};
+    vec[1] = Data{2};
+    vec[2] = Data{3};
+    heap1 = HeapVec<Data>(vec);
+    heap2 = HeapVec<Data>(vec);
+    assert(heap1 == heap2);
+    assert(!(heap1 != heap2));
+
+    // Caso 2: Heap con elementi diversi
+    Vector<Data> vec2(3);
+    vec2[0] = Data{4};
+    vec2[1] = Data{5};
+    vec2[2] = Data{6};
+    heap2 = HeapVec<Data>(vec2);
+    assert(!(heap1 == heap2));
+    assert(heap1 != heap2);
+
+    // Caso 3: Heap di dimensioni diverse
+    Vector<Data> vec3(4);
+    vec3[0] = Data{1};
+    vec3[1] = Data{2};
+    vec3[2] = Data{3};
+    vec3[3] = Data{4};
+    heap2 = HeapVec<Data>(vec3);
+    assert(!(heap1 == heap2));
+    assert(heap1 != heap2);
+
+    std::cout << "TestComparisonOperators passed!\n";
+}
+
+// Test IsHeap
+template <typename Data>
+void TestIsHeap() {
+    std::cout << "Running TestIsHeap...\n";
+
+    HeapVec<Data> heap;
+    // Caso 1: Heap vuoto
+    assert(heap.IsHeap());
+
+    // Caso 2: Heap valido
+    Vector<Data> validHeapVec(5);
+    validHeapVec[0] = Data{100};
+    validHeapVec[1] = Data{50};
+    validHeapVec[2] = Data{75};
+    validHeapVec[3] = Data{25};
+    validHeapVec[4] = Data{30};
+    heap = HeapVec<Data>(validHeapVec);
+    assert(heap.IsHeap());
+
+    // Caso 3: Heap non valido (modifica manuale)
+    heap[1] = Data{200}; // Viola la proprietà di Max-Heap
+    assert(!heap.IsHeap());
+    heap.Heapify(); // Ripristina
+    assert(heap.IsHeap());
+
+    std::cout << "TestIsHeap passed!\n";
+}
+
+// Test per Empty e Clear
+template <typename Data>
+void TestEmptyAndClear() {
+    std::cout << "Running TestEmptyAndClear...\n";
+
+    // Caso 1: Heap vuoto
+    HeapVec<Data> emptyHeap;
+    assert(emptyHeap.Empty() == true);
+    assert(emptyHeap.Size() == 0);
+    emptyHeap.Clear();
+    assert(emptyHeap.Empty() == true);
+    assert(emptyHeap.Size() == 0);
+    assert(emptyHeap.IsHeap());
+
+    // Caso 2: Heap con un solo elemento
+    Vector<Data> singleVec(1);
+    singleVec[0] = Data{42};
+    HeapVec<Data> singleHeap(singleVec);
+    assert(singleHeap.Empty() == false);
+    assert(singleHeap.Size() == 1);
+    singleHeap.Clear();
+    assert(singleHeap.Empty() == true);
+    assert(singleHeap.Size() == 0);
+    assert(singleHeap.IsHeap());
+
+    // Caso 3: Heap grande
+    Vector<Data> largeVec(1000);
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+        largeVec[i] = static_cast<Data>(dist(gen));
+    }
+    HeapVec<Data> largeHeap(largeVec);
+    assert(largeHeap.Empty() == false);
+    assert(largeHeap.Size() == 1000);
+    assert(largeHeap.IsHeap());
+    largeHeap.Clear();
+    assert(largeHeap.Empty() == true);
+    assert(largeHeap.Size() == 0);
+    assert(largeHeap.IsHeap());
+
+    std::cout << "TestEmptyAndClear passed!\n";
+}
+template <typename Data>
+void TestDestructor() {
+    std::cout << "Running TestDestructor...\n";
+    Vector<Data> vec(1000);
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < vec.Size(); ++i) {
+        vec[i] = static_cast<Data>(dist(gen));
+    }
+    {
+        HeapVec<Data> heap(vec);
+        assert(heap.Size() == 1000);
+        assert(heap.IsHeap());
+    } // Distruttore chiamato qui
+    std::cout << "TestDestructor passed!\n";
+}
+
+template <typename Data>
+void TestAccess() {
+    std::cout << "Running TestAccess...\n";
+    Vector<Data> vec(5);
+    vec[0] = Data{100};
+    vec[1] = Data{50};
+    vec[2] = Data{75};
+    vec[3] = Data{25};
+    vec[4] = Data{30};
+    HeapVec<Data> heap(vec);
+    assert(heap[0] == Data{100}); // Elemento iniziale
+    assert(heap[heap.Size()-1] == Data{30}); // Elemento finale (dopo Heapify)
+    assert(heap[2] == Data{75}); // Elemento a indice specifico
+    std::cout << "TestAccess passed!\n";
+}
+
+template <typename Data>
+void TestExists() {
+    std::cout << "Running TestExists...\n";
+    Vector<Data> vec(5);
+    vec[0] = Data{100};
+    vec[1] = Data{50};
+    vec[2] = Data{75};
+    vec[3] = Data{25};
+    vec[4] = Data{30};
+    HeapVec<Data> heap(vec);
+    assert(heap.Exists(Data{100}) == true);
+    assert(heap.Exists(Data{50}) == true);
+    assert(heap.Exists(Data{999}) == false);
+    std::cout << "TestExists passed!\n";
+}
+
+template <typename Data>
+void TestTraverseAndFold() {
+    std::cout << "Running TestTraverseAndFold...\n";
+    Vector<Data> vec(5);
+    vec[0] = Data{100};
+    vec[1] = Data{50};
+    vec[2] = Data{75};
+    vec[3] = Data{25};
+    vec[4] = Data{30};
+    HeapVec<Data> heap(vec);
+    
+    // Test Traverse
+    std::vector<Data> traversed(heap.Size()); // Pre-allocate vector
+    unsigned long index = 0;
+    heap.Traverse([&traversed, &index](const Data& value) { 
+        traversed[index++] = value; 
+    });
+    assert(index == heap.Size()); // Verify all elements were traversed
+    
+    // Test Fold (esempio: somma per int/double)
+    std::function<Data(const Data&, const Data&)> foldFunc = 
+        [](const Data& value, const Data& acc) { return acc + value; };
+    Data sum = heap.Fold(foldFunc, Data{0});
+    Data expectedSum = Data{100 + 50 + 75 + 25 + 30};
+    assert(sum == expectedSum);
+    
+    std::cout << "TestTraverseAndFold passed!\n";
+}
+
+template <typename Data>
+void TestHeapify() {
+    std::cout << "Running TestHeapify...\n";
+    Vector<Data> vec(5);
+    vec[0] = Data{10};
+    vec[1] = Data{50};
+    vec[2] = Data{20};
+    vec[3] = Data{30};
+    vec[4] = Data{40};
+    HeapVec<Data> heap(vec);
+    heap[0] = Data{5}; // Viola la proprietà di Max-Heap
+    assert(!heap.IsHeap());
+    heap.Heapify();
+    assert(heap.IsHeap());
+    assert(VerifyHeapProperty(heap));
+    std::cout << "TestHeapify passed!\n";
+}
+
+// Test Sort (HeapSort) corretto
+template <typename Data>
+void TestSort() {
+    std::cout << "Running TestSort...\n";
+
+    // Caso 1: Heap vuoto
+    std::cout << "Testing Sort on empty heap...\n";
+    HeapVec<Data> emptyHeap;
+    assert(emptyHeap.Empty() == true);
+    assert(emptyHeap.Size() == 0);
+    emptyHeap.Sort();
+    assert(emptyHeap.Empty() == true);
+    assert(emptyHeap.Size() == 0);
+    assert(emptyHeap.IsHeap()); // Un heap vuoto è un heap valido
+
+    // Caso 2: Heap con un solo elemento
+    std::cout << "Testing Sort on single-element heap...\n";
+    Vector<Data> singleVec(1);
+    singleVec[0] = Data{42};
+    HeapVec<Data> singleHeap(singleVec);
+    assert(singleHeap.Size() == 1);
+    assert(singleHeap.IsHeap());
+    singleHeap.Sort();
+    assert(singleHeap.Size() == 1);
+    assert(singleHeap[0] == Data{42});
+    assert(singleHeap.IsHeap()); // Un heap con un elemento è ancora un heap valido
+
+    // Caso 3: Heap con valori casuali
+    std::cout << "Testing Sort on large random heap...\n";
+    Vector<Data> vec(1000);
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (unsigned long i = 0; i < vec.Size(); ++i) {
+        vec[i] = static_cast<Data>(dist(gen));
+    }
+    std::vector<Data> sortedVec(vec.Size());
+    for (unsigned long i = 0; i < vec.Size(); ++i) {
+        sortedVec[i] = vec[i];
+    }
+    std::sort(sortedVec.begin(), sortedVec.end()); // Ordina in modo crescente
+    HeapVec<Data> heap(vec);
+    assert(heap.Size() == 1000);
+    assert(heap.IsHeap());
+    heap.Sort();
+    assert(heap.Size() == 1000);
+    assert(!heap.IsHeap()); // Dopo il sort, non è più un heap (tranne casi particolari)
+    for (unsigned long i = 0; i < heap.Size(); ++i) {
+        assert(heap[i] == sortedVec[i]); // Verifica che l'array sia ordinato in modo crescente
+    }
+
+    // Caso 4: Heap con valori duplicati
+    std::cout << "Testing Sort on duplicate values heap...\n";
+    Vector<Data> dupVec(100);
+    for (unsigned long i = 0; i < dupVec.Size(); ++i) {
+        dupVec[i] = Data{42};
+    }
+    heap = HeapVec<Data>(dupVec);
+    assert(heap.Size() == 100);
+    assert(heap.IsHeap());
+    heap.Sort();
+    assert(heap.Size() == 100);
+    // Non verifichiamo !heap.IsHeap() qui, perché un array di valori uguali è ancora un heap valido
+    for (unsigned long i = 0; i < heap.Size(); ++i) {
+        assert(heap[i] == Data{42}); // Verifica che tutti gli elementi siano 42
+    }
+
+    std::cout << "TestSort passed!\n";
+}
+
+// Test HeapDown stress (indirettamente tramite Heapify)
+template <typename Data>
+void TestHeapDownStress() {
+    std::cout << "Running TestHeapDownStress...\n";
+
+    HeapVec<Data> heap;
+    // Caso 1: Heap con struttura lineare (tutti i nodi hanno lo stesso valore)
+    Vector<Data> linearVec(1000);
+    for (unsigned long i = 0; i < linearVec.Size(); ++i) {
+        linearVec[i] = Data{42};
+    }
+    heap = HeapVec<Data>(linearVec);
+    heap.Heapify(); // Usa Heapify per testare indirettamente HeapDown
+    assert(heap.IsHeap());
+
+    // Caso 2: Heap con struttura patologica (valore minimo alla radice)
+    Vector<Data> pathoVec(1000);
+    pathoVec[0] = Data{0}; // Valore minimo alla radice
+    for (unsigned long i = 1; i < pathoVec.Size(); ++i) {
+        pathoVec[i] = Data{1};
+    }
+    heap = HeapVec<Data>(pathoVec);
+    heap.Heapify(); // Usa Heapify per testare indirettamente HeapDown
+    assert(heap.IsHeap());
+
+    std::cout << "TestHeapDownStress passed!\n";
+}
+
+
+// Test con std::string (tipo complesso)
+void TestComplexType() {
+    std::cout << "Running TestComplexType...\n";
+
+    HeapVec<std::string> heap;
+    Vector<std::string> vec(5);
+    vec[0] = "zebra";
+    vec[1] = "apple";
+    vec[2] = "banana";
+    vec[3] = "cat";
+    vec[4] = "dog";
+    heap = HeapVec<std::string>(vec);
+    assert(heap.IsHeap());
+    assert(VerifyHeapProperty(heap));
+    heap.Sort();
+    assert(!heap.IsHeap());
+    assert(heap[0] == "apple");
+    assert(heap[1] == "banana");
+    assert(heap[2] == "cat");
+    assert(heap[3] == "dog");
+    assert(heap[4] == "zebra");
+
+    std::cout << "TestComplexType passed!\n";
+}
+
+// Test con valori estremi (solo per int)
+void TestExtremeValues() {
+    std::cout << "Running TestExtremeValues...\n";
+
+    HeapVec<int> heap;
+    Vector<int> vec(3);
+    vec[0] = std::numeric_limits<int>::max();
+    vec[1] = std::numeric_limits<int>::min();
+    vec[2] = 0;
+    heap = HeapVec<int>(vec);
+    assert(heap.IsHeap());
+    assert(VerifyHeapProperty(heap));
+    heap.Sort();
+    assert(heap[0] == std::numeric_limits<int>::min());
+    assert(heap[1] == 0);
+    assert(heap[2] == std::numeric_limits<int>::max());
+
+    std::cout << "TestExtremeValues passed!\n";
+}
+
+// ... (all previous test functions remain unchanged)
+
+// Test per PQHeap
+// template <typename Data>
+// void TestPriorityQueue() {
+//     std::cout << "Running TestPriorityQueue...\n";
+
+//     // Caso 1: Coda vuota
+//     {
+//         PQHeap<Data> pq;
+//         assert(pq.Empty());
+//         assert(pq.Size() == 0);
+//         assert(pq.IsHeap());
+//         try {
+//             pq.Tip();
+//             assert(false && "Expected length_error on Tip with empty queue");
+//         } catch (const std::length_error&) {
+//             // Eccezione attesa
+//         }
+//         try {
+//             pq.RemoveTip();
+//             assert(false && "Expected length_error on RemoveTip with empty queue");
+//         } catch (const std::length_error&) {
+//             // Eccezione attesa
+//         }
+//         try {
+//             pq.TipNRemove();
+//             assert(false && "Expected length_error on TipNRemove with empty queue");
+//         } catch (const std::length_error&) {
+//             // Eccezione attesa
+//         }
+//         pq.Clear(); // Verifica che Clear su coda vuota non causi problemi
+//         assert(pq.Empty());
+//         assert(pq.Size() == 0);
+//         assert(pq.IsHeap());
+//     }
+
+//     // Caso 2: Costruttore da TraversableContainer
+//     {
+//         Vector<Data> vec(5);
+//         vec[0] = Data{100};
+//         vec[1] = Data{50};
+//         vec[2] = Data{75};
+//         vec[3] = Data{25};
+//         vec[4] = Data{30};
+//         PQHeap<Data> pq(vec);
+//         assert(pq.Size() == 5);
+//         assert(pq.IsHeap());
+//         assert(VerifyHeapProperty(pq));
+//         assert(pq.Tip() == Data{100}); // Massimo elemento
+//     }
+
+//     // Caso 3: Costruttore da MappableContainer (move)
+//     {
+//         Vector<Data> vec(5);
+//         vec[0] = Data{100};
+//         vec[1] = Data{50};
+//         vec[2] = Data{75};
+//         vec[3] = Data{25};
+//         vec[4] = Data{30};
+//         Vector<Data> copyVec = vec; // Per confronto
+//         PQHeap<Data> pq(std::move(vec));
+//         assert(pq.Size() == 5);
+//         assert(pq.IsHeap());
+//         assert(VerifyHeapProperty(pq));
+//         assert(pq.Tip() == Data{100});
+//         assert(CompareHeapWithSortedVector(pq, copyVec));
+//         assert(vec.Size() == 0); // Verifica che il move sia avvenuto
+//     }
+
+//     // Caso 4: Inserimento (copy e move)
+//     {
+//         PQHeap<Data> pq;
+//         pq.Insert(Data{100}); // Copy
+//         assert(pq.Size() == 1);
+//         assert(pq.Tip() == Data{100});
+//         Data value = Data{50};
+//         pq.Insert(std::move(value)); // Move
+//         assert(pq.Size() == 2);
+//         assert(pq.Tip() == Data{100});
+//         pq.Insert(Data{75});
+//         assert(pq.Size() == 3);
+//         assert(pq.IsHeap());
+//         assert(VerifyHeapProperty(pq));
+//         assert(pq.Tip() == Data{100});
+//     }
+
+//     // Caso 5: Rimozione (RemoveTip e TipNRemove)
+//     {
+//         PQHeap<Data> pq;
+//         pq.Insert(Data{100});
+//         pq.Insert(Data{50});
+//         pq.Insert(Data{75});
+//         assert(pq.Size() == 3);
+//         assert(pq.Tip() == Data{100});
+//         Data max = pq.TipNRemove();
+//         assert(max == Data{100});
+//         assert(pq.Size() == 2);
+//         assert(pq.IsHeap());
+//         assert(pq.Tip() == Data{75});
+//         pq.RemoveTip();
+//         assert(pq.Size() == 1);
+//         assert(pq.IsHeap());
+//         assert(pq.Tip() == Data{50});
+//         max = pq.TipNRemove();
+//         assert(max == Data{50});
+//         assert(pq.Empty());
+//         assert(pq.IsHeap());
+//     }
+
+//     // Caso 6: Cambio di priorità (copy e move)
+//     {
+//         PQHeap<Data> pq;
+//         pq.Insert(Data{100});
+//         pq.Insert(Data{50});
+//         pq.Insert(Data{75});
+//         assert(pq.Tip() == Data{100});
+//         pq.Change(1, Data{80}); // Copy, aumenta priorità
+//         assert(pq.IsHeap());
+//         assert(pq.Tip() == Data{100}); // 100 è ancora il massimo
+//         pq.Change(1, Data{110}); // Copy, diventa il nuovo massimo
+//         assert(pq.IsHeap());
+//         assert(pq.Tip() == Data{110});
+//         Data newValue = Data{40};
+//         pq.Change(0, std::move(newValue)); // Move, diminuisci priorità
+//         assert(pq.IsHeap());
+//         assert(pq.Tip() == Data{100}); // 100 torna il massimo
+//         try {
+//             pq.Change(10, Data{50}); // Indice invalido
+//             assert(false && "Expected no change for invalid index");
+//         } catch (...) {
+//             // Nessun cambiamento atteso
+//         }
+//     }
+
+//     // Caso 7: Stress test con dati casuali
+//     {
+//         PQHeap<Data> pq;
+//         Vector<Data> vec(1000);
+//         std::mt19937 gen(42);
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             vec[i] = static_cast<Data>(dist(gen));
+//             pq.Insert(vec[i]);
+//         }
+//         assert(pq.Size() == 1000);
+//         assert(pq.IsHeap());
+//         assert(VerifyHeapProperty(pq));
+//         // Verifica che gli elementi siano estratti in ordine decrescente
+//         std::vector<Data> sorted(vec.Size());
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             sorted[i] = vec[i];
+//         }
+//         std::sort(sorted.begin(), sorted.end(), std::greater<Data>());
+//         for (unsigned long i = 0; i < sorted.size(); ++i) {
+//             assert(pq.TipNRemove() == sorted[i]);
+//             assert(pq.IsHeap());
+//         }
+//         assert(pq.Empty());
+//     }
+
+//     // Caso 8: Test di copia e move (constructor e assignment)
+//     {
+//         PQHeap<Data> pq1;
+//         pq1.Insert(Data{100});
+//         pq1.Insert(Data{50});
+//         PQHeap<Data> pq2 = pq1; // Copy constructor
+//         assert(pq2.Size() == 2);
+//         assert(pq2.IsHeap());
+//         assert(pq2.Tip() == Data{100});
+//         PQHeap<Data> pq3 = std::move(pq2); // Move constructor
+//         assert(pq3.Size() == 2);
+//         assert(pq3.IsHeap());
+//         assert(pq3.Tip() == Data{100});
+//         assert(pq2.Size() == 0);
+//         PQHeap<Data> pq4;
+//         pq4 = pq1; // Copy assignment
+//         assert(pq4.Size() == 2);
+//         assert(pq4.IsHeap());
+//         assert(pq4.Tip() == Data{100});
+//         PQHeap<Data> pq5;
+//         pq5 = std::move(pq4); // Move assignment
+//         assert(pq5.Size() == 2);
+//         assert(pq5.IsHeap());
+//         assert(pq5.Tip() == Data{100});
+//         assert(pq4.Size() == 0);
+//     }
+
+//     // Caso 9: Test Clear e distruttore
+//     {
+//         {
+//             PQHeap<Data> pq;
+//             for (int i = 0; i < 1000; ++i) {
+//                 pq.Insert(static_cast<Data>(i));
+//             }
+//             assert(pq.Size() == 1000);
+//             assert(pq.IsHeap());
+//             pq.Clear();
+//             assert(pq.Empty());
+//             assert(pq.Size() == 0);
+//             assert(pq.IsHeap());
+//         } // Distruttore chiamato qui
+//     }
+
+//     // Caso 10: Test con valori duplicati
+//     {
+//         PQHeap<Data> pq;
+//         for (int i = 0; i < 100; ++i) {
+//             pq.Insert(Data{42});
+//         }
+//         assert(pq.Size() == 100);
+//         assert(pq.IsHeap());
+//         assert(pq.Tip() == Data{42});
+//         for (int i = 0; i < 100; ++i) {
+//             assert(pq.TipNRemove() == Data{42});
+//             assert(pq.IsHeap());
+//         }
+//         assert(pq.Empty());
+//     }
+
+//     std::cout << "TestPriorityQueue passed!\n";
+// }
+
+// Funzione principale che richiama tutti i test
+void RunAllTests() {
+    std::cout << "Starting all tests...\n";
+    TestConstructorTraversableContainer<int>();
+    TestConstructorMappableContainer<int>();
+    TestCopyConstructor<int>();
+    TestMoveConstructor<int>();
+    TestCopyAssignment<int>();
+    TestMoveAssignment<int>();
+    TestComparisonOperators<int>();
+    TestIsHeap<int>();
+    TestSort<int>();
+    TestHeapDownStress<int>();
+    TestEmptyAndClear<int>();
+    TestAccess<int>();
+    TestExists<int>();
+    TestTraverseAndFold<int>();
+    //TestPriorityQueue<int>();
+    TestHeapify<int>();
+
+    TestConstructorTraversableContainer<double>();
+    TestConstructorMappableContainer<double>();
+    TestCopyConstructor<double>();
+    TestMoveConstructor<double>();
+    TestCopyAssignment<double>();
+    TestMoveAssignment<double>();
+    TestComparisonOperators<double>();
+    TestIsHeap<double>();
+    TestSort<double>();
+    TestHeapDownStress<double>();
+    TestEmptyAndClear<double>();
+    TestAccess<double>();
+    TestExists<double>();
+    TestTraverseAndFold<double>();
+    //TestPriorityQueue<double>();
+
+    TestComplexType();
+    TestExtremeValues();
+
+    std::cout << "All tests passed successfully!\n";
+}

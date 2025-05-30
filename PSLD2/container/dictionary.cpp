@@ -54,7 +54,7 @@ inline bool DictionaryContainer<Data>::RemoveAll(const TraversableContainer<Data
 template <typename Data>
 inline bool DictionaryContainer<Data>::InsertSome(const TraversableContainer<Data> & container)
 {
-    bool qualcheInserimento;
+    bool qualcheInserimento = false;
     container.Traverse([this, &qualcheInserimento] (const Data& value) {
         if (!Insert(value))
         {
@@ -68,7 +68,7 @@ inline bool DictionaryContainer<Data>::InsertSome(const TraversableContainer<Dat
 template <typename Data>
 inline bool DictionaryContainer<Data>::InsertSome(MappableContainer<Data>&& container)
 {
-    bool qualcheInserimento;
+    bool qualcheInserimento = false ;
     container.Map([this, &qualcheInserimento] (Data value) {
         if (!Insert(value))
         {
@@ -82,7 +82,7 @@ inline bool DictionaryContainer<Data>::InsertSome(MappableContainer<Data>&& cont
 template <typename Data>
 inline bool DictionaryContainer<Data>::RemoveSome(const TraversableContainer<Data>& container)
 {
-    bool qualcheRimozione;
+    bool qualcheRimozione = false;
     container.Traverse([this, &qualcheRimozione](const Data& value)
     {
         if (!Remove(value))

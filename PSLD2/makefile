@@ -6,9 +6,9 @@ cflags = -Wall -pedantic -O3 -std=c++20 -fsanitize=address
 #comando per terminale valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./main
 
 
-objects = main.o test.o mytest.o container.o exc2as.o exc2af.o 
+objects = main.o test.o mytest.o container.o exc2as.o exc2af.o exc2bs.o exc2bf.o 
 #exc1as.o exc1af.o exc1bs.o exc1bf.o 
-#exc2bs.o exc2bf.o
+
 
 libcon = container/container.hpp container/testable.hpp container/traversable.hpp container/traversable.cpp container/mappable.hpp container/mappable.cpp container/dictionary.hpp container/dictionary.cpp container/linear.hpp container/linear.cpp
 
@@ -20,7 +20,7 @@ libexc1b = $(libexc1a) set/set.hpp set/lst/setlst.hpp set/lst/setlst.cpp set/vec
 
 libexc2a = $(libexc) heap/heap.hpp heap/vec/heapvec.hpp heap/vec/heapvec.cpp zlasdtest/heap/heap.hpp
 
-#libexc2b = $(libexc2a) pq/pq.hpp pq/heap/pqheap.hpp pq/heap/pqheap.cpp zlasdtest/pq/pq.hpp
+libexc2b = $(libexc2a) pq/pq.hpp pq/heap/pqheap.hpp pq/heap/pqheap.cpp zlasdtest/pq/pq.hpp
 
 main: $(objects)
 	$(cc) $(cflags) $(objects) -o main
@@ -58,8 +58,8 @@ exc2as.o: $(libexc2a) zlasdtest/exercise2a/simpletest.cpp
 exc2af.o: $(libexc2a) zlasdtest/exercise2a/fulltest.cpp
 	$(cc) $(cflags) -c zlasdtest/exercise2a/fulltest.cpp -o exc2af.o
 
-# exc2bs.o: $(libexc2b) zlasdtest/exercise2b/simpletest.cpp
-# 	$(cc) $(cflags) -c zlasdtest/exercise2b/simpletest.cpp -o exc2bs.o
+exc2bs.o: $(libexc2b) zlasdtest/exercise2b/simpletest.cpp
+	$(cc) $(cflags) -c zlasdtest/exercise2b/simpletest.cpp -o exc2bs.o
 
-# exc2bf.o: $(libexc2b) zlasdtest/exercise2b/fulltest.cpp
-# 	$(cc) $(cflags) -c zlasdtest/exercise2b/fulltest.cpp -o exc2bf.o
+exc2bf.o: $(libexc2b) zlasdtest/exercise2b/fulltest.cpp
+	$(cc) $(cflags) -c zlasdtest/exercise2b/fulltest.cpp -o exc2bf.o
