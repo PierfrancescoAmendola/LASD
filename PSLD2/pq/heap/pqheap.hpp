@@ -42,7 +42,7 @@ public:
 
   // Default constructor
   // PQHeap() specifiers;
-  PQHeap() = default;
+  PQHeap();
 
   /* ************************************************************************ */
 
@@ -100,6 +100,7 @@ public:
   void Change(unsigned long, Data&&) override; // Override PQ member (Change priority at index)
 
   void Clear() noexcept override;
+  void Resize(unsigned long newCapacity) override;
 
 protected:
 

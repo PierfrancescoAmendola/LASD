@@ -31,6 +31,11 @@ int main()
     std::cout << "" << std::endl;
     std::cout << "Scegli il test con cui mettere alla prova il tuo codice: " << std::endl;
     std::cout << "" << std::endl;
+
+    std::cout << "" << std::endl;
+    std::cout << "Test prima parte:" << std::endl;
+    std::cout << "" << std::endl;
+
     std::cout << "1)Test n°1 SimpleTest del Professore " << std::endl;
     std::cout << "2)Test n°2 List Test & Vector Test" << std::endl;
     std::cout << "3)Test n°3 TestMioEsercizio 1B" << std::endl;
@@ -38,9 +43,15 @@ int main()
     std::cout << "5)Test n°5 mySetVecExtendedTests" << std::endl;
     std::cout << "6)Test n°6 SetVec" << std::endl;
     std::cout << "7)Test n°7 SetList" << std::endl;
+
+    std::cout << "" << std::endl;
+    std::cout << "Test seconda parte:" << std::endl;
+    std::cout << "" << std::endl;
+
+
     std::cout << "8)Test n°8 HeapVec" << std::endl;
-    std::cout << "10)Test n°9 HeapVec invasivo " << std::endl;
-    std::cout << "11) Test n°10 PqHeap invasivo" << std::endl;
+    std::cout << "9)Test n°9 HeapVec invasivo " << std::endl;
+    std::cout << "10) Test n°10 PqHeap invasivo" << std::endl;
 
     std::cout << "0)Exit" << std::endl;
 

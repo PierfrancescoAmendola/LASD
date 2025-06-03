@@ -8,6 +8,15 @@ namespace lasd {
 
 /* ************************************************************************** */
 
+template <typename Data>
+PQHeap<Data>::PQHeap() {
+    // Creo un array con una capacità iniziale di 4
+    capacity = 4;
+    this-> elements = new Data[capacity]();
+    size = 0;
+    // Perché: 4 è una dimensione iniziale ragionevole, e inizializzo tutto a zero per sicurezza
+}
+
 // Costruttore specifico da TraversableContainer
 // Inizializza la coda a priorità copiando i dati da un contenitore traversabile, sfruttando la costruzione di HeapVec
 template <typename Data>
@@ -186,6 +195,30 @@ void PQHeap<Data>::Clear() noexcept {
     capacity = 4;
     // Perché: libera la memoria, resetta lo stato e prepara un nuovo array per futuri inserimenti
 }
+
+template <typename Data>
+void PQHeap<Data>::Resize(unsigned long newCapacity) {
+    // Se la nuova capacità è 0, uso la minima (4)
+    if (newCapacity == 0) {
+        newCapacity = 4;
+    }
+    // Assicurati che la nuova capacità sia almeno pari alla dimensione corrente
+    if (newCapacity < size) {
+        newCapacity = size; // Non ridurre la capacità sotto il numero di elementi attuali
+    }
+    // Creo un nuovo array
+    Data* newElements = new Data[newCapacity]();
+    // Copio gli elementi nel nuovo array
+    for (unsigned long i = 0; i < size; ++i) {
+        newElements[i] = std::move(this->elements[i]); // Sposto gli elementi esistenti
+    }
+    // Libero il vecchio array
+    delete[] this->elements; // Libera la memoria del vecchio array
+    this->elements = newElements; // Aggiorna il puntatore
+    capacity = newCapacity; // Aggiorna la capacità
+    // Perché: ridimensiono l'array per ottimizzare la memoria, garantendo spazio per gli elementi esistenti
+}
+
 
 /* ************************************************************************** */
 

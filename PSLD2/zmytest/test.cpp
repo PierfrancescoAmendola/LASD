@@ -7043,37 +7043,267 @@ void TestHeapVec() {
 // }
 
 
+// // Funzione ausiliaria per verificare la proprietà di Max-Heap
+// template <typename Data>
+// bool VerifyHeapProperty(const PQHeap<Data>& heap) {
+//     for (unsigned long i = 0; i < heap.Size() / 2; ++i) {
+//         unsigned long left = 2 * i + 1;
+//         unsigned long right = 2 * i + 2;
+//         if (left < heap.Size() && heap[left] > heap[i]) return false;
+//         if (right < heap.Size() && heap[right] > heap[i]) return false;
+//     }
+//     return true;
+// }
+
+// // Funzione ausiliaria per confrontare i contenuti di un PQHeap con un Vector ordinato
+// template <typename Data>
+// bool CompareHeapWithSortedVector(const PQHeap<Data>& heap, const Vector<Data>& vec) {
+//     std::vector<Data> sortedVec(vec.Size());
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         sortedVec[i] = vec[i];
+//     }
+//     std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>());
+    
+//     PQHeap<Data> tempHeap = heap;
+//     for (unsigned long i = 0; i < sortedVec.size(); ++i) {
+//         if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap.Tip()) return false;
+//         tempHeap.RemoveTip();
+//     }
+//     return tempHeap.Size() == 0;
+// }
+
+
+// // Test per Insert
+// template <typename Data>
+// void TestInsert() {
+//     std::cout << "Running TestInsert...\n";
+
+//     // Caso 1: Inserimento in heap vuoto
+//     PQHeap<Data> heap;
+//     heap.Insert(Data{42});
+//     assert(heap.Size() == 1);
+//     assert(heap.IsHeap());
+//     assert(heap.Tip() == Data{42});
+
+//     // Caso 2: Inserimenti multipli
+//     Vector<Data> vec(5);
+//     vec[0] = Data{10};
+//     vec[1] = Data{50};
+//     vec[2] = Data{20};
+//     vec[3] = Data{30};
+//     vec[4] = Data{40};
+//     heap = PQHeap<Data>(vec);
+//     heap.Insert(Data{100});
+//     assert(heap.Size() == 6);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     assert(heap.Tip() == Data{100});
+
+//     // Caso 3: Inserimento con move
+//     Data value = Data{200};
+//     heap.Insert(std::move(value));
+//     assert(heap.Size() == 7);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     assert(heap.Tip() == Data{200});
+
+//     // Caso 4: Stress test con inserimenti
+//     PQHeap<Data> stressHeap;
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < 1000; ++i) {
+//         stressHeap.Insert(static_cast<Data>(dist(gen)));
+//     }
+//     assert(stressHeap.Size() == 1000);
+//     assert(stressHeap.IsHeap());
+//     assert(VerifyHeapProperty(stressHeap));
+
+//     std::cout << "TestInsert passed!\n";
+// }
+
+// // Test per Tip, RemoveTip e TipNRemove
+// template <typename Data>
+// void TestTipOperations() {
+//     std::cout << "Running TestTipOperations...\n";
+
+//     // Caso 1: Heap vuoto
+//     PQHeap<Data> emptyHeap;
+//     try {
+//         emptyHeap.Tip();
+//         assert(false);
+//     } catch (const std::length_error& e) {
+//         assert(std::string(e.what()) == "Priority queue is empty");
+//     }
+//     try {
+//         emptyHeap.RemoveTip();
+//         assert(false);
+//     } catch (const std::length_error& e) {
+//         assert(std::string(e.what()) == "Priority queue is empty");
+//     }
+//     try {
+//         emptyHeap.TipNRemove();
+//         assert(false);
+//     } catch (const std::length_error& e) {
+//         assert(std::string(e.what()) == "Priority queue is empty");
+//     }
+
+//     // Caso 2: Heap con un solo elemento
+//     Vector<Data> singleVec(1);
+//     singleVec[0] = Data{42};
+//     PQHeap<Data> singleHeap(singleVec);
+//     assert(singleHeap.Tip() == Data{42});
+//     Data tip = singleHeap.TipNRemove();
+//     assert(tip == Data{42});
+//     assert(singleHeap.Size() == 0);
+//     assert(singleHeap.IsHeap());
+
+//     // Caso 3: Heap con più elementi
+//     Vector<Data> vec(5);
+//     vec[0] = Data{10};
+//     vec[1] = Data{50};
+//     vec[2] = Data{20};
+//     vec[3] = Data{30};
+//     vec[4] = Data{40};
+//     PQHeap<Data> heap(vec);
+//     assert(heap.Tip() == Data{50});
+//     heap.RemoveTip();
+//     assert(heap.Size() == 4);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     tip = heap.TipNRemove();
+//     assert(heap.Size() == 3);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+
+//     std::cout << "TestTipOperations passed!\n";
+// }
+
+// // Test per Change
+// template <typename Data>
+// void TestChange() {
+//     std::cout << "Running TestChange...\n";
+
+//     // Caso 1: Cambio su heap con più elementi
+//     Vector<Data> vec(5);
+//     vec[0] = Data{10};
+//     vec[1] = Data{50};
+//     vec[2] = Data{20};
+//     vec[3] = Data{30};
+//     vec[4] = Data{40};
+//     PQHeap<Data> heap(vec);
+//     heap.Change(2, Data{100});
+//     assert(heap.Size() == 5);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     assert(heap.Tip() == Data{100});
+
+//     // Caso 2: Cambio con move
+//     Data newVal = Data{200};
+//     heap.Change(0, std::move(newVal));
+//     assert(heap.Size() == 5);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     assert(heap.Tip() == Data{200});
+
+//     // Caso 3: Cambio su indice non valido
+//     heap.Change(1000, Data{500});
+//     assert(heap.Size() == 5);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     assert(heap.Tip() == Data{200});
+
+//     // Caso 4: Stress test con cambi
+//     PQHeap<Data> stressHeap;
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < 100; ++i) {
+//         stressHeap.Insert(static_cast<Data>(dist(gen)));
+//     }
+//     for (unsigned long i = 0; i < 100; ++i) {
+//         stressHeap.Change(i % stressHeap.Size(), static_cast<Data>(dist(gen)));
+//     }
+//     assert(stressHeap.Size() == 100);
+//     assert(stressHeap.IsHeap());
+//     assert(VerifyHeapProperty(stressHeap));
+
+//     std::cout << "TestChange passed!\n";
+// }
+
+
+// // Funzione principale che richiama tutti i test
+// void TestPqHeap() {
+//     std::cout << "\n";
+//     std::cout << "Starting all PQHeap tests...\n";
+//     std::cout << "\n";
+
+//     TestConstructorTraversableContainer<int>();
+//     TestConstructorMappableContainer<int>();
+//     TestCopyConstructor<int>();
+//     TestMoveConstructor<int>();
+//     TestCopyAssignment<int>();
+//     TestMoveAssignment<int>();
+//     TestEmptyAndClear<int>();
+//     TestDestructor<int>();
+//     TestInsert<int>();
+//     TestTipOperations<int>();
+//     TestChange<int>();
+//     TestHeapify<int>();
+
+//     TestConstructorTraversableContainer<double>();
+//     TestConstructorMappableContainer<double>();
+//     TestCopyConstructor<double>();
+//     TestMoveConstructor<double>();
+//     TestCopyAssignment<double>();
+//     TestMoveAssignment<double>();
+//     TestEmptyAndClear<double>();
+//     TestDestructor<double>();
+//     TestInsert<double>();
+//     TestTipOperations<double>();
+//     TestChange<double>();
+//     TestHeapify<double>();
+
+//     TestComplexType();
+//     TestExtremeValues();
+
+//     std::cout << "\n";
+//     std::cout << "All PQHeap tests passed successfully!\n";
+// }
+
+
 // Funzione ausiliaria per verificare la proprietà di Max-Heap
+// Controlla se ogni nodo genitore è maggiore o uguale ai suoi figli
 template <typename Data>
 bool VerifyHeapProperty(const PQHeap<Data>& heap) {
     for (unsigned long i = 0; i < heap.Size() / 2; ++i) {
-        unsigned long left = 2 * i + 1;
-        unsigned long right = 2 * i + 2;
-        if (left < heap.Size() && heap[left] > heap[i]) return false;
-        if (right < heap.Size() && heap[right] > heap[i]) return false;
+        unsigned long left = 2 * i + 1;  // Indice del figlio sinistro
+        unsigned long right = 2 * i + 2; // Indice del figlio destro
+        if (left < heap.Size() && heap[left] > heap[i]) return false;  // Verifica il figlio sinistro
+        if (right < heap.Size() && heap[right] > heap[i]) return false; // Verifica il figlio destro
+        // Perché: assicura che la proprietà del max-heap sia rispettata
     }
     return true;
 }
 
 // Funzione ausiliaria per confrontare i contenuti di un PQHeap con un Vector ordinato
+// Ordina un vettore in ordine decrescente e verifica se gli elementi estratti dall'heap corrispondono
 template <typename Data>
 bool CompareHeapWithSortedVector(const PQHeap<Data>& heap, const Vector<Data>& vec) {
     std::vector<Data> sortedVec(vec.Size());
     for (unsigned long i = 0; i < vec.Size(); ++i) {
-        sortedVec[i] = vec[i];
+        sortedVec[i] = vec[i]; // Copia gli elementi del Vector
     }
-    std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>());
-    
-    PQHeap<Data> tempHeap = heap;
+    std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>()); // Ordina in ordine decrescente
+    PQHeap<Data> tempHeap = heap; // Crea una copia temporanea dell'heap
     for (unsigned long i = 0; i < sortedVec.size(); ++i) {
-        if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap.Tip()) return false;
-        tempHeap.RemoveTip();
+        if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap.Tip()) return false; // Confronta l'elemento massimo
+        tempHeap.RemoveTip(); // Rimuove l'elemento massimo
     }
-    return tempHeap.Size() == 0;
+    return tempHeap.Size() == 0; // Verifica che l'heap sia vuoto
+    // Perché: controlla che l'heap produca gli elementi nell'ordine corretto
 }
 
-
 // Test per Insert
+// Verifica il comportamento dell'inserimento in vari scenari
 template <typename Data>
 void TestInsert() {
     std::cout << "Running TestInsert...\n";
@@ -7084,6 +7314,7 @@ void TestInsert() {
     assert(heap.Size() == 1);
     assert(heap.IsHeap());
     assert(heap.Tip() == Data{42});
+    // Perché: testa l'inserimento base e la proprietà dell'heap
 
     // Caso 2: Inserimenti multipli
     Vector<Data> vec(5);
@@ -7098,6 +7329,7 @@ void TestInsert() {
     assert(heap.IsHeap());
     assert(VerifyHeapProperty(heap));
     assert(heap.Tip() == Data{100});
+    // Perché: verifica che l'heap mantenga la proprietà dopo più inserimenti
 
     // Caso 3: Inserimento con move
     Data value = Data{200};
@@ -7106,6 +7338,7 @@ void TestInsert() {
     assert(heap.IsHeap());
     assert(VerifyHeapProperty(heap));
     assert(heap.Tip() == Data{200});
+    // Perché: testa l'inserimento con spostamento per efficienza
 
     // Caso 4: Stress test con inserimenti
     PQHeap<Data> stressHeap;
@@ -7117,11 +7350,13 @@ void TestInsert() {
     assert(stressHeap.Size() == 1000);
     assert(stressHeap.IsHeap());
     assert(VerifyHeapProperty(stressHeap));
+    // Perché: simula un uso intensivo per verificare robustezza
 
     std::cout << "TestInsert passed!\n";
 }
 
 // Test per Tip, RemoveTip e TipNRemove
+// Verifica le operazioni di accesso e rimozione dell'elemento massimo
 template <typename Data>
 void TestTipOperations() {
     std::cout << "Running TestTipOperations...\n";
@@ -7146,6 +7381,7 @@ void TestTipOperations() {
     } catch (const std::length_error& e) {
         assert(std::string(e.what()) == "Priority queue is empty");
     }
+    // Perché: verifica che le operazioni su heap vuoto lancino eccezioni corrette
 
     // Caso 2: Heap con un solo elemento
     Vector<Data> singleVec(1);
@@ -7156,6 +7392,7 @@ void TestTipOperations() {
     assert(tip == Data{42});
     assert(singleHeap.Size() == 0);
     assert(singleHeap.IsHeap());
+    // Perché: testa il comportamento con un solo elemento
 
     // Caso 3: Heap con più elementi
     Vector<Data> vec(5);
@@ -7174,11 +7411,13 @@ void TestTipOperations() {
     assert(heap.Size() == 3);
     assert(heap.IsHeap());
     assert(VerifyHeapProperty(heap));
+    // Perché: verifica rimozione e accesso in un heap più complesso
 
     std::cout << "TestTipOperations passed!\n";
 }
 
 // Test per Change
+// Verifica la modifica della priorità di elementi nell'heap
 template <typename Data>
 void TestChange() {
     std::cout << "Running TestChange...\n";
@@ -7196,6 +7435,7 @@ void TestChange() {
     assert(heap.IsHeap());
     assert(VerifyHeapProperty(heap));
     assert(heap.Tip() == Data{100});
+    // Perché: testa la modifica di un elemento e il riallineamento dell'heap
 
     // Caso 2: Cambio con move
     Data newVal = Data{200};
@@ -7204,6 +7444,7 @@ void TestChange() {
     assert(heap.IsHeap());
     assert(VerifyHeapProperty(heap));
     assert(heap.Tip() == Data{200});
+    // Perché: verifica la modifica con spostamento per efficienza
 
     // Caso 3: Cambio su indice non valido
     heap.Change(1000, Data{500});
@@ -7211,6 +7452,7 @@ void TestChange() {
     assert(heap.IsHeap());
     assert(VerifyHeapProperty(heap));
     assert(heap.Tip() == Data{200});
+    // Perché: assicura che un indice non valido non alteri l'heap
 
     // Caso 4: Stress test con cambi
     PQHeap<Data> stressHeap;
@@ -7225,12 +7467,73 @@ void TestChange() {
     assert(stressHeap.Size() == 100);
     assert(stressHeap.IsHeap());
     assert(VerifyHeapProperty(stressHeap));
+    // Perché: testa la robustezza con molteplici modifiche casuali
 
     std::cout << "TestChange passed!\n";
 }
 
+// Test per Resize
+// Verifica il comportamento della funzione di ridimensionamento
+template <typename Data>
+void TestResize() {
+    std::cout << "Running TestResize...\n";
+
+    // Caso 1: Ridimensionamento su heap vuoto
+    PQHeap<Data> heap;
+    heap.Resize(10); // Ridimensiona a capacità 10
+    assert(heap.Size() == 0); // La dimensione logica resta 0
+    assert(heap.IsHeap()); // L'heap vuoto è sempre valido
+    // Perché: verifica che il ridimensionamento non alteri un heap vuoto
+
+    // Caso 2: Ridimensionamento con elementi e inserimenti successivi
+    Vector<Data> vec(5);
+    vec[0] = Data{10};
+    vec[1] = Data{50};
+    vec[2] = Data{20};
+    vec[3] = Data{30};
+    vec[4] = Data{40};
+    PQHeap<Data> heapWithData(vec);
+    heapWithData.Resize(10); // Ridimensiona a capacità 10
+    assert(heapWithData.Size() == 5); // La dimensione logica non cambia
+    assert(heapWithData.IsHeap()); // Verifica la proprietà dell'heap
+    assert(VerifyHeapProperty(heapWithData));
+    heapWithData.Insert(Data{100}); // Inserisce un nuovo elemento
+    assert(heapWithData.Size() == 6);
+    assert(heapWithData.IsHeap());
+    assert(heapWithData.Tip() == Data{100});
+    // Perché: testa che il ridimensionamento permetta inserimenti senza problemi
+
+    // Caso 3: Ridimensionamento a capacità minore
+    PQHeap<Data> heapForShrink(vec);
+    heapForShrink.Resize(2); // Tenta di ridimensionare a capacità minore
+    assert(heapForShrink.Size() == 5); // La dimensione logica non deve cambiare
+    assert(heapForShrink.IsHeap()); // La proprietà dell'heap deve essere mantenuta
+    assert(VerifyHeapProperty(heapForShrink));
+    assert(heapForShrink.Tip() == Data{50});
+    // Perché: verifica che un ridimensionamento a capacità minore non corrompa l'heap
+
+    // Caso 4: Stress test con ridimensionamenti e inserimenti
+    PQHeap<Data> stressHeap;
+    std::mt19937 gen(42);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    stressHeap.Resize(1000); // Ridimensiona a capacità 1000
+    for (unsigned long i = 0; i < 500; ++i) {
+        stressHeap.Insert(static_cast<Data>(dist(gen))); // Inserisce 500 elementi
+    }
+    assert(stressHeap.Size() == 500);
+    assert(stressHeap.IsHeap());
+    assert(VerifyHeapProperty(stressHeap));
+    stressHeap.Resize(600); // Ridimensiona a capacità 600
+    assert(stressHeap.Size() == 500); // La dimensione logica resta invariata
+    assert(stressHeap.IsHeap());
+    assert(VerifyHeapProperty(stressHeap));
+    // Perché: simula ridimensionamenti e inserimenti intensivi per testare la robustezza
+
+    std::cout << "TestResize passed!\n";
+}
 
 // Funzione principale che richiama tutti i test
+// Esegue una suite completa di test per PQHeap con vari tipi di dati
 void TestPqHeap() {
     std::cout << "\n";
     std::cout << "Starting all PQHeap tests...\n";
@@ -7247,6 +7550,7 @@ void TestPqHeap() {
     TestInsert<int>();
     TestTipOperations<int>();
     TestChange<int>();
+    TestResize<int>(); // Aggiunto test per Resize
     TestHeapify<int>();
 
     TestConstructorTraversableContainer<double>();
@@ -7260,6 +7564,7 @@ void TestPqHeap() {
     TestInsert<double>();
     TestTipOperations<double>();
     TestChange<double>();
+    TestResize<double>(); // Aggiunto test per Resize
     TestHeapify<double>();
 
     TestComplexType();
