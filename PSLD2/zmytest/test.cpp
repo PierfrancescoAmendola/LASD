@@ -6130,6 +6130,8 @@ void testHeapVecStress()
 
 void testHeapVec()
 {
+    std::cout<<""<<std::endl;
+
     std::cout << "Inizio dei test per HeapVec\n";
 
     // Test per HeapVec<int>
@@ -6144,6 +6146,7 @@ void testHeapVec()
     // Test di stress
     testHeapVecStress();
 
+    std::cout<<""<<std::endl;
     std::cout << "Tutti i test per HeapVec completati con successo!\n";
 }
 // Funzione principale di test
