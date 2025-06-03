@@ -2,7 +2,7 @@
 //  main.cpp
 //  Progetto LASD 2025
 //
-//  Created by Pierfrancesco on 30/04/25.
+//  Created by Pierfrancesco on 21/05/25.
 //
 
 
@@ -17,51 +17,6 @@
 
 // /* ************************************************************************** */
 
-// int main() {
-//   std::cout << "LASD Libraries 2025" << std::endl;
-//   lasdtest();
-//   //mytest();
-//   return 0;
-// }
-
-// int main() {
-//   unsigned short index = 3;
-
-//   while(index != 0){
-//     std::cout << std::endl << std::endl << "Inserire 0 per uscire, 1 per avviare il Simple Test, 2 per avviare il Personal Test"<< std::endl << std::endl <<
-//       "0) Esci" << std::endl << "1) Simple Test" << std::endl << "2) Personal Test" << std::endl;
-//     std::cout << "Numero da inserire: ";
-//     std::cin >> index;
-//     std::cout << std::endl << std::endl;
-
-//     while(std::cin.fail()){
-//       std::cin.clear();
-//       std::cin.ignore();
-//       std::cout << "Input non valido. Inserisci un numero: ";
-//       std::cin >> index;
-//       std::cout << std::endl << std::endl;
-//     }
-
-//     switch (index){
-//       case 0:
-//         return 0;
-//       break;
-//       case 1:
-//         std::cout << "Lasd Libraries 2025" << std::endl;
-//         lasdtest(); // Call in the menu of your library test!
-//       break;
-//       case 2:
-//         std::cout << "Personal Lasd Libraries 2023" << std::endl;
-//         personalLasdTest();
-//       break;
-
-//       default:
-//         std::cout << "Inserire un numero valido";
-//       break;
-//     }
-//   }
-// }
-
 int main()
 {
   std::cout << "Lasd Libraries 2025" << std::endl;
@@ -72,7 +27,7 @@ int main()
   while (scelta != 0)
   {
     std::cout << "" << std::endl;
-    std::cout << "-------------------Benevenuto alla fine dei giochi-------------------" << std::endl;
+    std::cout << "-------------------Benevenuto alla fine dei giochi, pt.2-------------------" << std::endl;
     std::cout << "" << std::endl;
     std::cout << "Scegli il test con cui mettere alla prova il tuo codice: " << std::endl;
     std::cout << "" << std::endl;
@@ -84,13 +39,12 @@ int main()
     std::cout << "6)Test n°6 SetVec" << std::endl;
     std::cout << "7)Test n°7 SetList" << std::endl;
     std::cout << "8)Test n°8 HeapVec" << std::endl;
-    std::cout << "9)Test n°9 TestMioMarco" << std::endl;
-    std::cout << "9)Test n°10 Test invasivo HeapVec" << std::endl;
-
-
-    
+    std::cout << "10)Test n°9 HeapVec invasivo " << std::endl;
+    std::cout << "11) Test n°10 PqHeap invasivo" << std::endl;
 
     std::cout << "0)Exit" << std::endl;
+
+    
     std::cin >> scelta;
     if (scelta == 1)
       lasdtest();
@@ -109,11 +63,22 @@ int main()
     if (scelta == 8)
       testHeapVec();
     if (scelta == 9)
-      mytestMarco();
+      TestHeapVec();
     if (scelta == 10)
-      RunAllTests();
+      TestPqHeap();
+
       
+
   }
+
+  std::cout<<""<<std::endl;
+
+  std::cout<<"Se si è arrivati fino a questo punto, allora tutti i test sono stati superati."<<std::endl;
+  std::cout<<"Congratulazioni, ha superato le sfide della prima libreria e della seconda, si merita il massimo"<<std::endl;
+
+  std::cout<<""<<std::endl;
   return 0;
+
+  
 
 }

@@ -2,7 +2,7 @@
 //  test.hpp
 //  Progetto LASD 2025
 //
-//  Created by Pierfrancesco on 30/04/25.
+//  Created by Pierfrancesco on 21/05/25.
 //
 
 
@@ -22,8 +22,8 @@ void testSetLstExercise(uint& testnum, uint& testerr);
 void testSetLst();
 void testSetVec();
 void testHeapVec();
-void mytestMarco();
-void RunAllTests();
+void TestHeapVec();
+void TestPqHeap();
 /* ************************************************************************** */
 
 #endif
