@@ -51,7 +51,7 @@ int main()
 
     std::cout << "8)Test n°8 HeapVec" << std::endl;
     std::cout << "9)Test n°9 HeapVec invasivo " << std::endl;
-    std::cout << "10) Test n°10 PqHeap invasivo" << std::endl;
+    std::cout << "10)Test n°10 PqHeap invasivo" << std::endl;
 
     std::cout << "0)Exit" << std::endl;
 

@@ -1,6 +1,8 @@
 
 cc = g++
-cflags = -Wall -pedantic -O3 -std=c++20 -fsanitize=address
+#cflags = -Wall -pedantic -O3 -std=c++20 -fsanitize=address
+cflags = -Wall -pedantic -Wno-sequence-point -O3 -std=c++20 -fsanitize=address
+
 #test valgrind, qui sotto
 #cflags = -Wall -pedantic -O0 -g -std=c++20  
 #comando per terminale valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./main
@@ -8,8 +10,6 @@ cflags = -Wall -pedantic -O3 -std=c++20 -fsanitize=address
 
 objects = main.o test.o mytest.o container.o exc1as.o exc1af.o exc1bs.o exc1bf.o exc2as.o exc2af.o exc2bs.o exc2bf.o 
  
-
-
 libcon = container/container.hpp container/testable.hpp container/traversable.hpp container/traversable.cpp container/mappable.hpp container/mappable.cpp container/dictionary.hpp container/dictionary.cpp container/linear.hpp container/linear.cpp
 
 libexc = $(libcon) zlasdtest/container/container.hpp zlasdtest/container/testable.hpp zlasdtest/container/traversable.hpp zlasdtest/container/mappable.hpp zlasdtest/container/dictionary.hpp zlasdtest/container/linear.hpp
@@ -63,3 +63,6 @@ exc2bs.o: $(libexc2b) zlasdtest/exercise2b/simpletest.cpp
 
 exc2bf.o: $(libexc2b) zlasdtest/exercise2b/fulltest.cpp
 	$(cc) $(cflags) -c zlasdtest/exercise2b/fulltest.cpp -o exc2bf.o
+
+
+
