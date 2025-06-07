@@ -10,6 +10,9 @@
 #include <iostream>
 
 #include <random>
+#include <algorithm>
+#include <limits>
+
 
 #include <cassert> //da eliminare perchè serve solo per assert
 
@@ -35,6 +38,23 @@
 #include "../heap/vec/heapvec.hpp"
 #include "../pq/pq.hpp"
 #include "../pq/heap/pqheap.hpp"
+
+
+
+
+#include "../zlasdtest/container/container.hpp"
+#include "../zlasdtest/container/dictionary.hpp"
+#include "../zlasdtest/container/linear.hpp"
+#include "../zlasdtest/container/mappable.hpp"
+#include "../zlasdtest/container/testable.hpp"
+#include "../zlasdtest/container/traversable.hpp"
+
+#include "../zlasdtest/vector/vector.hpp"
+#include "../zlasdtest/list/list.hpp"
+#include "../zlasdtest/set/set.hpp"
+#include "../zlasdtest/heap/heap.hpp"
+#include "../zlasdtest/pq/pq.hpp"
+
 
 using namespace std;
 using namespace lasd;
@@ -3056,7 +3076,7 @@ void testSetVec()
         // Test 18: Clear on empty set
         setVec.Clear();
         assert(setVec.Size() == 0);
-        // Test 19: Capacity after construction
+        // Test 19: capacity after construction
         assert(setVec.Size() <= 4); // Assuming default capacity is 4
         // Test 20: Insert after clear
         setVec.Clear();
@@ -5435,728 +5455,7174 @@ void testSetVec()
     std::cout << "SetVec tests completed successfully, 400 test passed!" << std::endl;
 }
 
+
+
+//Test Gaetano
+
+
+
+
+
+
+
+
+
+/* ************************************************************************** */
+
+
+void myTestEmptyVectorInt(lasd::SortableVector<int> & vec, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, 0);
+  GetFront(testnum, testerr, vec, false, 0);
+  GetBack(testnum, testerr, vec, false, 0);
+
+  SetAt(testnum, testerr, vec, false, 0, 0);
+  SetBack(testnum, testerr, vec, false, 0);
+  SetFront(testnum, testerr, vec, false, 0);
+
+  Exists(testnum, testerr, vec, false, 0);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+
+  vec.Clear();
+
+  vec.Sort();
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, 0);
+  GetFront(testnum, testerr, vec, false, 0);
+  GetBack(testnum, testerr, vec, false, 0);
+
+  SetAt(testnum, testerr, vec, false, 0, 0);
+  SetBack(testnum, testerr, vec, false, 0);
+  SetFront(testnum, testerr, vec, false, 0);
+
+  Exists(testnum, testerr, vec, false, 0);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 0);
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 0);
+
+}
+
+void myTestSingleVectorInt(lasd::SortableVector<int> & vec, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, vec, false);
+  Size(testnum, testerr, vec, true, 1);
+
+  GetAt(testnum, testerr, vec, true, 0, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  SetAt(testnum, testerr, vec, true, 0, 0);
+  GetAt(testnum, testerr, vec, true, 0, 0);
+  Exists(testnum, testerr, vec, true, 0);
+
+  GetFront(testnum, testerr, vec, true, 0);
+  SetFront(testnum, testerr, vec, true, 1);
+  GetFront(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  SetFront(testnum, testerr, vec, true, 0);
+  GetFront(testnum, testerr, vec, true, 0);
+  Exists(testnum, testerr, vec, true, 0);
+
+  GetBack(testnum, testerr, vec, true, 0);
+  SetBack(testnum, testerr, vec, true, 1);
+  GetBack(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  SetBack(testnum, testerr, vec, true, 0);
+  GetBack(testnum, testerr, vec, true, 0);
+  Exists(testnum, testerr, vec, true, 0);
+
+  SetAt(testnum, testerr, vec, true, 0, 1);
+  GetAt(testnum, testerr, vec, true, 0, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 1);
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+
+  TraversePreOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPreOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 1);
+
+  vec.Clear();
+
+  myTestEmptyVectorInt(vec, testnum, testerr);
+
+  vec.Resize(1);
+
+  vec.Sort();
+
+  Exists(testnum, testerr, vec, true, 0);
+
+  SetFront(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 1);
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 1);
+
+  vec.Clear();
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, 0);
+  GetFront(testnum, testerr, vec, false, 0);
+  GetBack(testnum, testerr, vec, false, 0);
+
+  SetAt(testnum, testerr, vec, false, 0, 0);
+  SetBack(testnum, testerr, vec, false, 0);
+  SetFront(testnum, testerr, vec, false, 0);
+
+  Exists(testnum, testerr, vec, false, 0);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 0);
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 0);
+
+  vec.Resize(1);
+  SetFront(testnum, testerr, vec, true, 1);
+}
+
+void myTestMultipleVectorInt(lasd::SortableVector<int> & vec, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, vec, false);
+  Size(testnum, testerr, vec, true, 20);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 210);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, vec, true, index);
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, vec, true, index, index + 1);
+
+  GetFront(testnum, testerr, vec, true, 1);
+  SetFront(testnum, testerr, vec, true, 20);
+  GetFront(testnum, testerr, vec, true, 20);
+  Exists(testnum, testerr, vec, true, 20);
+  SetFront(testnum, testerr, vec, true, 1);
+  GetFront(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+
+  GetBack(testnum, testerr, vec, true, 20);
+  SetBack(testnum, testerr, vec, true, 1);
+  GetBack(testnum, testerr, vec, true, 1);
+  Exists(testnum, testerr, vec, true, 1);
+  SetBack(testnum, testerr, vec, true, 20);
+  GetBack(testnum, testerr, vec, true, 20);
+  Exists(testnum, testerr, vec, true, 20);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<int>);
+  Fold(testnum, testerr, vec, true, &FoldAdd<int>, 0, 210);
+  
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec, true, 19 - index, 20 - index);
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldAdd<int>, 0, 210);
+
+  vec.Resize(1);
+  SetAt(testnum, testerr, vec, true, 0, 1);
+  myTestSingleVectorInt(vec, testnum, testerr);
+
+  vec.Resize(10);
+
+  for (int index = 0; index < 10; index++)
+    SetAt(testnum, testerr, vec, true, 9 - index, 10 - index);
+
+  for (int index = 1; index <= 10; index++)
+    Exists(testnum, testerr, vec, true, index);
+
+  vec.Sort();
+
+  for (int index = 0; index < 10; index++)
+    GetAt(testnum, testerr, vec, true, index, index + 1);
+
+  vec.Resize(20);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec, true, index, index + 1);
+  
+}
+
+void myTestVectorInt(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of Vector<int> Test:" << endl;
+  try {
+    {
+      cout << endl << "Empty Vector" << endl;
+
+      lasd::List<int> list;
+
+      lasd::SortableVector<int> vector;
+
+      myTestEmptyVectorInt(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<int> copyCVector(list);
+
+      myTestEmptyVectorInt(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> copyVector = vector;
+
+      myTestEmptyVectorInt(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<int> moveCVector(std::move(list));
+
+      myTestEmptyVectorInt(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> moveVector = std::move(vector);
+
+      myTestEmptyVectorInt(moveVector, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 Vector" << endl;
+
+      lasd::List<int> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, 1);
+
+      lasd::SortableVector<int> vector(1);
+
+      SetFront(loctestnum, loctesterr, vector, true, 1);
+
+      cout << endl << "Size 1 Vector" << endl;
+
+      myTestSingleVectorInt(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<int> copyCVector(list);
+
+      myTestSingleVectorInt(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> copyVector = vector;
+
+      myTestSingleVectorInt(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<int> moveCVector(std::move(list));
+
+      myTestSingleVectorInt(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> moveVector = std::move(vector);
+
+      myTestSingleVectorInt(moveVector, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 Vector" << endl;
+      
+      lasd::List<int> list;
+      
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, index);
+      
+      lasd::SortableVector<int> vector(20);
+      
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vector, true, index, index + 1);
+      
+      cout << endl << "Size 20 Vector" << endl;
+
+      myTestMultipleVectorInt(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<int> copyCVector(list);
+
+      myTestMultipleVectorInt(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> copyVector = vector;
+
+      myTestMultipleVectorInt(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<int> moveCVector(std::move(list));
+
+      myTestMultipleVectorInt(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<int> moveVector = std::move(vector);
+
+      myTestMultipleVectorInt(moveVector, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of Vector<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void myTestEmptyVectorString(lasd::SortableVector<string> & vec, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, string(""));
+  GetFront(testnum, testerr, vec, false, string(""));
+  GetBack(testnum, testerr, vec, false, string(""));
+
+  SetAt(testnum, testerr, vec, false, 0, string(""));
+  SetBack(testnum, testerr, vec, false, string(""));
+  SetFront(testnum, testerr, vec, false, string(""));
+
+  Exists(testnum, testerr, vec, false, string(""));
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+
+  vec.Clear();
+
+  vec.Sort();
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, string(""));
+  GetFront(testnum, testerr, vec, false, string(""));
+  GetBack(testnum, testerr, vec, false, string(""));
+
+  SetAt(testnum, testerr, vec, false, 0, string(""));
+  SetBack(testnum, testerr, vec, false, string(""));
+  SetFront(testnum, testerr, vec, false, string(""));
+
+  Exists(testnum, testerr, vec, false, string(""));
+
+  MapPreOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string(""));
+
+  MapPostOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string(""));
+
+}
+
+void myTestSingleVectorString(lasd::SortableVector<string> & vec, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, vec, false);
+  Size(testnum, testerr, vec, true, 1);
+
+  GetAt(testnum, testerr, vec, true, 0, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  SetAt(testnum, testerr, vec, true, 0, string(""));
+  GetAt(testnum, testerr, vec, true, 0, string(""));
+  Exists(testnum, testerr, vec, true, string(""));
+
+  GetFront(testnum, testerr, vec, true, string(""));
+  SetFront(testnum, testerr, vec, true, string("a"));
+  GetFront(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  SetFront(testnum, testerr, vec, true, string(""));
+  GetFront(testnum, testerr, vec, true, string(""));
+  Exists(testnum, testerr, vec, true, string(""));
+
+  GetBack(testnum, testerr, vec, true, string(""));
+  SetBack(testnum, testerr, vec, true, string("a"));
+  GetBack(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  SetBack(testnum, testerr, vec, true, string(""));
+  GetBack(testnum, testerr, vec, true, string(""));
+  Exists(testnum, testerr, vec, true, string(""));
+
+  SetAt(testnum, testerr, vec, true, 0, string("a"));
+  GetAt(testnum, testerr, vec, true, 0, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a"));
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+
+  TraversePreOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a"));
+
+  vec.Clear();
+
+  myTestEmptyVectorString(vec, testnum, testerr);
+
+  vec.Resize(1);
+
+  vec.Sort();
+
+  Exists(testnum, testerr, vec, true, string(""));
+
+  SetFront(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a"));
+
+  MapPreOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a "));
+
+  MapPostOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a  "));
+
+  vec.Clear();
+
+  Empty(testnum, testerr, vec, true);
+  Size(testnum, testerr, vec, true, 0);
+
+  GetAt(testnum, testerr, vec, false, 0, string(""));
+  GetFront(testnum, testerr, vec, false, string(""));
+  GetBack(testnum, testerr, vec, false, string(""));
+
+  SetAt(testnum, testerr, vec, false, 0, string(""));
+  SetBack(testnum, testerr, vec, false, string(""));
+  SetFront(testnum, testerr, vec, false, string(""));
+
+  Exists(testnum, testerr, vec, false, string(""));
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string(""));
+
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string(""));
+
+  vec.Resize(1);
+  SetFront(testnum, testerr, vec, true, string("a"));
+
+}
+
+void myTestMultipleVectorString(lasd::SortableVector<string> & vec, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, vec, false);
+  Size(testnum, testerr, vec, true, 20);
+
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("abcdefghijklmnopqrst"));
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, vec, true, string(1, char (97 + index)));
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, vec, true, index, string(1, char (97 + index)));
+
+  GetFront(testnum, testerr, vec, true, string("a"));
+  SetFront(testnum, testerr, vec, true, string("t"));
+  GetFront(testnum, testerr, vec, true, string("t"));
+  Exists(testnum, testerr, vec, true, string("t"));
+  SetFront(testnum, testerr, vec, true, string("a"));
+  GetFront(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+
+  GetBack(testnum, testerr, vec, true, string("t"));
+  SetBack(testnum, testerr, vec, true, string("a"));
+  GetBack(testnum, testerr, vec, true, string("a"));
+  Exists(testnum, testerr, vec, true, string("a"));
+  SetBack(testnum, testerr, vec, true, string("t"));
+  GetBack(testnum, testerr, vec, true, string("t"));
+  Exists(testnum, testerr, vec, true, string("t"));
+
+  MapPreOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, vec, true, &TraversePrint<string>);
+  Fold(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a b c d e f g h i j k l m n o p q r s t "));
+  
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec, true, 19 - index, string(1, char (97 + index)));
+
+  MapPostOrder(testnum, testerr, vec, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, vec, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, vec, true, &FoldStringConcatenate, string(""), string("a b c d e f g h i j k l m n o p q r s t "));
+
+  vec.Resize(1);
+  SetAt(testnum, testerr, vec, true, 0, string("a"));
+  myTestSingleVectorString(vec, testnum, testerr);
+
+  vec.Resize(10);
+
+  for (int index = 0; index < 10; index++)
+    SetAt(testnum, testerr, vec, true, 9 - index, string(1, char (97 + index)));
+
+  for (int index = 0; index < 10; index++)
+    Exists(testnum, testerr, vec, true, string(1, char (97 + index)));
+
+  vec.Sort();
+
+  for (int index = 0; index < 10; index++)
+    GetAt(testnum, testerr, vec, true, index, string(1, char (97 + index)));
+
+  vec.Resize(20);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec, true, index, string(1, char (97 + index)));
+  
+}
+
+void myTestVectorString(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of Vector<string> Test:" << endl;
+  try  {
+    {
+      cout << endl << "Empty Vector" << endl;
+
+      lasd::List<string> list;
+
+      lasd::SortableVector<string> vector;
+
+      myTestEmptyVectorString(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<string> copyCVector(list);
+
+      myTestEmptyVectorString(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> copyVector = vector;
+
+      myTestEmptyVectorString(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<string> moveCVector(std::move(list));
+
+      myTestEmptyVectorString(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> moveVector = std::move(vector);
+
+      myTestEmptyVectorString(moveVector, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 Vector" << endl;
+
+      lasd::List<string> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, string("a"));
+
+      lasd::SortableVector<string> vector(1);
+
+      SetFront(loctestnum, loctesterr, vector, true, string("a"));
+
+      cout << endl << "Size 1 Vector" << endl;
+
+      myTestSingleVectorString(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<string> copyCVector(list);
+
+      myTestSingleVectorString(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> copyVector = vector;
+
+      myTestSingleVectorString(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<string> moveCVector(std::move(list));
+
+      myTestSingleVectorString(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> moveVector = std::move(vector);
+
+      myTestSingleVectorString(moveVector, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 Vector" << endl;
+      
+      lasd::List<string> list;
+      
+      for (int index = 0; index < 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, string(1, char (97 + index)));
+      
+      lasd::SortableVector<string> vector(20);
+      
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vector, true, index, string(1, char (97 + index)));
+      
+      cout << endl << "Size 20 Vector" << endl;
+
+      myTestMultipleVectorString(vector, loctestnum, loctesterr);
+
+      cout << endl << "Copy Vector" << endl;
+
+      lasd::SortableVector<string> copyCVector(list);
+
+      myTestMultipleVectorString(copyCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> copyVector = vector;
+
+      myTestMultipleVectorString(copyVector, loctestnum, loctesterr);
+
+      cout << endl << "Move Vector" << endl;
+
+      lasd::SortableVector<string> moveCVector(std::move(list));
+
+      myTestMultipleVectorString(moveCVector, loctestnum, loctesterr);
+
+      lasd::SortableVector<string> moveVector = std::move(vector);
+
+      myTestMultipleVectorString(moveVector, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of Vector<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void myTestEmptyListInt(lasd::List<int> & lst, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  GetAt(testnum, testerr, lst, false, 0, 0);
+  GetFront(testnum, testerr, lst, false, 0);
+  GetBack(testnum, testerr, lst, false, 0);
+
+  SetAt(testnum, testerr, lst, false, 0, 0);
+  SetBack(testnum, testerr, lst, false, 0);
+  SetFront(testnum, testerr, lst, false, 0);
+
+  Exists(testnum, testerr, lst, false, 0);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  GetAt(testnum, testerr, lst, false, 0, 0);
+  GetFront(testnum, testerr, lst, false, 0);
+  GetBack(testnum, testerr, lst, false, 0);
+
+  SetAt(testnum, testerr, lst, false, 0, 0);
+  SetBack(testnum, testerr, lst, false, 0);
+  SetFront(testnum, testerr, lst, false, 0);
+
+  Exists(testnum, testerr, lst, false, 0);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 0);
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 0);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, 0);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+
+  Exists(testnum, testerr, lst, true, 1);
+
+  FrontNRemove(testnum, testerr, lst, true, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromFront(testnum, testerr, lst, true);
+
+  RemoveFromBack(testnum, testerr, lst, false);
+  BackNRemove(testnum, testerr, lst, false, 0);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  Exists(testnum, testerr, lst, true, 1);
+
+  BackNRemove(testnum, testerr, lst, true, 1);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+}
+
+void myTestSingleListInt(lasd::List<int> & lst, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, lst, false);
+  Size(testnum, testerr, lst, true, 1);
+
+  GetAt(testnum, testerr, lst, true, 0, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  SetAt(testnum, testerr, lst, true, 0, 0);
+  GetAt(testnum, testerr, lst, true, 0, 0);
+  Exists(testnum, testerr, lst, true, 0);
+
+  GetFront(testnum, testerr, lst, true, 0);
+  SetFront(testnum, testerr, lst, true, 1);
+  GetFront(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  SetFront(testnum, testerr, lst, true, 0);
+  GetFront(testnum, testerr, lst, true, 0);
+  Exists(testnum, testerr, lst, true, 0);
+
+  GetBack(testnum, testerr, lst, true, 0);
+  SetBack(testnum, testerr, lst, true, 1);
+  GetBack(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  SetBack(testnum, testerr, lst, true, 0);
+  GetBack(testnum, testerr, lst, true, 0);
+  Exists(testnum, testerr, lst, true, 0);
+
+  SetAt(testnum, testerr, lst, true, 0, 1);
+  GetAt(testnum, testerr, lst, true, 0, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+
+  TraversePreOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPreOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  FrontNRemove(testnum, testerr, lst, false, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, 1);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  RemoveFromFront(testnum, testerr, lst, true);
+  FrontNRemove(testnum, testerr, lst, false, 1);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  FrontNRemove(testnum, testerr, lst, true, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+
+  lst.Clear();
+  
+  myTestEmptyListInt(lst, testnum, testerr);
+
+  Exists(testnum, testerr, lst, false, 1);
+
+  InsertAtBack(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  FrontNRemove(testnum, testerr, lst, false, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, 0);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  RemoveFromFront(testnum, testerr, lst, true);
+  FrontNRemove(testnum, testerr, lst, false, 0);
+  InsertAtBack(testnum, testerr, lst, true, 1);
+
+  FrontNRemove(testnum, testerr, lst, true, 1);
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 1);
+
+}
+
+void myTestMultipleListInt(lasd::List<int> & lst, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, lst, false);
+  Size(testnum, testerr, lst, true, 20);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 210);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, index);
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, lst, true, index, index + 1);
+
+  GetFront(testnum, testerr, lst, true, 1);
+  SetFront(testnum, testerr, lst, true, 20);
+  GetFront(testnum, testerr, lst, true, 20);
+  Exists(testnum, testerr, lst, true, 20);
+  SetFront(testnum, testerr, lst, true, 1);
+  GetFront(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+
+  GetBack(testnum, testerr, lst, true, 20);
+  SetBack(testnum, testerr, lst, true, 1);
+  GetBack(testnum, testerr, lst, true, 1);
+  Exists(testnum, testerr, lst, true, 1);
+  SetBack(testnum, testerr, lst, true, 20);
+  GetBack(testnum, testerr, lst, true, 20);
+  Exists(testnum, testerr, lst, true, 20);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<int>);
+  Fold(testnum, testerr, lst, true, &FoldAdd<int>, 0, 210);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, lst, true, 19 - index, 20 - index);
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldAdd<int>, 0, 210);
+
+  lst.Clear();
+
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, index);
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, index);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, index);
+
+  for (int index = 1; index <= 10; index++)
+    FrontNRemove(testnum, testerr, lst, true, index);
+
+  for (int index = 20; index >= 11; index--)
+    BackNRemove(testnum, testerr, lst, true, index);
+
+  lst.Clear();
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, index);
+  
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, index);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, index);
+
+  for (int index = 20; index >= 11; index--)
+    BackNRemove(testnum, testerr, lst, true, index);
+  
+  for (int index = 1; index <= 10; index++)
+    FrontNRemove(testnum, testerr, lst, true, index);
+
+  lst.Clear();
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+  myTestSingleListInt(lst, testnum, testerr);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, index);
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, index);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, index);
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, lst, true, index, index + 1);
+
+}
+
+void myTestListInt(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of List<int> Test:" << endl;
+  try {
+    {
+      cout << endl << "Empty List" << endl;
+
+      lasd::Vector<int> vector;
+
+      lasd::List<int> list;
+
+      myTestEmptyListInt(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<int> copyCList(vector);
+
+      myTestEmptyListInt(copyCList, loctestnum, loctesterr);
+
+      lasd::List<int> copyList = list;
+
+      myTestEmptyListInt(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<int> moveCList(std::move(vector));
+
+      myTestEmptyListInt(moveCList, loctestnum, loctesterr);
+
+      lasd::List<int> moveList = std::move(list);
+
+      myTestEmptyListInt(moveList, loctestnum, loctesterr);
+    }
+     {
+      cout << endl << "Start Inserting Element Size 1 List" << endl;
+
+      lasd::Vector<int> vector(1);
+
+      SetFront(loctestnum, loctesterr, vector, true, 1);
+      
+      lasd::List<int> list;
+      
+      InsertAtFront(loctestnum, loctesterr, list, true, 1);
+
+      cout << endl << "Size 1 List" << endl;
+
+      myTestSingleListInt(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<int> copyCList(vector);
+
+      myTestSingleListInt(copyCList, loctestnum, loctesterr);
+
+      lasd::List<int> copyList = list;
+
+      myTestSingleListInt(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<int> moveCList(std::move(vector));
+
+      myTestSingleListInt(moveCList, loctestnum, loctesterr);
+
+      lasd::List<int> moveList = std::move(list);
+
+      myTestSingleListInt(moveList, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 List" << endl;
+      
+      lasd::Vector<int> vector(20);
+      
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vector, true, index, index + 1);
+      
+      lasd::List<int> list;
+      
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, index);
+      
+      cout << endl << "Size 20 List" << endl;
+
+      myTestMultipleListInt(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<int> copyCList(vector);
+
+      myTestMultipleListInt(copyCList, loctestnum, loctesterr);
+
+      lasd::List<int> copyList = list;
+
+      myTestMultipleListInt(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<int> moveCList(std::move(vector));
+
+      myTestMultipleListInt(moveCList, loctestnum, loctesterr);
+
+      lasd::List<int> moveList = std::move(list);
+
+      myTestMultipleListInt(moveList, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of List<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void myTestEmptyListString(lasd::List<string> & lst, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  GetAt(testnum, testerr, lst, false, 0, string(""));
+  GetFront(testnum, testerr, lst, false, string(""));
+  GetBack(testnum, testerr, lst, false, string(""));
+
+  SetAt(testnum, testerr, lst, false, 0, string(""));
+  SetBack(testnum, testerr, lst, false, string(""));
+  SetFront(testnum, testerr, lst, false, string(""));
+
+  Exists(testnum, testerr, lst, false, string(""));
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  GetAt(testnum, testerr, lst, false, 0, string(""));
+  GetFront(testnum, testerr, lst, false, string(""));
+  GetBack(testnum, testerr, lst, false, string(""));
+
+  SetAt(testnum, testerr, lst, false, 0, string(""));
+  SetBack(testnum, testerr, lst, false, string(""));
+  SetFront(testnum, testerr, lst, false, string(""));
+
+  Exists(testnum, testerr, lst, false, string(""));
+
+  MapPreOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string(""));
+
+  MapPostOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string(""));
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, string(""));
+  InsertAtFront(testnum, testerr, lst, true, string(""));
+
+  Exists(testnum, testerr, lst, true, string(""));
+
+  FrontNRemove(testnum, testerr, lst, true, string(""));
+  InsertAtFront(testnum, testerr, lst, true, string(""));
+  RemoveFromFront(testnum, testerr, lst, true);
+
+  RemoveFromBack(testnum, testerr, lst, false);
+  BackNRemove(testnum, testerr, lst, false, string(""));
+  InsertAtBack(testnum, testerr, lst, true, string(""));
+
+  Exists(testnum, testerr, lst, true, string(""));
+
+  BackNRemove(testnum, testerr, lst, true, string(""));
+  InsertAtBack(testnum, testerr, lst, true, string(""));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+}
+
+void myTestSingleListString(lasd::List<string> & lst, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, lst, false);
+  Size(testnum, testerr, lst, true, 1);
+
+  GetAt(testnum, testerr, lst, true, 0, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  SetAt(testnum, testerr, lst, true, 0, string("a"));
+  GetAt(testnum, testerr, lst, true, 0, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  GetFront(testnum, testerr, lst, true, string("a"));
+  SetFront(testnum, testerr, lst, true, string("a"));
+  GetFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  SetFront(testnum, testerr, lst, true, string("a"));
+  GetFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  GetBack(testnum, testerr, lst, true, string("a"));
+  SetBack(testnum, testerr, lst, true, string("a"));
+  GetBack(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  SetBack(testnum, testerr, lst, true, string("a"));
+  GetBack(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  SetAt(testnum, testerr, lst, true, 0, string("a"));
+  GetAt(testnum, testerr, lst, true, 0, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a"));
+
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a"));
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+
+  RemoveFromFront(testnum, testerr, lst, true);
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+
+  FrontNRemove(testnum, testerr, lst, true, string("a"));
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  lst.Clear();
+  
+  myTestEmptyListString(lst, testnum, testerr);
+
+  Exists(testnum, testerr, lst, false, string("a"));
+
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  MapPreOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a "));
+
+  MapPostOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a  "));
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+  Size(testnum, testerr, lst, true, 0);
+
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  RemoveFromFront(testnum, testerr, lst, false);
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+
+  RemoveFromFront(testnum, testerr, lst, true);
+  FrontNRemove(testnum, testerr, lst, false, string("a"));
+  InsertAtBack(testnum, testerr, lst, true, string("a"));
+
+  FrontNRemove(testnum, testerr, lst, true, string("a"));
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  RemoveFromBack(testnum, testerr, lst, true);
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  MapPreOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a "));
+
+  MapPostOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a  "));
+
+  lst.Clear();
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+
+}
+
+void myTestMultipleListString(lasd::List<string> & lst, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, lst, false);
+  Size(testnum, testerr, lst, true, 20);
+
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("abcdefghijklmnopqrst"));
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, lst, true, string(1, char (97 + index)));
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, lst, true, index, string(1, char (97 + index)));
+
+  GetFront(testnum, testerr, lst, true, string("a"));
+  SetFront(testnum, testerr, lst, true, string("t"));
+  GetFront(testnum, testerr, lst, true, string("t"));
+  Exists(testnum, testerr, lst, true, string("t"));
+  SetFront(testnum, testerr, lst, true, string("a"));
+  GetFront(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+
+  GetBack(testnum, testerr, lst, true, string("t"));
+  SetBack(testnum, testerr, lst, true, string("a"));
+  GetBack(testnum, testerr, lst, true, string("a"));
+  Exists(testnum, testerr, lst, true, string("a"));
+  SetBack(testnum, testerr, lst, true, string("t"));
+  GetBack(testnum, testerr, lst, true, string("t"));
+  Exists(testnum, testerr, lst, true, string("t"));
+
+  MapPreOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, lst, true, &TraversePrint<string>);
+  Fold(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a b c d e f g h i j k l m n o p q r s t "));
+  
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, lst, true, 19 - index, string(1, char (97 + index)));
+
+  MapPostOrder(testnum, testerr, lst, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, lst, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, lst, true, &FoldStringConcatenate, string(""), string("a b c d e f g h i j k l m n o p q r s t "));
+
+  lst.Clear();
+
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 1; index <= 10; index++)
+    FrontNRemove(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 20; index >= 11; index--)
+    BackNRemove(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  lst.Clear();
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+  
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 20; index >= 11; index--)
+    BackNRemove(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+  
+  for (int index = 1; index <= 10; index++)
+    FrontNRemove(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  lst.Clear();
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+  myTestSingleListString(lst, testnum, testerr);
+
+  lst.Clear();
+
+  Empty(testnum, testerr, lst, true);
+
+  for (int index = 10; index >= 1; index--)
+    InsertAtFront(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 11; index <= 20; index++)
+    InsertAtBack(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, lst, true, string(1, char (97 + index - 1)));
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, lst, true, index, string(1, char (97 + index)));
+
+}
+
+void myTestListString(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of List<string> Test:" << endl;
+  try {
+    {
+      cout << endl << "Empty List" << endl;
+
+      lasd::Vector<string> vector;
+
+      lasd::List<string> list;
+
+      myTestEmptyListString(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<string> copyCList(vector);
+
+      myTestEmptyListString(copyCList, loctestnum, loctesterr);
+
+      lasd::List<string> copyList = list;
+
+      myTestEmptyListString(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<string> moveCList(std::move(vector));
+
+      myTestEmptyListString(moveCList, loctestnum, loctesterr);
+
+      lasd::List<string> moveList = std::move(list);
+
+      myTestEmptyListString(moveList, loctestnum, loctesterr);
+    }
+      {
+      cout << endl << "Start Inserting Element Size 1 List" << endl;
+
+      lasd::Vector<string> vector(1);
+
+      SetFront(loctestnum, loctesterr, vector, true, string("a"));
+      
+      lasd::List<string> list;
+      
+      InsertAtFront(loctestnum, loctesterr, list, true, string("a"));
+
+      cout << endl << "Size 1 List" << endl;
+
+      myTestSingleListString(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<string> copyCList(vector);
+
+      myTestSingleListString(copyCList, loctestnum, loctesterr);
+
+      lasd::List<string> copyList = list;
+
+      myTestSingleListString(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<string> moveCList(std::move(vector));
+
+      myTestSingleListString(moveCList, loctestnum, loctesterr);
+
+      lasd::List<string> moveList = std::move(list);
+
+      myTestSingleListString(moveList, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 List" << endl;
+      
+      lasd::Vector<string> vector(20);
+      
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vector, true, index, string(1, char (97 + index)));
+      
+      lasd::List<string> list;
+      
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, string(1, char (97 + index - 1)));
+      
+      cout << endl << "Size 20 List" << endl;
+
+      myTestMultipleListString(list, loctestnum, loctesterr);
+
+      cout << endl << "Copy List" << endl;
+
+      lasd::List<string> copyCList(vector);
+
+      myTestMultipleListString(copyCList, loctestnum, loctesterr);
+
+      lasd::List<string> copyList = list;
+
+      myTestMultipleListString(copyList, loctestnum, loctesterr);
+
+      cout << endl << "Move List" << endl;
+
+      lasd::List<string> moveCList(std::move(vector));
+
+      myTestMultipleListString(moveCList, loctestnum, loctesterr);
+
+      lasd::List<string> moveList = std::move(list);
+
+      myTestMultipleListString(moveList, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of List<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+/* ************************************************************************** */
+
+void myTestVector(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  myTestVectorInt(loctestnum, loctesterr);
+  myTestVectorString(loctestnum, loctesterr);
+  testnum += loctestnum;
+  testerr += loctesterr;
+  cout << endl << "Exercise 1A - Vector (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+}
+
+void myTestList(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  myTestListInt(loctestnum, loctesterr);
+  myTestListString(loctestnum, loctesterr);
+  testnum += loctestnum;
+  testerr += loctesterr;
+  cout << endl << "Exercise 1A - List (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+}
+
+void myTestExercise1A(unsigned int & testnum, unsigned int & testerr) {
+  myTestVector(testnum, testerr);
+  myTestList(testnum, testerr);
+  cout << endl << "Exercise 1A (Student Test) (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
+}
+
+/* ************************************************************************** */
+
+void myTestEmptySetInt(lasd::Set<int> & set, unsigned int & testnum, unsigned int & testerr) {
+  
+  Empty(testnum, testerr, set, true);
+  Size(testnum, testerr, set, true, 0);
+
+  GetAt(testnum, testerr, set, false, 0, 0);
+  GetFront(testnum, testerr, set, false, 0);
+  GetBack(testnum, testerr, set, false, 0);
+
+  Exists(testnum, testerr, set, false, 0);
+
+  lasd::Vector<int> vec(1);
+
+  SetFront(testnum, testerr, vec, true, 1);
+
+  lasd::Vector<int> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<int> vec2(2);
+
+  SetFront(testnum, testerr, vec2, true, 1);
+  SetBack(testnum, testerr, vec2, true, 2);
+
+  lasd::Vector<int> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<int>);
+
+  Min(testnum, testerr, set, false, 0);
+  RemoveMin(testnum, testerr, set, false);
+  MinNRemove(testnum, testerr, set, false, 0);
+  
+  Max(testnum, testerr, set, false, 0);
+  RemoveMax(testnum, testerr, set, false);
+  MaxNRemove(testnum, testerr, set, false, 0);
+  
+  Predecessor(testnum, testerr, set, false, 0, 1);
+  RemovePredecessor(testnum, testerr, set, false, 0);
+  PredecessorNRemove(testnum, testerr, set, false, 0, 1);
+
+  Successor(testnum, testerr, set, false, 0, 1);
+  RemoveSuccessor(testnum, testerr, set, false, 0);
+  SuccessorNRemove(testnum, testerr, set, false, 0, 1);
+
+  set.Clear();
+
+  Empty(testnum, testerr, set, true);
+  Size(testnum, testerr, set, true, 0);
+
+  GetAt(testnum, testerr, set, false, 0, 0);
+  GetFront(testnum, testerr, set, false, 0);
+  GetBack(testnum, testerr, set, false, 0);
+
+  Exists(testnum, testerr, set, false, 0);
+
+  lasd::List<int> lst;
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+
+  lasd::List<int> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<int> lst2;
+
+  InsertAtFront(testnum, testerr, lst2, true, 1);
+  InsertAtBack(testnum, testerr, lst2, true, 2);
+
+  lasd::List<int> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<int>);
+  Fold(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  Min(testnum, testerr, set, false, 0);
+  RemoveMin(testnum, testerr, set, false);
+  MinNRemove(testnum, testerr, set, false, 0);
+  
+  Max(testnum, testerr, set, false, 0);
+  RemoveMax(testnum, testerr, set, false);
+  MaxNRemove(testnum, testerr, set, false, 0);
+  
+  Predecessor(testnum, testerr, set, false, 0, 1);
+  RemovePredecessor(testnum, testerr, set, false, 0);
+  PredecessorNRemove(testnum, testerr, set, false, 0, 1);
+
+  Successor(testnum, testerr, set, false, 0, 1);
+  RemoveSuccessor(testnum, testerr, set, false, 0);
+  SuccessorNRemove(testnum, testerr, set, false, 0, 1);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  set.Clear();
+
+}
+
+void myTestSingleSetInt(lasd::Set<int> & set, unsigned int & testnum, unsigned int & testerr) {
+ 
+  Empty(testnum, testerr, set, false);
+  Size(testnum, testerr, set, true, 1);
+
+  GetAt(testnum, testerr, set, true, 0, 1);
+  GetFront(testnum, testerr, set, true, 1);
+  GetBack(testnum, testerr, set, true, 1);
+
+  Exists(testnum, testerr, set, true, 1);
+
+  lasd::Vector<int> vec(1);
+
+  SetFront(testnum, testerr, vec, true, 0);
+
+  lasd::Vector<int> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<int> vec2(2);
+
+  SetFront(testnum, testerr, vec2, true, 1);
+  SetBack(testnum, testerr, vec2, true, 2);
+
+  lasd::Vector<int> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  vec2 = vec2R;
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Min(testnum, testerr, set, true, 1);
+  RemoveMin(testnum, testerr, set, true);
+  
+  Min(testnum, testerr, set, true, 2);
+  MinNRemove(testnum, testerr, set, true, 2);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Max(testnum, testerr, set, true, 2);
+  RemoveMax(testnum, testerr, set, true);
+
+  Max(testnum, testerr, set, true, 1);
+  MaxNRemove(testnum, testerr, set, true, 1);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, true, 2, 1);
+  RemovePredecessor(testnum, testerr, set, true, 2);
+
+  Predecessor(testnum, testerr, set, true, 3, 2);
+  PredecessorNRemove(testnum, testerr, set, true, 3, 2);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Successor(testnum, testerr, set, true, 0, 1);
+  RemoveSuccessor(testnum, testerr, set, true, 0);
+
+  Successor(testnum, testerr, set, true, 1, 2);
+  SuccessorNRemove(testnum, testerr, set, true, 1, 2);
+
+  set.Clear();
+
+  myTestEmptySetInt(set, testnum, testerr);
+
+  lasd::List<int> lst;
+
+  InsertAtFront(testnum, testerr, lst, true, 1);
+
+  lasd::List<int> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<int> lst2;
+
+  InsertAtFront(testnum, testerr, lst2, true, 1);
+  InsertAtBack(testnum, testerr, lst2, true, 2);
+
+  lasd::List<int> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  lst2 = lst2R;
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<int>);
+  Fold(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Min(testnum, testerr, set, true, 1);
+  RemoveMin(testnum, testerr, set, true);
+  
+  Min(testnum, testerr, set, true, 2);
+  MinNRemove(testnum, testerr, set, true, 2);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Max(testnum, testerr, set, true, 2);
+  RemoveMax(testnum, testerr, set, true);
+
+  Max(testnum, testerr, set, true, 1);
+  MaxNRemove(testnum, testerr, set, true, 1);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+  
+  Predecessor(testnum, testerr, set, true, 2, 1);
+  RemovePredecessor(testnum, testerr, set, true, 2);
+
+  Predecessor(testnum, testerr, set, true, 3, 2);
+  PredecessorNRemove(testnum, testerr, set, true, 3, 2);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Successor(testnum, testerr, set, true, 0, 1);
+  RemoveSuccessor(testnum, testerr, set, true, 0);
+
+  Successor(testnum, testerr, set, true, 1, 2);
+  SuccessorNRemove(testnum, testerr, set, true, 1, 2);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  InsertC(testnum, testerr, set, true, 1);
+}
+
+void myTestMultipleSetInt(lasd::Set<int> & set, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, set, false);
+  Size(testnum, testerr, set, true, 20);
+
+  GetFront(testnum, testerr, set, true, 1);
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, set, true, index, index + 1);
+
+  GetBack(testnum, testerr, set, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, set, true, index);
+
+  set.Clear();
+
+  lasd::Vector<int> vec(10);
+
+  for (int index = 0; index < 10; index++)
+    SetAt(testnum, testerr, vec, true, index, index + 1);
+
+  lasd::Vector<int> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<int> vec2(20);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec2, true, index, index + 1);
+
+  lasd::Vector<int> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  vec2 = vec2R;
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, index + 1);
+    RemoveMin(testnum, testerr, set, true);
+  }
+
+  Min(testnum, testerr, set, false, 0);
+  RemoveMin(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, index + 1);
+    MinNRemove(testnum, testerr, set, true, index + 1);
+  }
+
+  Min(testnum, testerr, set, false, 0);
+  MinNRemove(testnum, testerr, set, false, 0);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 20; index > 0; index--) {
+    Max(testnum, testerr, set, true, index);
+    RemoveMax(testnum, testerr, set, true);
+  }
+
+  Max(testnum, testerr, set, false, 0);
+  RemoveMax(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 20; index > 0; index--) {
+    Max(testnum, testerr, set, true, index);
+    MaxNRemove(testnum, testerr, set, true, index);
+  }
+
+  Max(testnum, testerr, set, false, 0);
+  MaxNRemove(testnum, testerr, set, false, 0);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, false, 22, 21);
+  Predecessor(testnum, testerr, set, false, 0, -1);
+
+  for (int index = 20; index > 0; index--) {
+    Predecessor(testnum, testerr, set, true, index + 1, index);
+    RemovePredecessor(testnum, testerr, set, true, index + 1);
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 20; index > 0; index--) {
+    Predecessor(testnum, testerr, set, true, index + 1, index);
+    PredecessorNRemove(testnum, testerr, set, true, index + 1, index);
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Successor(testnum, testerr, set, false, 20, 21);
+  Successor(testnum, testerr, set, false, -1, 0);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, index, index + 1);
+    RemoveSuccessor(testnum, testerr, set, true, index);
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, index, index + 1);
+    SuccessorNRemove(testnum, testerr, set, true, index, index + 1);
+  }
+
+  set.Clear();
+
+  InsertC(testnum, testerr, set, true, 1);
+
+  myTestSingleSetInt(set, testnum, testerr);
+
+  set.Clear();
+
+  lasd::List<int> lst;
+
+  for (int index = 1; index <= 10; index++)
+    InsertAtFront(testnum, testerr, lst, true, index);
+
+  lasd::List<int> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<int> lst2;
+
+  for (int index = 1; index <= 20; index++)
+    InsertAtFront(testnum, testerr, lst2, true, index);
+
+  lasd::List<int> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  lst2 = lst2R;
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, index + 1);
+    RemoveMin(testnum, testerr, set, true);
+  }
+
+  Min(testnum, testerr, set, false, 0);
+  RemoveMin(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, index + 1);
+    MinNRemove(testnum, testerr, set, true, index + 1);
+  }
+
+  Min(testnum, testerr, set, false, 0);
+  MinNRemove(testnum, testerr, set, false, 0);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 20; index > 0; index--) {
+    Max(testnum, testerr, set, true, index);
+    RemoveMax(testnum, testerr, set, true);
+  }
+
+  Max(testnum, testerr, set, false, 0);
+  RemoveMax(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 20; index > 0; index--) {
+    Max(testnum, testerr, set, true, index);
+    MaxNRemove(testnum, testerr, set, true, index);
+  }
+
+  Max(testnum, testerr, set, false, 0);
+  MaxNRemove(testnum, testerr, set, false, 0);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, false, 22, 21);
+  Predecessor(testnum, testerr, set, false, 0, -1);
+
+  for (int index = 20; index > 0; index--) {
+    Predecessor(testnum, testerr, set, true, index + 1, index);
+    RemovePredecessor(testnum, testerr, set, true, index + 1);
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 20; index > 0; index--) {
+    Predecessor(testnum, testerr, set, true, index + 1, index);
+    PredecessorNRemove(testnum, testerr, set, true, index + 1, index);
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Successor(testnum, testerr, set, false, 20, 21);
+  Successor(testnum, testerr, set, false, -1, 0);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, index, index + 1);
+    RemoveSuccessor(testnum, testerr, set, true, index);
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, index, index + 1);
+    SuccessorNRemove(testnum, testerr, set, true, index, index + 1);
+  }
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<int>);
+  Fold(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldAdd<int>, 0, 0);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+}
+
+void myTestSetInt(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of Set<int> Test" << endl;
+  try {
+    {
+      cout << endl << "Empty SetVector" << endl;
+
+      lasd::List<int> list;
+
+      lasd::SetVec<int> setVec;
+
+      myTestEmptySetInt(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<int> copyCSetVec(list);
+
+      myTestEmptySetInt(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> copySetVec = setVec;
+
+      myTestEmptySetInt(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<int> moveCSetVec(std::move(list));
+
+      myTestEmptySetInt(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> moveSetVec = std::move(setVec);
+
+      myTestEmptySetInt(moveSetVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 SetVector" << endl;
+
+      lasd::List<int> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, 1);
+
+      lasd::SetVec<int> setVec;
+
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);
+
+      cout << endl << "Size 1 SetVector" << endl;
+
+      myTestSingleSetInt(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<int> copyCSetVec(list);
+
+      myTestSingleSetInt(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> copySetVec = setVec;
+
+      myTestSingleSetInt(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<int> moveCSetVec(std::move(list));
+
+      myTestSingleSetInt(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> moveSetVec = std::move(setVec);
+
+      myTestSingleSetInt(moveSetVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 SetVector" << endl;
+
+      lasd::List<int> list;
+
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, index);
+      
+      lasd::SetVec<int> setVec;
+      
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);
+
+      cout << endl << "Size 20 SetVector" << endl;
+
+      myTestMultipleSetInt(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<int> copyCSetVec(list);
+
+      myTestMultipleSetInt(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> copySetVec = setVec;
+
+      myTestMultipleSetInt(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<int> moveCSetVec(std::move(list));
+
+      myTestMultipleSetInt(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<int> moveSetVec = std::move(setVec);
+
+      myTestMultipleSetInt(moveSetVec, loctestnum, loctesterr);
+    }
+     {
+      cout << endl << "Empty SetList" << endl;
+
+      lasd::Vector<int> vec;
+
+      lasd::SetLst<int> setList;
+
+      myTestEmptySetInt(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<int> copyCSetList(vec);
+
+      myTestEmptySetInt(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> copySetList = setList;
+
+      myTestEmptySetInt(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<int> moveCSetList(std::move(vec));
+
+      myTestEmptySetInt(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> moveSetList = std::move(setList);
+
+      myTestEmptySetInt(moveSetList, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 SetList" << endl;
+
+      lasd::Vector<int> vec(1);
+
+      SetFront(loctestnum, loctesterr, vec, true, 1);
+
+      lasd::SetLst<int> setList;
+
+      InsertC(loctestnum, loctesterr, setList, true, 1);
+
+      cout << endl << "Size 1 SetList" << endl;
+
+      myTestSingleSetInt(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<int> copyCSetList(vec);
+
+      myTestSingleSetInt(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> copySetList = setList;
+
+      myTestSingleSetInt(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<int> moveCSetList(std::move(vec));
+
+      myTestSingleSetInt(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> moveSetList = std::move(setList);
+
+      myTestSingleSetInt(moveSetList, loctestnum, loctesterr);
+
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 SetList" << endl;
+
+      lasd::Vector<int> vec(20);
+
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vec, true, index, index + 1);
+      
+      lasd::SetLst<int> setList;
+      
+      for (int index = 1; index <= 20; index++)
+        InsertC(loctestnum, loctesterr, setList, true, index);
+
+      cout << endl << "Size 20 SetList" << endl;
+
+      myTestMultipleSetInt(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<int> copyCSetList(vec);
+
+      myTestMultipleSetInt(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> copySetList = setList;
+
+      myTestMultipleSetInt(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<int> moveCSetList(std::move(vec));
+
+      myTestMultipleSetInt(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<int> moveSetList = std::move(setList);
+
+      myTestMultipleSetInt(moveSetList, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of Set<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void myTestEmptySetString(lasd::Set<string> & set, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, set, true);
+  Size(testnum, testerr, set, true, 0);
+
+  GetAt(testnum, testerr, set, false, 0, string(""));
+  GetFront(testnum, testerr, set, false, string(""));
+  GetBack(testnum, testerr, set, false, string(""));
+
+  Exists(testnum, testerr, set, false, string(""));
+ 
+  lasd::Vector<string> vec(1);
+
+  SetFront(testnum, testerr, vec, true, string("a"));
+
+  lasd::Vector<string> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<string> vec2(2);
+
+  SetFront(testnum, testerr, vec2, true, string("a"));
+  SetBack(testnum, testerr, vec2, true, string("b"));
+
+  lasd::Vector<string> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  Min(testnum, testerr, set, false, string(""));
+  RemoveMin(testnum, testerr, set, false);
+  MinNRemove(testnum, testerr, set, false, string(""));
+  
+  Max(testnum, testerr, set, false, string(""));
+  RemoveMax(testnum, testerr, set, false);
+  MaxNRemove(testnum, testerr, set, false, string(""));
+  
+  Predecessor(testnum, testerr, set, false, string(""), string("a"));
+  RemovePredecessor(testnum, testerr, set, false, string(""));
+  PredecessorNRemove(testnum, testerr, set, false, string(""), string("a"));
+
+  Successor(testnum, testerr, set, false, string(""), string("a"));
+  RemoveSuccessor(testnum, testerr, set, false, string(""));
+  SuccessorNRemove(testnum, testerr, set, false, string(""), string("a"));
+
+  set.Clear();
+
+  Empty(testnum, testerr, set, true);
+  Size(testnum, testerr, set, true, 0);
+
+  GetAt(testnum, testerr, set, false, 0, string(""));
+  GetFront(testnum, testerr, set, false, string(""));
+  GetBack(testnum, testerr, set, false, string(""));
+
+  Exists(testnum, testerr, set, false, string(""));
+
+  lasd::List<string> lst;
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+
+  lasd::List<string> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<string> lst2;
+
+  InsertAtFront(testnum, testerr, lst2, true, string("a"));
+  InsertAtBack(testnum, testerr, lst2, true, string("b"));
+
+  lasd::List<string> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<string>);
+  Fold(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string(""));
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string(""));
+
+}
+
+void myTestSingleSetString(lasd::Set<string> & set, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, set, false);
+  Size(testnum, testerr, set, true, 1);
+
+  GetAt(testnum, testerr, set, false, 0, string(""));
+  GetFront(testnum, testerr, set, false, string(""));
+  GetBack(testnum, testerr, set, false, string(""));
+
+  Exists(testnum, testerr, set, false, string(""));
+
+  set.Clear();
+
+  lasd::Vector<string> vec(1);
+
+  SetFront(testnum, testerr, vec, true, string("a"));
+
+  lasd::Vector<string> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<string> vec2(2);
+
+  SetFront(testnum, testerr, vec2, true, string("a"));
+  SetBack(testnum, testerr, vec2, true, string("b"));
+
+  lasd::Vector<string> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  vec2 = vec2R;
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("ba"));
+
+  Min(testnum, testerr, set, true, string("a"));
+  RemoveMin(testnum, testerr, set, true);
+  
+  Min(testnum, testerr, set, true, string("b"));
+  MinNRemove(testnum, testerr, set, true, string("b"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Max(testnum, testerr, set, true, string("b"));
+  RemoveMax(testnum, testerr, set, true);
+
+  Max(testnum, testerr, set, true, string("a"));
+  MaxNRemove(testnum, testerr, set, true, string("a"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, true, string("b"), string("a"));
+  RemovePredecessor(testnum, testerr, set, true, string("b"));
+
+  Predecessor(testnum, testerr, set, true, string("c"), string("b"));
+  PredecessorNRemove(testnum, testerr, set, true, string("c"), string("b"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Successor(testnum, testerr, set, true, string("?"), string("a"));
+  RemoveSuccessor(testnum, testerr, set, true, string("?"));
+
+  Successor(testnum, testerr, set, true, string("a"), string("b"));
+  SuccessorNRemove(testnum, testerr, set, true, string("a"), string("b"));
+
+  set.Clear();
+
+  myTestEmptySetString(set, testnum, testerr);
+
+  lasd::List<string> lst;
+
+  InsertAtFront(testnum, testerr, lst, true, string("a"));
+
+  lasd::List<string> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<string> lst2;
+
+  InsertAtFront(testnum, testerr, lst2, true, string("a"));
+  InsertAtBack(testnum, testerr, lst2, true, string("b"));
+
+  lasd::List<string> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  lst2 = lst2R;
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<string>);
+  Fold(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("ab"));
+
+  Min(testnum, testerr, set, true, string("a"));
+  RemoveMin(testnum, testerr, set, true);
+  
+  Min(testnum, testerr, set, true, string("b"));
+  MinNRemove(testnum, testerr, set, true, string("b"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Max(testnum, testerr, set, true, string("b"));
+  RemoveMax(testnum, testerr, set, true);
+
+  Max(testnum, testerr, set, true, string("a"));
+  MaxNRemove(testnum, testerr, set, true, string("a"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+  
+  Predecessor(testnum, testerr, set, true, string("b"), string("a"));
+  RemovePredecessor(testnum, testerr, set, true, string("b"));
+
+  Predecessor(testnum, testerr, set, true, string("c"), string("b"));
+  PredecessorNRemove(testnum, testerr, set, true, string("c"), string("b"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Successor(testnum, testerr, set, true, string("?"), string("a"));
+  RemoveSuccessor(testnum, testerr, set, true, string("?"));
+
+  Successor(testnum, testerr, set, true, string("a"), string("b"));
+  SuccessorNRemove(testnum, testerr, set, true, string("a"), string("b"));
+
+  InsertC(testnum, testerr, set, true, string("a"));
+  
+}
+
+void myTestMultipleSetString(lasd::Set<string> & set, unsigned int & testnum, unsigned int & testerr) {
+
+  Empty(testnum, testerr, set, false);
+  Size(testnum, testerr, set, true, 20);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<string>);
+  Fold(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("abcdefghijklmnopqrst"));
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, set, true, string(1, char (97 + index)));
+
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, set, true, index, string(1, char (97 + index)));
+
+  set.Clear();
+
+  lasd::Vector<string> vec(10);
+
+  for (int index = 0; index < 10; index++)
+    SetAt(testnum, testerr, vec, true, index, string(1, char (97 + index)));
+
+  lasd::Vector<string> vecR = vec;
+
+  InsertAllC(testnum, testerr, set, true, vec);
+  InsertAllC(testnum, testerr, set, false, vec);
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(vec));
+  RemoveAll(testnum, testerr, set, true, vecR);
+  RemoveAll(testnum, testerr, set, false, vecR);
+
+  lasd::Vector<string> vec2(20);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, vec2, true, index, string(1, char (97 + index)));
+
+  lasd::Vector<string> vec2R = vec2;
+
+  vec = vecR;
+
+  InsertSomeC(testnum, testerr, set, true, vec);
+  InsertSomeC(testnum, testerr, set, false, vec);
+  InsertSomeC(testnum, testerr, set, true, vec2);
+  InsertSomeC(testnum, testerr, set, false, vec2);
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(vec));
+  InsertSomeM(testnum, testerr, set, true, std::move(vec2));
+  RemoveSome(testnum, testerr, set, true, vecR);
+  RemoveSome(testnum, testerr, set, true, vec2R);
+  RemoveSome(testnum, testerr, set, false, vecR);
+  RemoveSome(testnum, testerr, set, false, vec2R);
+
+  vec2 = vec2R;
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Traverse(testnum, testerr, set, true, &TraversePrint<string>);
+  Fold(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("abcdefghijklmnopqrst"));
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, string(1, char (97 + index)));
+    RemoveMin(testnum, testerr, set, true);
+  }
+
+  Min(testnum, testerr, set, false, string("?"));
+  RemoveMin(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, string(1, char (97 + index)));
+    MinNRemove(testnum, testerr, set, true, string(1, char (97 + index)));
+  }
+
+  Min(testnum, testerr, set, false, string("?"));
+  MinNRemove(testnum, testerr, set, false, string("?"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 19; index >= 0; index--) {
+    Max(testnum, testerr, set, true, string(1, char (97 + index)));
+    RemoveMax(testnum, testerr, set, true);
+  }
+
+  Max(testnum, testerr, set, false, string("?"));
+  RemoveMax(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 19; index >= 0; index--) {
+    Max(testnum, testerr, set, true, string(1, char (97 + index)));
+    MaxNRemove(testnum, testerr, set, true, string(1, char (97 + index)));
+  }
+
+  Max(testnum, testerr, set, false, string("?"));
+  MaxNRemove(testnum, testerr, set, false, string("?"));
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+  
+  Predecessor(testnum, testerr, set, false, string("v"), string("u"));
+  Predecessor(testnum, testerr, set, false, string("a"), string("?"));
+
+  for (int index = 19; index >= 0; index--) {
+    Predecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+    RemovePredecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 19; index >= 0; index--) {
+    Predecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+    PredecessorNRemove(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  Successor(testnum, testerr, set, false, string("u"), string("v"));
+  Successor(testnum, testerr, set, false, string("!"), string("?"));
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+    RemoveSuccessor(testnum, testerr, set, true, string(1, char (97 + index - 1)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, vec2);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+    SuccessorNRemove(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+  }
+
+  set.Clear();
+
+  InsertC(testnum, testerr, set, true, string("a"));
+
+  myTestSingleSetString(set, testnum, testerr);
+
+  set.Clear();
+
+  lasd::List<string> lst;
+
+  for (int index = 0; index < 10; index++)
+    InsertAtFront(testnum, testerr, lst, true, string(1, char (97 + index)));
+
+  lasd::List<string> lstR = lst;
+
+  InsertAllC(testnum, testerr, set, true, lst);
+  InsertAllC(testnum, testerr, set, false, lst);
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  InsertAllM(testnum, testerr, set, true, std::move(lst));
+  RemoveAll(testnum, testerr, set, true, lstR);
+  RemoveAll(testnum, testerr, set, false, lstR);
+
+  lasd::List<string> lst2;
+
+  for (int index = 0; index < 20; index++)
+    InsertAtFront(testnum, testerr, lst2, true, string(1, char (97 + index)));
+
+  lasd::List<string> lst2R = lst2;
+
+  lst = lstR;
+
+  InsertSomeC(testnum, testerr, set, true, lst);
+  InsertSomeC(testnum, testerr, set, false, lst);
+  InsertSomeC(testnum, testerr, set, true, lst2);
+  InsertSomeC(testnum, testerr, set, false, lst2);
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  InsertSomeM(testnum, testerr, set, true, std::move(lst));
+  InsertSomeM(testnum, testerr, set, true, std::move(lst2));
+  RemoveSome(testnum, testerr, set, true, lstR);
+  RemoveSome(testnum, testerr, set, true, lst2R);
+  RemoveSome(testnum, testerr, set, false, lstR);
+  RemoveSome(testnum, testerr, set, false, lst2R);
+
+  lst2 = lst2R;
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, string(1, char (97 + index)));
+    RemoveMin(testnum, testerr, set, true);
+  }
+
+  Min(testnum, testerr, set, false, string("?"));
+  RemoveMin(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Min(testnum, testerr, set, true, string(1, char (97 + index)));
+    MinNRemove(testnum, testerr, set, true, string(1, char (97 + index)));
+  }
+
+  Min(testnum, testerr, set, false, string("?"));
+  MinNRemove(testnum, testerr, set, false, string("?"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 19; index >= 0; index--) {
+    Max(testnum, testerr, set, true, string(1, char (97 + index)));
+    RemoveMax(testnum, testerr, set, true);
+  }
+
+  Max(testnum, testerr, set, false, string("?"));
+  RemoveMax(testnum, testerr, set, false);
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 19; index >= 0; index--) {
+    Max(testnum, testerr, set, true, string(1, char (97 + index)));
+    MaxNRemove(testnum, testerr, set, true, string(1, char (97 + index)));
+  }
+
+  Max(testnum, testerr, set, false, string("?"));
+  MaxNRemove(testnum, testerr, set, false, string("?"));
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+  
+  Predecessor(testnum, testerr, set, false, string("v"), string("u"));
+  Predecessor(testnum, testerr, set, false, string("a"), string("?"));
+
+  for (int index = 19; index >= 0; index--) {
+    Predecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+    RemovePredecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 19; index >= 0; index--) {
+    Predecessor(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+    PredecessorNRemove(testnum, testerr, set, true, string(1, char (97 + index + 1)), string(1, char (97 + index)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  Successor(testnum, testerr, set, false, string("u"), string("v"));
+  Successor(testnum, testerr, set, false, string("!"), string("?"));
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+    RemoveSuccessor(testnum, testerr, set, true, string(1, char (97 + index - 1)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  for (int index = 0; index < 20; index++) {
+    Successor(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+    SuccessorNRemove(testnum, testerr, set, true, string(1, char (97 + index - 1)), string(1, char (97 + index)));
+  }
+
+  InsertAllC(testnum, testerr, set, true, lst2);
+
+  TraversePostOrder(testnum, testerr, set, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, set, true, &FoldStringConcatenate, string(""), string("tsrqponmlkjihgfedcba"));
+
+}
+
+void myTestSetString(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of Set<string> Test" << endl;
+  try {
+    {
+      cout << endl << "Empty SetVector" << endl;
+
+      lasd::List<string> list;
+
+      lasd::SetVec<string> setVec;
+
+      myTestEmptySetString(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<string> copyCSetVec(list);
+
+      myTestEmptySetString(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> copySetVec = setVec;
+
+      myTestEmptySetString(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<string> moveCSetVec(std::move(list));
+
+      myTestEmptySetString(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> moveSetVec = std::move(setVec);
+
+      myTestEmptySetString(moveSetVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 SetVector" << endl;
+
+      lasd::List<string> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, string("a"));
+
+      lasd::SetVec<string> setVec;
+
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);
+
+      cout << endl << "Size 1 SetVector" << endl;
+
+      myTestSingleSetString(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<string> copyCSetVec(list);
+
+      myTestSingleSetString(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> copySetVec = setVec;
+
+      myTestSingleSetString(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<string> moveCSetVec(std::move(list));
+
+      myTestSingleSetString(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> moveSetVec = std::move(setVec);
+
+      myTestSingleSetString(moveSetVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 SetVector" << endl;
+
+      lasd::List<string> list;
+
+      for (int index = 0; index < 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, string(1, char (97 + index)));
+      
+      lasd::SetVec<string> setVec;
+      
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);
+
+      cout << endl << "Size 20 SetVector" << endl;
+
+      myTestMultipleSetString(setVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetVector" << endl;
+
+      lasd::SetVec<string> copyCSetVec(list);
+
+      myTestMultipleSetString(copyCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> copySetVec = setVec;
+
+      myTestMultipleSetString(copySetVec, loctestnum, loctesterr);
+
+      cout << endl << "Move SetVector" << endl;
+
+      lasd::SetVec<string> moveCSetVec(std::move(list));
+
+      myTestMultipleSetString(moveCSetVec, loctestnum, loctesterr);
+
+      lasd::SetVec<string> moveSetVec = std::move(setVec);
+
+      myTestMultipleSetString(moveSetVec, loctestnum, loctesterr);
+    }
+     {
+      cout << endl << "Empty SetList" << endl;
+
+      lasd::Vector<string> vec;
+
+      lasd::SetLst<string> setList;
+
+      myTestEmptySetString(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<string> copyCSetList(vec);
+
+      myTestEmptySetString(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> copySetList = setList;
+
+      myTestEmptySetString(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<string> moveCSetList(std::move(vec));
+
+      myTestEmptySetString(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> moveSetList = std::move(setList);
+
+      myTestEmptySetString(moveSetList, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 SetList" << endl;
+
+      lasd::Vector<string> vec(1);
+
+      SetFront(loctestnum, loctesterr, vec, true, string("a"));
+
+      lasd::SetLst<string> setList;
+
+      InsertAllC(loctestnum, loctesterr, setList, true, vec);
+
+      cout << endl << "Size 1 SetList" << endl;
+
+      myTestSingleSetString(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<string> copyCSetList(vec);
+
+      myTestSingleSetString(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> copySetList = setList;
+
+      myTestSingleSetString(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<string> moveCSetList(std::move(vec));
+
+      myTestSingleSetString(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> moveSetList = std::move(setList);
+
+      myTestSingleSetString(moveSetList, loctestnum, loctesterr);
+
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 SetList" << endl;
+
+      lasd::Vector<string> vec(20);
+
+      for (int index = 0; index < 20; index++)
+        SetAt(loctestnum, loctesterr, vec, true, index, string(1, char (97 + index)));
+      
+      lasd::SetLst<string> setList;
+      
+      InsertAllC(loctestnum, loctesterr, setList, true, vec);
+
+      cout << endl << "Size 20 SetList" << endl;
+
+      myTestMultipleSetString(setList, loctestnum, loctesterr);
+
+      cout << endl << "Copy SetList" << endl;
+
+      lasd::SetLst<string> copyCSetList(vec);
+
+      myTestMultipleSetString(copyCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> copySetList = setList;
+
+      myTestMultipleSetString(copySetList, loctestnum, loctesterr);
+
+      cout << endl << "Move SetList" << endl;
+
+      lasd::SetLst<string> moveCSetList(std::move(vec));
+
+      myTestMultipleSetString(moveCSetList, loctestnum, loctesterr);
+
+      lasd::SetLst<string> moveSetList = std::move(setList);
+
+      myTestMultipleSetString(moveSetList, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of Set<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+/* ************************************************************************** */
+
+void myTestExercise1B(unsigned int & testnum, unsigned int & testerr) {
+  myTestSetInt(testnum, testerr);
+  myTestSetString(testnum, testerr);
+  cout << endl << "Exercise 1B (Student Test) (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
+}
+
+/* ************************************************************************** */
+
+void myTestEmptyHeapInt(lasd::HeapVec<int> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, 0);
+  GetFront(testnum, testerr, heap, false, 0);
+  GetBack(testnum, testerr, heap, false, 0);
+
+  SetAt(testnum, testerr, heap, false, 0, 0);
+  SetBack(testnum, testerr, heap, false, 0);
+  SetFront(testnum, testerr, heap, false, 0);
+
+  Exists(testnum, testerr, heap, false, 0);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 0);
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  MapPreOrder(testnum, testerr, heap, true, &MapInvert<int>);
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Sort();
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Clear();
+  IsHeap(testnum, testerr, heap, true);
+
+  MapPostOrder(testnum, testerr, heap, true, &MapInvert<int>);
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, 0);
+  GetFront(testnum, testerr, heap, false, 0);
+  GetBack(testnum, testerr, heap, false, 0);
+
+  SetFront(testnum, testerr, heap, false, 0);
+
+  SetAt(testnum, testerr, heap, false, 0, 0);
+  SetBack(testnum, testerr, heap, false, 0);
+  SetFront(testnum, testerr, heap, false, 0);
+
+  Exists(testnum, testerr, heap, false, 0);
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldAdd<int>, 0, 0);
+}
+
+void myTestSingleHeapInt(lasd::HeapVec<int> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 1);
+
+  GetAt(testnum, testerr, heap, true, 0, 1);
+  GetFront(testnum, testerr, heap, true, 1);
+  GetBack(testnum, testerr, heap, true, 1);
+
+  SetAt(testnum, testerr, heap, true, 0, 0);
+  GetAt(testnum, testerr, heap, true, 0, 0);
+  Exists(testnum, testerr, heap, true, 0);
+
+  GetFront(testnum, testerr, heap, true, 0);
+  SetFront(testnum, testerr, heap, true, 1);
+  GetFront(testnum, testerr, heap, true, 1);
+  Exists(testnum, testerr, heap, true, 1);
+  SetFront(testnum, testerr, heap, true, 0);
+  GetFront(testnum, testerr, heap, true, 0);
+  Exists(testnum, testerr, heap, true, 0);
+
+  GetBack(testnum, testerr, heap, true, 0);
+  SetBack(testnum, testerr, heap, true, 1);
+  GetBack(testnum, testerr, heap, true, 1);
+  Exists(testnum, testerr, heap, true, 1);
+  SetBack(testnum, testerr, heap, true, 0);
+  GetBack(testnum, testerr, heap, true, 0);
+  Exists(testnum, testerr, heap, true, 0);
+
+  SetAt(testnum, testerr, heap, true, 0, 1);
+  GetAt(testnum, testerr, heap, true, 0, 1);
+  Exists(testnum, testerr, heap, true, 1);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 1);
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  MapPreOrder(testnum, testerr, heap, true, &MapInvert<int>);
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Sort();
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Clear();
+  myTestEmptyHeapInt(heap, testnum, testerr);
+
+  lasd::List<int> list;
+  InsertAtFront(testnum, testerr, list, true, 1);
+  lasd::HeapVec<int> tempHeap(list);
+  heap = tempHeap;
+  IsHeap(testnum, testerr, heap, true);
+
+  MapPostOrder(testnum, testerr, heap, true, &MapInvert<int>);
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  GetAt(testnum, testerr, heap, false, 0, 0);
+  GetFront(testnum, testerr, heap, false, 0);
+  GetBack(testnum, testerr, heap, false, 0);
+
+  SetAt(testnum, testerr, heap, true, 0, 0);
+  SetBack(testnum, testerr, heap, true, 2);
+  SetFront(testnum, testerr, heap, true, 1);
+
+  Exists(testnum, testerr, heap, true, 1);
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldAdd<int>, 0, 1);
+}
+
+void myTestMultipleHeapInt(lasd::HeapVec<int> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 20);
+
+  GetAt(testnum, testerr, heap, true, 0, 20);
+  GetFront(testnum, testerr, heap, true, 20);
+  GetBack(testnum, testerr, heap, true, 5);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+
+  GetAt(testnum, testerr, heap, true, 0, 20);
+  GetAt(testnum, testerr, heap, true, 1, 19);
+  GetAt(testnum, testerr, heap, true, 2, 15);
+  GetAt(testnum, testerr, heap, true, 3, 18);
+  GetAt(testnum, testerr, heap, true, 4, 11);
+  GetAt(testnum, testerr, heap, true, 5, 13);
+  GetAt(testnum, testerr, heap, true, 6, 14);
+  GetAt(testnum, testerr, heap, true, 7, 17);
+  GetAt(testnum, testerr, heap, true, 8, 9);
+  GetAt(testnum, testerr, heap, true, 9, 10);
+  GetAt(testnum, testerr, heap, true, 10, 2);
+  GetAt(testnum, testerr, heap, true, 11, 12);
+  GetAt(testnum, testerr, heap, true, 12, 6);
+  GetAt(testnum, testerr, heap, true, 13, 3);
+  GetAt(testnum, testerr, heap, true, 14, 7);
+  GetAt(testnum, testerr, heap, true, 15, 16);
+  GetAt(testnum, testerr, heap, true, 16, 8);
+  GetAt(testnum, testerr, heap, true, 17, 4);
+  GetAt(testnum, testerr, heap, true, 18, 1);
+  GetAt(testnum, testerr, heap, true, 19, 5);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+
+  IsHeap(testnum, testerr, heap, true);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, heap, true, index, index + 1);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+
+  IsHeap(testnum, testerr, heap, false);
+
+  GetAt(testnum, testerr, heap, false, -1, -1);
+  GetAt(testnum, testerr, heap, false, 20, 21);
+
+  heap.Sort();
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  IsHeap(testnum, testerr, heap, false);
+
+  heap.Heapify();
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  IsHeap(testnum, testerr, heap, true);
+
+  lasd::HeapVec<int> tempHeap = heap;
+  heap.Clear();
+
+  Size(testnum, testerr, heap, true, 0);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, false, index);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, heap, false, index, index + 1);
+  
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, heap, false, index, index + 1);
+
+  Empty(testnum, testerr, heap, true);
+
+  lasd::List<int> list;
+  InsertAtFront(testnum, testerr, list, true, 1);
+  heap = list;
+  myTestSingleHeapInt(heap, testnum, testerr);
+
+  heap = tempHeap;
+  IsHeap(testnum, testerr, heap, true);
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+}
+
+void myTestEmptyHeapString(lasd::HeapVec<string> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, string(""));
+  GetFront(testnum, testerr, heap, false, string(""));
+  GetBack(testnum, testerr, heap, false, string(""));
+
+  SetAt(testnum, testerr, heap, false, 0, string(""));
+  SetBack(testnum, testerr, heap, false, string(""));
+  SetFront(testnum, testerr, heap, false, string(""));
+
+  Exists(testnum, testerr, heap, false, string(""));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string(""));
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Sort();
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Clear();
+  IsHeap(testnum, testerr, heap, true);
+
+  MapPreOrder(testnum, testerr, heap, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, string(""));
+  GetFront(testnum, testerr, heap, false, string(""));
+  GetBack(testnum, testerr, heap, false, string(""));
+
+  SetFront(testnum, testerr, heap, false, string(""));
+
+  SetAt(testnum, testerr, heap, false, 0, string(""));
+  SetBack(testnum, testerr, heap, false, string(""));
+  SetFront(testnum, testerr, heap, false, string(""));
+
+  Exists(testnum, testerr, heap, false, string(""));
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string(""));
+}
+
+void myTestSingleHeapString(lasd::HeapVec<string> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 1);
+
+  GetAt(testnum, testerr, heap, true, 0, string("a"));
+  GetFront(testnum, testerr, heap, true, string("a"));
+  GetBack(testnum, testerr, heap, true, string("a"));
+
+  SetAt(testnum, testerr, heap, true, 0, string(""));
+  GetAt(testnum, testerr, heap, true, 0, string(""));
+  Exists(testnum, testerr, heap, true, string(""));
+
+  GetFront(testnum, testerr, heap, true, string(""));
+  SetFront(testnum, testerr, heap, true, string("a"));
+  GetFront(testnum, testerr, heap, true, string("a"));
+  Exists(testnum, testerr, heap, true, string("a"));
+
+  MapPostOrder(testnum, testerr, heap, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("a "));
+
+  SetFront(testnum, testerr, heap, true, string(""));
+  GetFront(testnum, testerr, heap, true, string(""));
+  Exists(testnum, testerr, heap, true, string(""));
+
+  GetBack(testnum, testerr, heap, true, string(""));
+  SetBack(testnum, testerr, heap, true, string("a"));
+  GetBack(testnum, testerr, heap, true, string("a"));
+  Exists(testnum, testerr, heap, true, string("a"));
+
+  MapPreOrder(testnum, testerr, heap, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("a "));
+
+  SetBack(testnum, testerr, heap, true, string(""));
+  GetBack(testnum, testerr, heap, true, string(""));
+  Exists(testnum, testerr, heap, true, string(""));
+
+  SetAt(testnum, testerr, heap, true, 0, string("a"));
+  GetAt(testnum, testerr, heap, true, 0, string("a"));
+  Exists(testnum, testerr, heap, true, string("a"));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("a"));
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Sort();
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Clear();
+  myTestEmptyHeapString(heap, testnum, testerr);
+
+  lasd::List<string> list;
+  InsertAtFront(testnum, testerr, list, true, string("a"));
+  lasd::HeapVec<string> tempHeap(list);
+  heap = tempHeap;
+  IsHeap(testnum, testerr, heap, true);
+
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  GetAt(testnum, testerr, heap, false, 0, string(""));
+  GetFront(testnum, testerr, heap, false, string(""));
+  GetBack(testnum, testerr, heap, false, string(""));
+
+  SetAt(testnum, testerr, heap, true, 0, string(""));
+  SetBack(testnum, testerr, heap, true, string("b"));
+  SetFront(testnum, testerr, heap, true, string("a"));
+
+  Exists(testnum, testerr, heap, true, string("a"));
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("a"));
+}
+
+void myTestMultipleHeapString(lasd::HeapVec<string> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 20);
+
+  GetAt(testnum, testerr, heap, true, 0, string("t"));
+  GetFront(testnum, testerr, heap, true, string("t"));
+  GetBack(testnum, testerr, heap, true, string("e"));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+
+  GetAt(testnum, testerr, heap, true, 0, string("t"));
+  GetAt(testnum, testerr, heap, true, 1, string("s"));
+  GetAt(testnum, testerr, heap, true, 2, string("o"));
+  GetAt(testnum, testerr, heap, true, 3, string("r"));
+  GetAt(testnum, testerr, heap, true, 4, string("k"));
+  GetAt(testnum, testerr, heap, true, 5, string("m"));
+  GetAt(testnum, testerr, heap, true, 6, string("n"));
+  GetAt(testnum, testerr, heap, true, 7, string("q"));
+  GetAt(testnum, testerr, heap, true, 8, string("i"));
+  GetAt(testnum, testerr, heap, true, 9, string("j"));
+  GetAt(testnum, testerr, heap, true, 10, string("b"));
+  GetAt(testnum, testerr, heap, true, 11, string("l"));
+  GetAt(testnum, testerr, heap, true, 12, string("f"));
+  GetAt(testnum, testerr, heap, true, 13, string("c"));
+  GetAt(testnum, testerr, heap, true, 14, string("g"));
+  GetAt(testnum, testerr, heap, true, 15, string("p"));
+  GetAt(testnum, testerr, heap, true, 16, string("h"));
+  GetAt(testnum, testerr, heap, true, 17, string("d"));
+  GetAt(testnum, testerr, heap, true, 18, string("a"));
+  GetAt(testnum, testerr, heap, true, 19, string("e"));
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (97 + index)));
+
+  MapPreOrder(testnum, testerr, heap, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("t s o r k m n q i j b l f c g p h d a e "));
+
+  IsHeap(testnum, testerr, heap, true);
+
+  MapPostOrder(testnum, testerr, heap, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("e  a  d  h  p  g  c  f  l  b  j  i  q  n  m  k  r  o  s  t  "));
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, heap, true, index, string(1, char (97 + index)));
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (97 + index)));
+
+  MapPostOrder(testnum, testerr, heap, true, [](string & str) { MapStringAppend(str, string(" ")); });
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("t s r q p o n m l k j i h g f e d c b a "));
+
+  IsHeap(testnum, testerr, heap, false);
+
+  GetAt(testnum, testerr, heap, false, -1, string("?"));
+  GetAt(testnum, testerr, heap, false, 20, string("u"));
+
+  heap.Sort();
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  IsHeap(testnum, testerr, heap, false);
+
+  heap.Heapify();
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  IsHeap(testnum, testerr, heap, true);
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, heap, true, index, string(1, char (97 + index)));
+
+  lasd::HeapVec<string> tempHeap = heap;
+  heap.Clear();
+
+  Size(testnum, testerr, heap, true, 0);
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, heap, false, string(1, char (97 + index)));
+
+  for (int index = 0; index < 20; index++)
+    SetAt(testnum, testerr, heap, false, index, string(1, char (97 + index)));
+  
+  for (int index = 0; index < 20; index++)
+    GetAt(testnum, testerr, heap, false, index, string(1, char (97 + index)));
+
+  Empty(testnum, testerr, heap, true);
+
+  lasd::List<string> list;
+  InsertAtFront(testnum, testerr, list, true, string("a"));
+  heap = list;
+  myTestSingleHeapString(heap, testnum, testerr);
+
+  heap = tempHeap;
+  IsHeap(testnum, testerr, heap, false);
+  heap.Heapify();
+  IsHeap(testnum, testerr, heap, true);
+
+  for (int index = 0; index < 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (97 + index)));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("tsorkmnqijblfcgphdae"));
+}
+
+/* ************************************************************************** */
+
+void myTestHeapInt(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of HeapVector<int> Test" << endl;
+  try {
+    {
+      cout << endl << "Empty HeapVector (from List)" << endl;
+
+      lasd::List<int> list;
+
+      lasd::HeapVec<int> heapVec;
+
+      myTestEmptyHeapInt(heapVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<int> copyCHeapVec(list);
+
+      myTestEmptyHeapInt(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> copyHeapVec = heapVec;
+
+      myTestEmptyHeapInt(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<int> moveCHeapVec(std::move(list));
+
+      myTestEmptyHeapInt(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> moveHeapVec = std::move(copyHeapVec);
+
+      myTestEmptyHeapInt(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 HeapVector (from List)" << endl;
+
+      lasd::List<int> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, 1);
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<int> copyCHeapVec(list);
+
+      myTestSingleHeapInt(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> copyHeapVec = copyCHeapVec;
+
+      myTestSingleHeapInt(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<int> moveCHeapVec(std::move(list));
+
+      myTestSingleHeapInt(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> moveHeapVec = std::move(copyHeapVec);
+
+      myTestSingleHeapInt(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 HeapVector (from List)" << endl;
+
+      lasd::List<int> list;
+
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, index);
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<int> copyCHeapVec(list);
+
+      myTestMultipleHeapInt(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> copyHeapVec = copyCHeapVec;
+
+      myTestMultipleHeapInt(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<int> moveCHeapVec(std::move(list));
+
+      myTestMultipleHeapInt(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> moveHeapVec = std::move(copyHeapVec);
+
+      myTestMultipleHeapInt(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Empty HeapVector (from SetVec)" << endl;
+
+      lasd::SetVec<int> setVec;
+
+      lasd::HeapVec<int> heapVec;
+
+      myTestEmptyHeapInt(heapVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<int> copyCHeapVec(setVec);
+
+      myTestEmptyHeapInt(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> copyHeapVec = copyCHeapVec;
+
+      myTestEmptyHeapInt(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<int> moveCHeapVec(std::move(setVec));
+
+      myTestEmptyHeapInt(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> moveHeapVec = std::move(copyHeapVec);
+
+      myTestEmptyHeapInt(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 HeapVector (from SetVec)" << endl;
+
+      lasd::SetVec<int> setVec;
+
+      InsertC(loctestnum, loctesterr, setVec, true, 1);
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<int> copyCHeapVec(setVec);
+
+      myTestSingleHeapInt(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> copyHeapVec = copyCHeapVec;
+
+      myTestSingleHeapInt(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<int> moveCHeapVec(std::move(setVec));
+
+      myTestSingleHeapInt(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> moveHeapVec = std::move(copyHeapVec);
+
+      myTestSingleHeapInt(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 HeapVector (from SetVec)" << endl;
+
+      lasd::List<int> list;
+
+      for (int index = 1; index <= 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, index);
+
+      lasd::SetVec<int> setVec;
+
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);  
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<int> copyCHeapVec(setVec);
+
+      myTestMultipleHeapInt(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> copyHeapVec = copyCHeapVec;
+
+      myTestMultipleHeapInt(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<int> moveCHeapVec(std::move(setVec));
+
+      myTestMultipleHeapInt(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<int> moveHeapVec = std::move(copyHeapVec);
+
+      myTestMultipleHeapInt(moveHeapVec, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of HeapVec<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void myTestHeapString(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of HeapVector<string> Test" << endl;
+  try {
+    {
+      cout << endl << "Empty HeapVector (from List)" << endl;
+
+      lasd::List<string> list;
+
+      lasd::HeapVec<string> heapVec;
+
+      myTestEmptyHeapString(heapVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<string> copyCHeapVec(list);
+
+      myTestEmptyHeapString(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> copyHeapVec = heapVec;
+
+      myTestEmptyHeapString(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<string> moveCHeapVec(std::move(list));
+
+      myTestEmptyHeapString(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> moveHeapVec = std::move(copyHeapVec);
+
+      myTestEmptyHeapString(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 HeapVector (from List)" << endl;
+
+      lasd::List<string> list;
+
+      InsertAtFront(loctestnum, loctesterr, list, true, string("a"));
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<string> copyCHeapVec(list);
+
+      myTestSingleHeapString(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> copyHeapVec = copyCHeapVec;
+
+      myTestSingleHeapString(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<string> moveCHeapVec(std::move(list));
+
+      myTestSingleHeapString(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> moveHeapVec = std::move(copyHeapVec);
+
+      myTestSingleHeapString(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 HeapVector (from List)" << endl;
+
+      lasd::List<string> list;
+
+      for (int index = 0; index < 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, string(1, char (97 + index)));
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<string> copyCHeapVec(list);
+
+      myTestMultipleHeapString(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> copyHeapVec = copyCHeapVec;
+
+      myTestMultipleHeapString(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<string> moveCHeapVec(std::move(list));
+
+      myTestMultipleHeapString(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> moveHeapVec = std::move(copyHeapVec);
+
+      myTestMultipleHeapString(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Empty HeapVector (from SetVec)" << endl;
+
+      lasd::SetVec<string> setVec;
+
+      lasd::HeapVec<string> heapVec;
+
+      myTestEmptyHeapString(heapVec, loctestnum, loctesterr);
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<string> copyCHeapVec(setVec);
+
+      myTestEmptyHeapString(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> copyHeapVec = copyCHeapVec;
+
+      myTestEmptyHeapString(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<string> moveCHeapVec(std::move(setVec));
+
+      myTestEmptyHeapString(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> moveHeapVec = std::move(copyHeapVec);
+
+      myTestEmptyHeapString(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 HeapVector (from SetVec)" << endl;
+
+      lasd::SetVec<string> setVec;
+
+      InsertC(loctestnum, loctesterr, setVec, true, string("a"));
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<string> copyCHeapVec(setVec);
+
+      myTestSingleHeapString(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> copyHeapVec = copyCHeapVec;
+
+      myTestSingleHeapString(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<string> moveCHeapVec(std::move(setVec));
+
+      myTestSingleHeapString(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> moveHeapVec = std::move(copyHeapVec);
+
+      myTestSingleHeapString(moveHeapVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 HeapVector (from SetVec)" << endl;
+
+      lasd::List<string> list;
+
+      for (int index = 0; index < 20; index++)
+        InsertAtBack(loctestnum, loctesterr, list, true, string(1, char (97 + index)));
+
+      lasd::SetVec<string> setVec;
+
+      InsertAllC(loctestnum, loctesterr, setVec, true, list);  
+
+      cout << endl << "Copy HeapVector" << endl;
+
+      lasd::HeapVec<string> copyCHeapVec(setVec);
+
+      myTestMultipleHeapString(copyCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> copyHeapVec = copyCHeapVec;
+
+      myTestMultipleHeapString(copyHeapVec, loctestnum, loctesterr);
+
+      cout << endl << "Move HeapVector" << endl;
+
+      lasd::HeapVec<string> moveCHeapVec(std::move(setVec));
+
+      myTestMultipleHeapString(moveCHeapVec, loctestnum, loctesterr);
+
+      lasd::HeapVec<string> moveHeapVec = std::move(copyHeapVec);
+
+      myTestMultipleHeapString(moveHeapVec, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of HeapVec<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void myTestExercise2A(unsigned int & testnum, unsigned int & testerr) {
+  myTestHeapInt(testnum, testerr);
+  myTestHeapString(testnum, testerr);
+  cout << endl << "Exercise 2A (Student Test) (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
+}
+
+/* ************************************************************************** */
+
+void myTestEmptyPQInt(lasd::PQ<int> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, 0);
+  GetFront(testnum, testerr, heap, false, 0);
+  GetBack(testnum, testerr, heap, false, 0);
+
+  Tip(testnum, testerr, heap, false, 0);
+  TipNRemove(testnum, testerr, heap, false, 0);
+  RemoveTip(testnum, testerr, heap, false);
+  Change(testnum, testerr, heap, false, 0, 0);
+
+  Insert(testnum, testerr, heap, 1);
+  Tip(testnum, testerr, heap, true, 1);
+  TipNRemove(testnum, testerr, heap, true, 1);
+
+  Exists(testnum, testerr, heap, false, 1);
+
+  Insert(testnum, testerr, heap, 1);
+  Change(testnum, testerr, heap, true, 0, 0);
+  Tip(testnum, testerr, heap, true, 0);
+  RemoveTip(testnum, testerr, heap, true);
+
+  Exists(testnum, testerr, heap, false, 0);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 0);
+
+  heap.Clear();
+
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, 0);
+  GetFront(testnum, testerr, heap, false, 0);
+  GetBack(testnum, testerr, heap, false, 0);
+
+  Tip(testnum, testerr, heap, false, 0);
+  TipNRemove(testnum, testerr, heap, false, 0);
+  RemoveTip(testnum, testerr, heap, false);
+  Change(testnum, testerr, heap, false, 0, 0);
+
+  Insert(testnum, testerr, heap, 1);
+  Tip(testnum, testerr, heap, true, 1);
+  TipNRemove(testnum, testerr, heap, true, 1);
+
+  Exists(testnum, testerr, heap, false, 1);
+
+  Insert(testnum, testerr, heap, 1);
+  Change(testnum, testerr, heap, true, 0, 0);
+  Tip(testnum, testerr, heap, true, 0);
+  RemoveTip(testnum, testerr, heap, true);
+
+  Exists(testnum, testerr, heap, false, 0);
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldAdd<int>, 0, 0);
+}
+
+void myTestSinglePQInt(lasd::PQ<int> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 1);
+
+  GetAt(testnum, testerr, heap, true, 0, 1);
+  GetFront(testnum, testerr, heap, true, 1);
+  GetBack(testnum, testerr, heap, true, 1);
+
+  Change(testnum, testerr, heap, true, 0, 0);
+  GetAt(testnum, testerr, heap, true, 0, 0);
+  Exists(testnum, testerr, heap, true, 0);
+
+  GetFront(testnum, testerr, heap, true, 0);
+  Change(testnum, testerr, heap, true, 0, 1);
+  GetFront(testnum, testerr, heap, true, 1);
+  Exists(testnum, testerr, heap, true, 1);
+  Change(testnum, testerr, heap, true, 0, 0);
+  GetFront(testnum, testerr, heap, true, 0);
+  Exists(testnum, testerr, heap, true, 0);
+
+  GetBack(testnum, testerr, heap, true, 0);
+  Change(testnum, testerr, heap, true, 0, 1);
+  GetBack(testnum, testerr, heap, true, 1);
+  Exists(testnum, testerr, heap, true, 1);
+  Change(testnum, testerr, heap, true, 0, 0);
+  GetBack(testnum, testerr, heap, true, 0);
+  Exists(testnum, testerr, heap, true, 0);
+
+  Change(testnum, testerr, heap, true, 0, 1);
+  GetAt(testnum, testerr, heap, true, 0, 1);
+  Exists(testnum, testerr, heap, true, 1);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 1);
+
+  heap.Clear();
+  myTestEmptyPQInt(heap, testnum, testerr);
+
+  TipNRemove(testnum, testerr, heap, false, 1);
+  RemoveTip(testnum, testerr, heap, false);
+  Change(testnum, testerr, heap, false, 0, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, 0);
+  GetFront(testnum, testerr, heap, false, 0);
+  GetBack(testnum, testerr, heap, false, 0);
+
+  Insert(testnum, testerr, heap, 0);
+  Change(testnum, testerr, heap, true, 0, 1);
+
+  Exists(testnum, testerr, heap, true, 1);
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldAdd<int>, 0, 1);
+}
+
+void myTestMultiplePQInt(lasd::PQ<int> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 20);
+
+  GetAt(testnum, testerr, heap, true, 0, 20);
+  GetFront(testnum, testerr, heap, true, 20);
+  GetBack(testnum, testerr, heap, true, 3);
+
+  GetAt(testnum, testerr, heap, true, 0, 20);
+  GetAt(testnum, testerr, heap, true, 1, 19);
+  GetAt(testnum, testerr, heap, true, 2, 14);
+  GetAt(testnum, testerr, heap, true, 3, 17);
+  GetAt(testnum, testerr, heap, true, 4, 18);
+  GetAt(testnum, testerr, heap, true, 5, 11);
+  GetAt(testnum, testerr, heap, true, 6, 13);
+  GetAt(testnum, testerr, heap, true, 7, 10);
+  GetAt(testnum, testerr, heap, true, 8, 16);
+  GetAt(testnum, testerr, heap, true, 9, 9);
+  GetAt(testnum, testerr, heap, true, 10, 8);
+  GetAt(testnum, testerr, heap, true, 11, 2);
+  GetAt(testnum, testerr, heap, true, 12, 6);
+  GetAt(testnum, testerr, heap, true, 13, 5);
+  GetAt(testnum, testerr, heap, true, 14, 12);
+  GetAt(testnum, testerr, heap, true, 15, 1);
+  GetAt(testnum, testerr, heap, true, 16, 7);
+  GetAt(testnum, testerr, heap, true, 17, 4);
+  GetAt(testnum, testerr, heap, true, 18, 15);
+  GetAt(testnum, testerr, heap, true, 19, 3);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+
+  lasd::HeapVec<int> heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<int>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  RemoveTip(testnum, testerr, heap, false);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 0; index < 20; index++) {
+    Tip(testnum, testerr, heap, true, 20 - index);
+    TipNRemove(testnum, testerr, heap, true, 20 - index);
+  }
+
+  Tip(testnum, testerr, heap, false, 1);
+  TipNRemove(testnum, testerr, heap, false, 1);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+  Change(testnum, testerr, heap, false, 21, 0);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, index - 1, rand() % index);
+
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  for (int index = 20; index > 0; index--)
+    TipNRemove(testnum, testerr, heap, true, index);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, 0, -index);
+
+  heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<int>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, 19, index);
+
+  Change(testnum, testerr, heap, false, 20, 21);
+
+  heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<int>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  heap.Clear();
+  Size(testnum, testerr, heap, true, 0);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, false, index);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+  
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  Insert(testnum, testerr, heap, 1);
+  myTestSinglePQInt(heap, testnum, testerr);
+
+  for (int index = 2; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+}
+
+void myTestMultipleCPQInt(lasd::PQ<int> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 20);
+
+  GetAt(testnum, testerr, heap, true, 0, 20);
+  GetFront(testnum, testerr, heap, true, 20);
+  GetBack(testnum, testerr, heap, true, 5);
+
+  GetAt(testnum, testerr, heap, true, 0, 20);
+  GetAt(testnum, testerr, heap, true, 1, 19);
+  GetAt(testnum, testerr, heap, true, 2, 15);
+  GetAt(testnum, testerr, heap, true, 3, 18);
+  GetAt(testnum, testerr, heap, true, 4, 11);
+  GetAt(testnum, testerr, heap, true, 5, 13);
+  GetAt(testnum, testerr, heap, true, 6, 14);
+  GetAt(testnum, testerr, heap, true, 7, 17);
+  GetAt(testnum, testerr, heap, true, 8, 9);
+  GetAt(testnum, testerr, heap, true, 9, 10);
+  GetAt(testnum, testerr, heap, true, 10, 2);
+  GetAt(testnum, testerr, heap, true, 11, 12);
+  GetAt(testnum, testerr, heap, true, 12, 6);
+  GetAt(testnum, testerr, heap, true, 13, 3);
+  GetAt(testnum, testerr, heap, true, 14, 7);
+  GetAt(testnum, testerr, heap, true, 15, 16);
+  GetAt(testnum, testerr, heap, true, 16, 8);
+  GetAt(testnum, testerr, heap, true, 17, 4);
+  GetAt(testnum, testerr, heap, true, 18, 1);
+  GetAt(testnum, testerr, heap, true, 19, 5);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+
+  lasd::HeapVec<int> heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<int>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  RemoveTip(testnum, testerr, heap, false);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 0; index < 20; index++) {
+    Tip(testnum, testerr, heap, true, 20 - index);
+    TipNRemove(testnum, testerr, heap, true, 20 - index);
+  }
+
+  Tip(testnum, testerr, heap, false, 1);
+  TipNRemove(testnum, testerr, heap, false, 1);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<int>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+  Change(testnum, testerr, heap, false, 20, 0);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, index - 1, rand() % index);
+
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 20; index > 0; index--)
+    TipNRemove(testnum, testerr, heap, true, index);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, 0, -index);
+
+  heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<int>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, 19, index);
+
+  Change(testnum, testerr, heap, false, 20, 21);
+
+  heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<int>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  heap.Clear();
+  Size(testnum, testerr, heap, true, 0);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, false, index);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+  
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  Insert(testnum, testerr, heap, 1);
+  myTestSinglePQInt(heap, testnum, testerr);
+
+  for (int index = 2; index <= 20; index++)
+    Insert(testnum, testerr, heap, index);
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, index);
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<int>);
+  Fold(testnum, testerr, heap, true, &FoldAdd<int>, 0, 210);
+}
+
+void myTestEmptyPQString(lasd::PQ<string> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, string(""));
+  GetFront(testnum, testerr, heap, false, string(""));
+  GetBack(testnum, testerr, heap, false, string(""));
+
+  Tip(testnum, testerr, heap, false, string(""));
+  TipNRemove(testnum, testerr, heap, false, string(""));
+  RemoveTip(testnum, testerr, heap, false);
+  Change(testnum, testerr, heap, false, 0, string(""));
+
+  Insert(testnum, testerr, heap, string("a"));
+  Tip(testnum, testerr, heap, true, string("a"));
+  TipNRemove(testnum, testerr, heap, true, string("a"));
+
+  Exists(testnum, testerr, heap, false, string("a"));
+
+  Insert(testnum, testerr, heap, string("a"));
+  Change(testnum, testerr, heap, true, 0, string("b"));
+  Tip(testnum, testerr, heap, true, string("b"));
+  RemoveTip(testnum, testerr, heap, true);
+
+  Exists(testnum, testerr, heap, false, string("b"));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string(""));
+
+  heap.Clear();
+
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  GetAt(testnum, testerr, heap, false, 0, string(""));
+  GetFront(testnum, testerr, heap, false, string(""));
+  GetBack(testnum, testerr, heap, false, string(""));
+
+  Tip(testnum, testerr, heap, false, string(""));
+  TipNRemove(testnum, testerr, heap, false, string(""));
+  RemoveTip(testnum, testerr, heap, false);
+  Change(testnum, testerr, heap, false, 0, string(""));
+
+  Insert(testnum, testerr, heap, string("a"));
+  Tip(testnum, testerr, heap, true, string("a"));
+  TipNRemove(testnum, testerr, heap, true, string("a"));
+
+  Exists(testnum, testerr, heap, false, string("a"));
+
+  Insert(testnum, testerr, heap, string("a"));
+  Change(testnum, testerr, heap, true, 0, string("b"));
+  Tip(testnum, testerr, heap, true, string("b"));
+  RemoveTip(testnum, testerr, heap, true);
+
+  Exists(testnum, testerr, heap, false, string("b"));
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string(""));
+}
+
+void myTestSinglePQString(lasd::PQ<string> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 1);
+
+  GetAt(testnum, testerr, heap, true, 0, string("a"));
+  GetFront(testnum, testerr, heap, true, string("a"));
+  GetBack(testnum, testerr, heap, true, string("a"));
+
+  Change(testnum, testerr, heap, true, 0, string("b"));
+  GetAt(testnum, testerr, heap, true, 0, string("b"));
+  Exists(testnum, testerr, heap, true, string("b"));
+
+  GetFront(testnum, testerr, heap, true, string("b"));
+  Change(testnum, testerr, heap, true, 0, string("a"));
+  GetFront(testnum, testerr, heap, true, string("a"));
+  Exists(testnum, testerr, heap, true, string("a"));
+  Change(testnum, testerr, heap, true, 0, string("b"));
+  GetFront(testnum, testerr, heap, true, string("b"));
+  Exists(testnum, testerr, heap, true, string("b"));
+
+  GetBack(testnum, testerr, heap, true, string("b"));
+  Change(testnum, testerr, heap, true, 0, string("a"));
+  GetBack(testnum, testerr, heap, true, string("a"));
+  Exists(testnum, testerr, heap, true, string("a"));
+  Change(testnum, testerr, heap, true, 0, string("b"));
+  GetBack(testnum, testerr, heap, true, string("b"));
+  Exists(testnum, testerr, heap, true, string("b"));
+
+  Change(testnum, testerr, heap, true, 0, string("a"));
+  GetAt(testnum, testerr, heap, true, 0, string("a"));
+  Exists(testnum, testerr, heap, true, string("a"));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("a"));
+
+  heap.Clear();
+  myTestEmptyPQString(heap, testnum, testerr);
+
+  TipNRemove(testnum, testerr, heap, false, string("a"));
+  RemoveTip(testnum, testerr, heap, false);
+  Change(testnum, testerr, heap, false, 0, string("b"));
+
+  GetAt(testnum, testerr, heap, false, 0, string("b"));
+  GetFront(testnum, testerr, heap, false, string("b"));
+  GetBack(testnum, testerr, heap, false, string("b"));
+
+  Insert(testnum, testerr, heap, string("b"));
+  Change(testnum, testerr, heap, true, 0, string("a"));
+
+  Exists(testnum, testerr, heap, true, string("a"));
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("a"));
+}
+
+void myTestMultiplePQString(lasd::PQ<string> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 20);
+
+  GetAt(testnum, testerr, heap, true, 0, string("t"));
+  GetFront(testnum, testerr, heap, true, string("t"));
+  GetBack(testnum, testerr, heap, true, string("c"));
+
+  GetAt(testnum, testerr, heap, true, 0, string("t"));
+  GetAt(testnum, testerr, heap, true, 1, string("s"));
+  GetAt(testnum, testerr, heap, true, 2, string("n"));
+  GetAt(testnum, testerr, heap, true, 3, string("q"));
+  GetAt(testnum, testerr, heap, true, 4, string("r"));
+  GetAt(testnum, testerr, heap, true, 5, string("k"));
+  GetAt(testnum, testerr, heap, true, 6, string("m"));
+  GetAt(testnum, testerr, heap, true, 7, string("j"));
+  GetAt(testnum, testerr, heap, true, 8, string("p"));
+  GetAt(testnum, testerr, heap, true, 9, string("i"));
+  GetAt(testnum, testerr, heap, true, 10, string("h"));
+  GetAt(testnum, testerr, heap, true, 11, string("b"));
+  GetAt(testnum, testerr, heap, true, 12, string("f"));
+  GetAt(testnum, testerr, heap, true, 13, string("e"));
+  GetAt(testnum, testerr, heap, true, 14, string("l"));
+  GetAt(testnum, testerr, heap, true, 15, string("a"));
+  GetAt(testnum, testerr, heap, true, 16, string("g"));
+  GetAt(testnum, testerr, heap, true, 17, string("d"));
+  GetAt(testnum, testerr, heap, true, 18, string("o"));
+  GetAt(testnum, testerr, heap, true, 19, string("c"));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+
+  lasd::HeapVec<string> heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<string>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (96 + index)));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("tsnqrkmjpihbfelagdoc"));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("tsnqrkmjpihbfelagdoc"));
+
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  RemoveTip(testnum, testerr, heap, false);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 0; index < 20; index++) {
+    Tip(testnum, testerr, heap, true, string(1, char (116 - index)));
+    TipNRemove(testnum, testerr, heap, true, string(1, char (116 - index)));
+  }
+
+  Tip(testnum, testerr, heap, false, string("u"));
+  TipNRemove(testnum, testerr, heap, false, string("u"));
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (96 + index)));
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("codgalefbhipjmkrqnst"));
+  
+  Change(testnum, testerr, heap, false, 20, string(""));
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, index - 1, string(1, char (97 + (rand() % index))));
+
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 20; index > 0; index--)
+    TipNRemove(testnum, testerr, heap, true, string(1, char (96 + index)));
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, 0, string(1, char (64 + index)));
+
+  heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<string>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, 19, string(1, char (96 + index)));
+
+  Change(testnum, testerr, heap, false, 20, string(""));
+
+  heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<string>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  heap.Clear();
+  Size(testnum, testerr, heap, true, 0);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, false, string(1, char (96 + index)));
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+  
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  Insert(testnum, testerr, heap, string("a"));
+  myTestSinglePQString(heap, testnum, testerr);
+
+  for (int index = 2; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (96 + index)));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("tsnqrkmjpihbfelagdoc"));
+}
+
+void myTestMultipleCPQString(lasd::PQ<string> & heap, unsigned int & testnum, unsigned int & testerr) {
+  Empty(testnum, testerr, heap, false);
+  Size(testnum, testerr, heap, true, 20);
+
+  GetAt(testnum, testerr, heap, true, 0, string("t"));
+  GetFront(testnum, testerr, heap, true, string("t"));
+  GetBack(testnum, testerr, heap, true, string("e"));
+
+  GetAt(testnum, testerr, heap, true, 0, string("t"));
+  GetAt(testnum, testerr, heap, true, 1, string("s"));
+  GetAt(testnum, testerr, heap, true, 2, string("o"));
+  GetAt(testnum, testerr, heap, true, 3, string("r"));
+  GetAt(testnum, testerr, heap, true, 4, string("k"));
+  GetAt(testnum, testerr, heap, true, 5, string("m"));
+  GetAt(testnum, testerr, heap, true, 6, string("n"));
+  GetAt(testnum, testerr, heap, true, 7, string("q"));
+  GetAt(testnum, testerr, heap, true, 8, string("i"));
+  GetAt(testnum, testerr, heap, true, 9, string("j"));
+  GetAt(testnum, testerr, heap, true, 10, string("b"));
+  GetAt(testnum, testerr, heap, true, 11, string("l"));
+  GetAt(testnum, testerr, heap, true, 12, string("f"));
+  GetAt(testnum, testerr, heap, true, 13, string("c"));
+  GetAt(testnum, testerr, heap, true, 14, string("g"));
+  GetAt(testnum, testerr, heap, true, 15, string("p"));
+  GetAt(testnum, testerr, heap, true, 16, string("h"));
+  GetAt(testnum, testerr, heap, true, 17, string("d"));
+  GetAt(testnum, testerr, heap, true, 18, string("a"));
+  GetAt(testnum, testerr, heap, true, 19, string("e"));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+
+  lasd::HeapVec<string> heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<string>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (96 + index)));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("tsorkmnqijblfcgphdae"));
+
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  RemoveTip(testnum, testerr, heap, false);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 0; index < 20; index++) {
+    Tip(testnum, testerr, heap, true, string(1, char (116 - index)));
+    TipNRemove(testnum, testerr, heap, true, string(1, char (116 - index)));
+  }
+
+  Tip(testnum, testerr, heap, false, string("u"));
+  TipNRemove(testnum, testerr, heap, false, string("u"));
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (96 + index)));
+
+  TraversePostOrder(testnum, testerr, heap, true, &TraversePrint<string>);
+  FoldPostOrder(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("codgalefbhipjmkrqnst"));
+
+  Change(testnum, testerr, heap, false, 20, string(""));
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, index - 1, string(1, char (97 + (rand() % index))));
+
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 20; index > 0; index--)
+    TipNRemove(testnum, testerr, heap, true, string(1, char (96 + index)));
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, 0, string(1, char (64 + index)));
+
+  heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<string>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  for (int index = 1; index <= 20; index++)
+    Change(testnum, testerr, heap, true, 19, string(1, char (96 + index)));
+
+  Change(testnum, testerr, heap, false, 20, string(""));
+
+  heapVec = heap;
+  Traverse(testnum, testerr, heapVec, true, &TraversePrint<string>);
+  IsHeap(testnum, testerr, heapVec, true);
+
+  heap.Clear();
+  Size(testnum, testerr, heap, true, 0);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, false, string(1, char (96 + index)));
+
+  for (int index = 1; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+  
+  for (int index = 0; index < 20; index++)
+    RemoveTip(testnum, testerr, heap, true);
+
+  Empty(testnum, testerr, heap, true);
+  Size(testnum, testerr, heap, true, 0);
+
+  Insert(testnum, testerr, heap, string("a"));
+  myTestSinglePQString(heap, testnum, testerr);
+
+  for (int index = 2; index <= 20; index++)
+    Insert(testnum, testerr, heap, string(1, char (96 + index)));
+
+  Size(testnum, testerr, heap, true, 20);
+
+  for (int index = 1; index <= 20; index++)
+    Exists(testnum, testerr, heap, true, string(1, char (96 + index)));
+
+  Traverse(testnum, testerr, heap, true, &TraversePrint<string>);
+  Fold(testnum, testerr, heap, true, &FoldStringConcatenate, string(""), string("tsnqrkmjpihbfelagdoc"));
+}
+
+/* ************************************************************************** */
+
+void myTestPQInt(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of PQHeap<int> Test" << endl;
+  try {
+    {
+      cout << endl << "Empty PQHeap (from Vector)" << endl;
+
+      lasd::Vector<int> vec;
+
+      lasd::PQHeap<int> pq;
+
+      myTestEmptyPQInt(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<int> copyCPQVec(vec);
+
+      myTestEmptyPQInt(copyCPQVec, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> copyPQVec = pq;
+
+      myTestEmptyPQInt(copyPQVec, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<int> moveCPQVec(std::move(vec));
+
+      myTestEmptyPQInt(moveCPQVec, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> movePQVec = std::move(pq);
+
+      myTestEmptyPQInt(movePQVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 PQHeap (from Vector)" << endl;
+
+      lasd::Vector<int> vec(1);
+
+      SetFront(loctestnum, loctesterr, vec, true, 1);
+
+      lasd::PQHeap<int> pq;
+
+      Insert(testnum, testerr, pq, 1);
+
+      myTestSinglePQInt(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<int> heapCPQHeap(vec);
+
+      myTestSinglePQInt(heapCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> copyPQHeap = pq;
+      
+      myTestSinglePQInt(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<int> moveCPQHeap(std::move(vec));
+
+      myTestSinglePQInt(moveCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> movePQHeap = std::move(pq);
+
+      myTestSinglePQInt(movePQHeap, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 PQHeap (from Vector)" << endl;
+
+      lasd::Vector<int> vec(20);
+
+      for (int index = 1; index <= 20; index++)
+        SetAt(loctestnum, loctesterr, vec, true, index - 1, index);
+      
+      lasd::PQHeap<int> pq;
+
+      for (int index = 1; index <= 20; index++)
+        Insert(loctestnum, loctesterr, pq, index);
+
+      myTestMultiplePQInt(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<int> copyCPQHeap(vec);
+
+      myTestMultipleCPQInt(copyCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> copyPQHeap = pq;
+
+      myTestMultiplePQInt(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<int> moveCPQHeap(std::move(vec));
+
+      myTestMultipleCPQInt(moveCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> movePQHeap = std::move(pq);
+
+      myTestMultiplePQInt(movePQHeap, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Empty PQHeap (from SetList)" << endl;
+
+      lasd::SetLst<int> setList;
+
+      lasd::PQHeap<int> pq;
+
+      myTestEmptyPQInt(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<int> copyCPQHeap(setList);
+
+      myTestEmptyPQInt(copyCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> copyPQHeap = pq;
+
+      myTestEmptyPQInt(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<int> movePQHeap = std::move(pq);
+
+      myTestEmptyPQInt(movePQHeap, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 PQHeap (from SetList)" << endl;
+
+      lasd::SetLst<int> setList;
+
+      InsertC(loctestnum, loctesterr, setList, true, 1);
+
+      lasd::PQHeap<int> pq;
+
+      Insert(loctestnum, loctesterr, pq, 1);
+
+      myTestSinglePQInt(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<int> heapCPQHeap(setList);
+
+      myTestSinglePQInt(heapCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> copyPQHeap = pq;
+
+      myTestSinglePQInt(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<int> movePQHeap = std::move(pq);
+
+      myTestSinglePQInt(movePQHeap, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 PQHeap (from SetList)" << endl;
+
+      lasd::Vector<int> vec(20);
+
+      for (int index = 1; index <= 20; index++)
+        SetAt(loctestnum, loctesterr, vec, true, index - 1, 21 - index);
+
+      lasd::SetLst<int> setList;
+
+      InsertAllC(loctestnum, loctesterr, setList, true, vec);  
+      
+      lasd::PQHeap<int> pq;
+
+      for (int index = 1; index <= 20; index++)
+        Insert(loctestnum, loctesterr, pq, index);
+
+      myTestMultiplePQInt(pq, loctestnum, loctesterr);
+
+      cout << endl << "Size 20 PQHeap" << endl;
+
+      myTestMultiplePQInt(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<int> copyCPQHeap(setList);
+
+      myTestMultipleCPQInt(copyCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<int> copyPQHeap = pq;
+
+      myTestMultiplePQInt(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<int> movePQHeap = std::move(pq);
+
+      myTestMultiplePQInt(movePQHeap, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of PQHeap<int> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void myTestPQString(unsigned int & testnum, unsigned int & testerr) {
+  unsigned int loctestnum = 0, loctesterr = 0;
+  cout << endl << "Begin of PQHeap<string> Test" << endl;
+  try {
+    {
+      cout << endl << "Empty PQHeap (from Vector)" << endl;
+
+      lasd::Vector<string> vec;
+
+      lasd::PQHeap<string> pq;
+
+      myTestEmptyPQString(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<string> copyCPQVec(vec);
+
+      myTestEmptyPQString(copyCPQVec, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> copyPQVec = pq;
+
+      myTestEmptyPQString(copyPQVec, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<string> moveCPQVec(std::move(vec));
+
+      myTestEmptyPQString(moveCPQVec, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> movePQVec = std::move(pq);
+
+      myTestEmptyPQString(movePQVec, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 PQHeap (from Vector)" << endl;
+
+      lasd::Vector<string> vec(1);
+
+      SetFront(loctestnum, loctesterr, vec, true, string("a"));
+
+      lasd::PQHeap<string> pq;
+
+      Insert(testnum, testerr, pq, string("a"));
+
+      myTestSinglePQString(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<string> heapCPQHeap(vec);
+
+      myTestSinglePQString(heapCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> copyPQHeap = pq;
+      
+      myTestSinglePQString(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<string> moveCPQHeap(std::move(vec));
+
+      myTestSinglePQString(moveCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> movePQHeap = std::move(pq);
+
+      myTestSinglePQString(movePQHeap, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 PQHeap (from Vector)" << endl;
+
+      lasd::Vector<string> vec(20);
+
+      for (int index = 1; index <= 20; index++)
+        SetAt(loctestnum, loctesterr, vec, true, index - 1, string(1, char (96 + index)));
+      
+      lasd::PQHeap<string> pq;
+
+      for (int index = 1; index <= 20; index++)
+        Insert(loctestnum, loctesterr, pq, string(1, char (96 + index)));
+
+      myTestMultiplePQString(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<string> copyCPQHeap(vec);
+
+      myTestMultipleCPQString(copyCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> copyPQHeap = pq;
+
+      myTestMultiplePQString(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<string> moveCPQHeap(std::move(vec));
+
+      myTestMultipleCPQString(moveCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> movePQHeap = std::move(pq);
+
+      myTestMultiplePQString(movePQHeap, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Empty PQHeap (from SetList)" << endl;
+
+      lasd::SetLst<string> setList;
+
+      lasd::PQHeap<string> pq;
+
+      myTestEmptyPQString(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<string> copyCPQHeap(setList);
+
+      myTestEmptyPQString(copyCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> copyPQHeap = pq;
+
+      myTestEmptyPQString(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<string> movePQHeap = std::move(pq);
+
+      myTestEmptyPQString(movePQHeap, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 1 PQHeap (from SetList)" << endl;
+
+      lasd::SetLst<string> setList;
+
+      InsertC(loctestnum, loctesterr, setList, true, string("a"));
+
+      lasd::PQHeap<string> pq;
+
+      Insert(loctestnum, loctesterr, pq, string("a"));
+
+      myTestSinglePQString(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<string> heapCPQHeap(setList);
+
+      myTestSinglePQString(heapCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> copyPQHeap = pq;
+
+      myTestSinglePQString(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<string> movePQHeap = std::move(pq);
+
+      myTestSinglePQString(movePQHeap, loctestnum, loctesterr);
+    }
+    {
+      cout << endl << "Start Inserting Element Size 20 PQHeap (from SetList)" << endl;
+
+      lasd::Vector<string> vec(20);
+
+      for (int index = 1; index <= 20; index++)
+        SetAt(loctestnum, loctesterr, vec, true, index - 1, string(1, char (96 + index)));
+
+      lasd::SetLst<string> setList;
+
+      InsertAllC(loctestnum, loctesterr, setList, true, vec);  
+      
+      lasd::PQHeap<string> pq;
+
+      for (int index = 1; index <= 20; index++)
+        Insert(loctestnum, loctesterr, pq, string(1, char (96 + index)));
+
+      myTestMultiplePQString(pq, loctestnum, loctesterr);
+
+      cout << endl << "Size 20 PQHeap" << endl;
+
+      myTestMultiplePQString(pq, loctestnum, loctesterr);
+
+      cout << endl << "Copy PQHeap" << endl;
+
+      lasd::PQHeap<string> copyCPQHeap(setList);
+
+      myTestMultipleCPQString(copyCPQHeap, loctestnum, loctesterr);
+
+      lasd::PQHeap<string> copyPQHeap = pq;
+
+      myTestMultiplePQString(copyPQHeap, loctestnum, loctesterr);
+
+      cout << endl << "Move PQHeap" << endl;
+
+      lasd::PQHeap<string> movePQHeap = std::move(pq);
+
+      myTestMultiplePQString(movePQHeap, loctestnum, loctesterr);
+    }
+  }
+  catch (...) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! " << endl;
+  }
+  cout << "End of PQHeap<string> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  testnum += loctestnum;
+  testerr += loctesterr;
+}
+
+void myTestExercise2B(unsigned int & testnum, unsigned int & testerr) {
+  myTestPQInt(testnum, testerr);
+  myTestPQString(testnum, testerr);
+  cout << endl << "Exercise 2B (Student Test) (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
+}
+
+/* ************************************************************************** */
+
+void TestGaetano() {
+  cout << endl << "~*~#~*~ Welcome to the \"It works on my machine!\" Test Suite ~*~#~*~" << endl;
+
+  unsigned int loctestnum, loctesterr;
+  unsigned int testnum = 0, testerr = 0;
+
+  loctestnum = 0; loctesterr = 0;
+  myTestExercise1A(loctestnum, loctesterr);
+  testnum += loctestnum; testerr += loctesterr;
+
+  loctestnum = 0; loctesterr = 0;
+  myTestExercise1B(loctestnum, loctesterr);
+  testnum += loctestnum; testerr += loctesterr;
+
+  loctestnum = 0; loctesterr = 0;
+  myTestExercise2A(loctestnum, loctesterr);
+  testnum += loctestnum; testerr += loctesterr;
+
+  loctestnum = 0; loctesterr = 0;
+  myTestExercise2B(loctestnum, loctesterr);
+  testnum += loctestnum; testerr += loctesterr;
+
+  cout << endl << "Exercise Total (Student Test) (Errors/Tests: " << testerr << "/" << testnum << ") \n";
+
+  cout << endl << "«It's not a bug, it's a feature» - Steve Jobs" << endl;
+
+}
+
+
 // Funzione ausiliaria per verificare la proprietà del max-heap
-template <typename Data>
-void VerifyMaxHeap(const HeapVec<Data> &heap)
-{
-    for (unsigned long i = 0; i < heap.Size() / 2; ++i)
-    {
-        unsigned long left = 2 * i + 1;
-        unsigned long right = 2 * i + 2;
-        if (left < heap.Size())
-            assert(heap[i] >= heap[left]);
-        if (right < heap.Size())
-            assert(heap[i] >= heap[right]);
-    }
-}
+// template <typename Data>
+// void VerifyMaxHeap(const HeapVec<Data> &heap)
+// {
+//     for (unsigned long i = 0; i < heap.Size() / 2; ++i)
+//     {
+//         unsigned long left = 2 * i + 1;
+//         unsigned long right = 2 * i + 2;
+//         if (left < heap.Size())
+//             assert(heap[i] >= heap[left]);
+//         if (right < heap.Size())
+//             assert(heap[i] >= heap[right]);
+//     }
+// }
 
-// Test per HeapVec<int>
-void testHeapVecInt()
-{
-    std::cout << "\nInizio dei test per HeapVec<int>\n";
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(-1000, 1000);
+// // Test per HeapVec<int>
+// void testHeapVecInt()
+// {
+//     std::cout << "\nInizio dei test per HeapVec<int>\n";
+//     std::random_device rd;
+//     std::mt19937 gen(rd());
+//     std::uniform_int_distribution<> dist(-1000, 1000);
 
-    // Costruttore predefinito (25 test)
-    {
-        HeapVec<int> heap;
-        assert(heap.Empty());
-        assert(heap.Size() == 0);
-        assert(heap.IsHeap());
-        bool throws = false;
-        try
-        {
-            heap.Front();
-        }
-        catch (const std::length_error &)
-        {
-            throws = true;
-        }
-        assert(throws);
-        throws = false;
-        try
-        {
-            heap.Back();
-        }
-        catch (const std::length_error &)
-        {
-            throws = true;
-        }
-        assert(throws);
-        throws = false;
-        try
-        {
-            heap[0];
-        }
-        catch (const std::out_of_range &)
-        {
-            throws = true;
-        }
-        assert(throws);
-        heap.Clear();
-        assert(heap.Empty());
-        heap.Resize(0);
-        assert(heap.Size() == 0);
-        // Altri test: verifica di operazioni su heap vuoto
-        for (int i = 0; i < 17; ++i)
-        {
-            assert(heap.Empty());
-            assert(heap.IsHeap());
-        }
-    }
+//     // Costruttore predefinito (25 test)
+//     {
+//         HeapVec<int> heap;
+//         assert(heap.Empty());
+//         assert(heap.Size() == 0);
+//         assert(heap.IsHeap());
+//         bool throws = false;
+//         try
+//         {
+//             heap.Front();
+//         }
+//         catch (const std::length_error &)
+//         {
+//             throws = true;
+//         }
+//         assert(throws);
+//         throws = false;
+//         try
+//         {
+//             heap.Back();
+//         }
+//         catch (const std::length_error &)
+//         {
+//             throws = true;
+//         }
+//         assert(throws);
+//         throws = false;
+//         try
+//         {
+//             heap[0];
+//         }
+//         catch (const std::out_of_range &)
+//         {
+//             throws = true;
+//         }
+//         assert(throws);
+//         heap.Clear();
+//         assert(heap.Empty());
+//         heap.Resize(0);
+//         assert(heap.Size() == 0);
+//         // Altri test: verifica di operazioni su heap vuoto
+//         for (int i = 0; i < 17; ++i)
+//         {
+//             assert(heap.Empty());
+//             assert(heap.IsHeap());
+//         }
+//     }
 
-    // Costruttore da TraversableContainer (25 test)
-    {
-        Vector<int> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<int> heap(vec);
-        assert(heap.Size() == 10);
-        assert(heap.IsHeap());
-        VerifyMaxHeap(heap);
-        Vector<int> emptyVec(0);
-        HeapVec<int> emptyHeap(emptyVec);
-        assert(emptyHeap.Empty());
-        Vector<int> single(1);
-        single[0] = 42;
-        HeapVec<int> singleHeap(single);
-        assert(singleHeap.Size() == 1);
-        assert(singleHeap.Front() == 42);
-        // Altri test: vettori ordinati, inversi, con duplicati
-        Vector<int> sorted(5);
-        for (unsigned long i = 0; i < 5; ++i)
-            sorted[i] = i;
-        HeapVec<int> sortedHeap(sorted);
-        assert(sortedHeap.IsHeap());
-        Vector<int> reverse(5);
-        for (unsigned long i = 0; i < 5; ++i)
-            reverse[i] = 4 - i;
-        HeapVec<int> reverseHeap(reverse);
-        assert(reverseHeap.IsHeap());
-        Vector<int> dups(5);
-        for (unsigned long i = 0; i < 5; ++i)
-            dups[i] = 42;
-        HeapVec<int> dupsHeap(dups);
-        assert(dupsHeap.IsHeap());
-        // Aggiungi altri test per coprire 25 casi
-    }
+//     // Costruttore da TraversableContainer (25 test)
+//     {
+//         Vector<int> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<int> heap(vec);
+//         assert(heap.Size() == 10);
+//         assert(heap.IsHeap());
+//         VerifyMaxHeap(heap);
+//         Vector<int> emptyVec(0);
+//         HeapVec<int> emptyHeap(emptyVec);
+//         assert(emptyHeap.Empty());
+//         Vector<int> single(1);
+//         single[0] = 42;
+//         HeapVec<int> singleHeap(single);
+//         assert(singleHeap.Size() == 1);
+//         assert(singleHeap.Front() == 42);
+//         // Altri test: vettori ordinati, inversi, con duplicati
+//         Vector<int> sorted(5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             sorted[i] = i;
+//         HeapVec<int> sortedHeap(sorted);
+//         assert(sortedHeap.IsHeap());
+//         Vector<int> reverse(5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             reverse[i] = 4 - i;
+//         HeapVec<int> reverseHeap(reverse);
+//         assert(reverseHeap.IsHeap());
+//         Vector<int> dups(5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             dups[i] = 42;
+//         HeapVec<int> dupsHeap(dups);
+//         assert(dupsHeap.IsHeap());
+//         // Aggiungi altri test per coprire 25 casi
+//     }
 
-    // Costruttore da MappableContainer (25 test)
-    {
-        Vector<int> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<int> heap(std::move(vec));
-        assert(heap.Size() == 10);
-        assert(heap.IsHeap());
-        assert(vec.Size() == 10);
-        Vector<int> emptyVec(0);
-        HeapVec<int> emptyHeap(std::move(emptyVec));
-        assert(emptyHeap.Empty());
-        // Altri test simili
-    }
+//     // Costruttore da MappableContainer (25 test)
+//     {
+//         Vector<int> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<int> heap(std::move(vec));
+//         assert(heap.Size() == 10);
+//         assert(heap.IsHeap());
+//         assert(vec.Size() == 10);
+//         Vector<int> emptyVec(0);
+//         HeapVec<int> emptyHeap(std::move(emptyVec));
+//         assert(emptyHeap.Empty());
+//         // Altri test simili
+//     }
 
-    // Costruttore di copia (25 test)
-    {
-        Vector<int> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<int> heap(vec);
-        HeapVec<int> copy(heap);
-        assert(copy == heap);
-        assert(copy.Size() == 10);
-        assert(copy.IsHeap());
-        // Altri test: copia di heap vuoto, singolo elemento
-    }
+//     // Costruttore di copia (25 test)
+//     {
+//         Vector<int> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<int> heap(vec);
+//         HeapVec<int> copy(heap);
+//         assert(copy == heap);
+//         assert(copy.Size() == 10);
+//         assert(copy.IsHeap());
+//         // Altri test: copia di heap vuoto, singolo elemento
+//     }
 
-    // Costruttore di spostamento (25 test)
-    {
-        Vector<int> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<int> heap(vec);
-        HeapVec<int> moved(std::move(heap));
-        assert(moved.Size() == 10);
-        assert(moved.IsHeap());
-        assert(heap.Size() == 0);
-        // Altri test
-    }
+//     // Costruttore di spostamento (25 test)
+//     {
+//         Vector<int> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<int> heap(vec);
+//         HeapVec<int> moved(std::move(heap));
+//         assert(moved.Size() == 10);
+//         assert(moved.IsHeap());
+//         assert(heap.Size() == 0);
+//         // Altri test
+//     }
 
-    // Assegnazione di copia (25 test)
-    {
-        Vector<int> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<int> heap(vec);
-        HeapVec<int> assign;
-        assign = heap;
-        assert(assign == heap);
-        assert(assign.Size() == 10);
-        assert(assign.IsHeap());
-        // Altri test
-    }
+//     // Assegnazione di copia (25 test)
+//     {
+//         Vector<int> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<int> heap(vec);
+//         HeapVec<int> assign;
+//         assign = heap;
+//         assert(assign == heap);
+//         assert(assign.Size() == 10);
+//         assert(assign.IsHeap());
+//         // Altri test
+//     }
 
-    // Assegnazione di spostamento (25 test)
-    {
-        Vector<int> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<int> heap(vec);
-        HeapVec<int> assign;
-        assign = std::move(heap);
-        assert(assign.Size() == 10);
-        assert(assign.IsHeap());
-        assert(heap.Size() == 0);
-        // Altri test
-    }
+//     // Assegnazione di spostamento (25 test)
+//     {
+//         Vector<int> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<int> heap(vec);
+//         HeapVec<int> assign;
+//         assign = std::move(heap);
+//         assert(assign.Size() == 10);
+//         assert(assign.IsHeap());
+//         assert(heap.Size() == 0);
+//         // Altri test
+//     }
 
-    // Operatori di confronto (25 test)
-    {
-        Vector<int> vec1(5);
-        for (unsigned long i = 0; i < 5; ++i)
-            vec1[i] = i;
-        HeapVec<int> heap1(vec1);
-        Vector<int> vec2(5);
-        for (unsigned long i = 0; i < 5; ++i)
-            vec2[i] = i;
-        HeapVec<int> heap2(vec2);
-        assert(heap1 == heap2);
-        assert(!(heap1 != heap2));
-        Vector<int> vec3(4);
-        for (unsigned long i = 0; i < 4; ++i)
-            vec3[i] = i;
-        HeapVec<int> heap3(vec3);
-        assert(heap1 != heap3);
-        Vector<int> vec4(5);
-        for (unsigned long i = 0; i < 5; ++i)
-            vec4[i] = i + 1;
-        HeapVec<int> heap4(vec4);
-        assert(heap1 != heap4);
-        // Altri test
-    }
+//     // Operatori di confronto (25 test)
+//     {
+//         Vector<int> vec1(5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             vec1[i] = i;
+//         HeapVec<int> heap1(vec1);
+//         Vector<int> vec2(5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             vec2[i] = i;
+//         HeapVec<int> heap2(vec2);
+//         assert(heap1 == heap2);
+//         assert(!(heap1 != heap2));
+//         Vector<int> vec3(4);
+//         for (unsigned long i = 0; i < 4; ++i)
+//             vec3[i] = i;
+//         HeapVec<int> heap3(vec3);
+//         assert(heap1 != heap3);
+//         Vector<int> vec4(5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             vec4[i] = i + 1;
+//         HeapVec<int> heap4(vec4);
+//         assert(heap1 != heap4);
+//         // Altri test
+//     }
 
-    // // IsHeap (25 test)
-    // {
-    //     HeapVec<int> emptyHeap;
-    //     assert(emptyHeap.IsHeap());
-    //     HeapVec<int> singleHeap;
-    //     singleHeap.Resize(1);
-    //     singleHeap[0] = 42;
-    //     assert(singleHeap.IsHeap());
-    //     Vector<int> validVec(10); // {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-    //     for (unsigned long i = 0; i < 10; ++i)
-    //         validVec[i] = 10 - i;
-    //     HeapVec<int> validHeap(validVec);
-    //     validHeap.Heapify();
-    //     assert(validHeap.IsHeap());
-    //     Vector<int> invalidVec(10);
-    //     for (unsigned long i = 0; i < 10; ++i)
-    //         invalidVec[i] = i; // {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    //     HeapVec<int> invalidHeap(invalidVec);
-    //     assert(!invalidHeap.IsHeap());
-    //     // Altri test
-    // }
+//     // // IsHeap (25 test)
+//     // {
+//     //     HeapVec<int> emptyHeap;
+//     //     assert(emptyHeap.IsHeap());
+//     //     HeapVec<int> singleHeap;
+//     //     singleHeap.Resize(1);
+//     //     singleHeap[0] = 42;
+//     //     assert(singleHeap.IsHeap());
+//     //     Vector<int> validVec(10); // {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+//     //     for (unsigned long i = 0; i < 10; ++i)
+//     //         validVec[i] = 10 - i;
+//     //     HeapVec<int> validHeap(validVec);
+//     //     validHeap.Heapify();
+//     //     assert(validHeap.IsHeap());
+//     //     Vector<int> invalidVec(10);
+//     //     for (unsigned long i = 0; i < 10; ++i)
+//     //         invalidVec[i] = i; // {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     //     HeapVec<int> invalidHeap(invalidVec);
+//     //     assert(!invalidHeap.IsHeap());
+//     //     // Altri test
+//     // }
 
-    // Heapify (25 test)
-    {
-        Vector<int> unsorted(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            unsorted[i] = dist(gen);
-        HeapVec<int> heap(unsorted);
-        heap.Heapify();
-        assert(heap.IsHeap());
-        // Altri test: vettori ordinati, inversi, con duplicati
-    }
+//     // Heapify (25 test)
+//     {
+//         Vector<int> unsorted(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             unsorted[i] = dist(gen);
+//         HeapVec<int> heap(unsorted);
+//         heap.Heapify();
+//         assert(heap.IsHeap());
+//         // Altri test: vettori ordinati, inversi, con duplicati
+//     }
 
-    // Sort (25 test)
-    {
-        Vector<int> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<int> heap(vec);
-        heap.Sort();
-        for (unsigned long i = 1; i < heap.Size(); ++i)
-        {
-            assert(heap[i - 1] <= heap[i]);
-        }
-        assert(!heap.IsHeap());
-        // Altri test
-    }
+//     // Sort (25 test)
+//     {
+//         Vector<int> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<int> heap(vec);
+//         heap.Sort();
+//         for (unsigned long i = 1; i < heap.Size(); ++i)
+//         {
+//             assert(heap[i - 1] <= heap[i]);
+//         }
+//         assert(!heap.IsHeap());
+//         // Altri test
+//     }
 
-    // Operazioni ereditate (25 test)
-    {
-        HeapVec<int> heap;
-        assert(heap.Empty());
-        heap.Resize(5);
-        assert(heap.Size() == 5);
-        for (unsigned long i = 0; i < 5; ++i)
-            heap[i] = i;
-        assert(heap[0] == 0);
-        assert(heap[4] == 4);
-        heap.Clear();
-        assert(heap.Empty());
-        // Altri test
-    }
+//     // Operazioni ereditate (25 test)
+//     {
+//         HeapVec<int> heap;
+//         assert(heap.Empty());
+//         heap.Resize(5);
+//         assert(heap.Size() == 5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             heap[i] = i;
+//         assert(heap[0] == 0);
+//         assert(heap[4] == 4);
+//         heap.Clear();
+//         assert(heap.Empty());
+//         // Altri test
+//     }
 
-    std::cout << "Fine dei test per HeapVec<int>\n";
-}
+//     std::cout << "Fine dei test per HeapVec<int>\n";
+// }
 
-// Test per HeapVec<double>
-void testHeapVecDouble()
-{
-    std::cout << "\nInizio dei test per HeapVec<double>\n";
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dist(-1000.0, 1000.0);
+// // Test per HeapVec<double>
+// void testHeapVecDouble()
+// {
+//     std::cout << "\nInizio dei test per HeapVec<double>\n";
+//     std::random_device rd;
+//     std::mt19937 gen(rd());
+//     std::uniform_real_distribution<> dist(-1000.0, 1000.0);
 
-    // Costruttore predefinito (25 test)
-    {
-        HeapVec<double> heap;
-        assert(heap.Empty());
-        assert(heap.Size() == 0);
-        assert(heap.IsHeap());
-        bool throws = false;
-        try
-        {
-            heap.Front();
-        }
-        catch (const std::length_error &)
-        {
-            throws = true;
-        }
-        assert(throws);
-        // Altri test simili a int
-    }
+//     // Costruttore predefinito (25 test)
+//     {
+//         HeapVec<double> heap;
+//         assert(heap.Empty());
+//         assert(heap.Size() == 0);
+//         assert(heap.IsHeap());
+//         bool throws = false;
+//         try
+//         {
+//             heap.Front();
+//         }
+//         catch (const std::length_error &)
+//         {
+//             throws = true;
+//         }
+//         assert(throws);
+//         // Altri test simili a int
+//     }
 
-    // Costruttore da TraversableContainer (25 test)
-    {
-        Vector<double> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<double> heap(vec);
-        assert(heap.Size() == 10);
-        assert(heap.IsHeap());
-        VerifyMaxHeap(heap);
-        // Altri test
-    }
+//     // Costruttore da TraversableContainer (25 test)
+//     {
+//         Vector<double> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<double> heap(vec);
+//         assert(heap.Size() == 10);
+//         assert(heap.IsHeap());
+//         VerifyMaxHeap(heap);
+//         // Altri test
+//     }
 
-    // Costruttore da MappableContainer (25 test)
-    {
-        Vector<double> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<double> heap(std::move(vec));
-        assert(heap.Size() == 10);
-        assert(heap.IsHeap());
-        assert(vec.Size() == 10);
-        // Altri test
-    }
+//     // Costruttore da MappableContainer (25 test)
+//     {
+//         Vector<double> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<double> heap(std::move(vec));
+//         assert(heap.Size() == 10);
+//         assert(heap.IsHeap());
+//         assert(vec.Size() == 10);
+//         // Altri test
+//     }
 
-    // Costruttore di copia (25 test)
-    {
-        Vector<double> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<double> heap(vec);
-        HeapVec<double> copy(heap);
-        assert(copy == heap);
-        // Altri test
-    }
+//     // Costruttore di copia (25 test)
+//     {
+//         Vector<double> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<double> heap(vec);
+//         HeapVec<double> copy(heap);
+//         assert(copy == heap);
+//         // Altri test
+//     }
 
-    // Costruttore di spostamento (25 test)
-    {
-        Vector<double> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<double> heap(vec);
-        HeapVec<double> moved(std::move(heap));
-        assert(moved.Size() == 10);
-        assert(moved.IsHeap());
-        assert(heap.Size() == 0);
-        // Altri test
-    }
+//     // Costruttore di spostamento (25 test)
+//     {
+//         Vector<double> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<double> heap(vec);
+//         HeapVec<double> moved(std::move(heap));
+//         assert(moved.Size() == 10);
+//         assert(moved.IsHeap());
+//         assert(heap.Size() == 0);
+//         // Altri test
+//     }
 
-    // Assegnazione di copia (25 test)
-    {
-        Vector<double> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<double> heap(vec);
-        HeapVec<double> assign;
-        assign = heap;
-        assert(assign == heap);
-        // Altri test
-    }
+//     // Assegnazione di copia (25 test)
+//     {
+//         Vector<double> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<double> heap(vec);
+//         HeapVec<double> assign;
+//         assign = heap;
+//         assert(assign == heap);
+//         // Altri test
+//     }
 
-    // Assegnazione di spostamento (25 test)
-    {
-        Vector<double> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<double> heap(vec);
-        HeapVec<double> assign;
-        assign = std::move(heap);
-        assert(assign.Size() == 10);
-        assert(assign.IsHeap());
-        assert(heap.Size() == 0);
-        // Altri test
-    }
+//     // Assegnazione di spostamento (25 test)
+//     {
+//         Vector<double> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<double> heap(vec);
+//         HeapVec<double> assign;
+//         assign = std::move(heap);
+//         assert(assign.Size() == 10);
+//         assert(assign.IsHeap());
+//         assert(heap.Size() == 0);
+//         // Altri test
+//     }
 
-    // Operatori di confronto (25 test)
-    {
-        Vector<double> vec1(5);
-        for (unsigned long i = 0; i < 5; ++i)
-            vec1[i] = i;
-        HeapVec<double> heap1(vec1);
-        Vector<double> vec2(5);
-        for (unsigned long i = 0; i < 5; ++i)
-            vec2[i] = i;
-        HeapVec<double> heap2(vec2);
-        assert(heap1 == heap2);
-        assert(!(heap1 != heap2));
-        // Altri test
-    }
+//     // Operatori di confronto (25 test)
+//     {
+//         Vector<double> vec1(5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             vec1[i] = i;
+//         HeapVec<double> heap1(vec1);
+//         Vector<double> vec2(5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             vec2[i] = i;
+//         HeapVec<double> heap2(vec2);
+//         assert(heap1 == heap2);
+//         assert(!(heap1 != heap2));
+//         // Altri test
+//     }
 
-    // IsHeap (25 test)
-    {
-        HeapVec<double> emptyHeap;
-        assert(emptyHeap.IsHeap());
-        HeapVec<double> singleHeap;
-        singleHeap.Resize(1);
-        singleHeap[0] = 42.5;
-        assert(singleHeap.IsHeap());
-        // Altri test
-    }
+//     // IsHeap (25 test)
+//     {
+//         HeapVec<double> emptyHeap;
+//         assert(emptyHeap.IsHeap());
+//         HeapVec<double> singleHeap;
+//         singleHeap.Resize(1);
+//         singleHeap[0] = 42.5;
+//         assert(singleHeap.IsHeap());
+//         // Altri test
+//     }
 
-    // Heapify (25 test)
-    {
-        Vector<double> unsorted(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            unsorted[i] = dist(gen);
-        HeapVec<double> heap(unsorted);
-        heap.Heapify();
-        assert(heap.IsHeap());
-        // Altri test
-    }
+//     // Heapify (25 test)
+//     {
+//         Vector<double> unsorted(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             unsorted[i] = dist(gen);
+//         HeapVec<double> heap(unsorted);
+//         heap.Heapify();
+//         assert(heap.IsHeap());
+//         // Altri test
+//     }
 
-    // Sort (25 test)
-    {
-        Vector<double> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = dist(gen);
-        HeapVec<double> heap(vec);
-        heap.Sort();
-        for (unsigned long i = 1; i < heap.Size(); ++i)
-        {
-            assert(heap[i - 1] <= heap[i]);
-        }
-        assert(!heap.IsHeap());
-        // Altri test
-    }
+//     // Sort (25 test)
+//     {
+//         Vector<double> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<double> heap(vec);
+//         heap.Sort();
+//         for (unsigned long i = 1; i < heap.Size(); ++i)
+//         {
+//             assert(heap[i - 1] <= heap[i]);
+//         }
+//         assert(!heap.IsHeap());
+//         // Altri test
+//     }
 
-    // Operazioni ereditate (25 test)
-    {
-        HeapVec<double> heap;
-        assert(heap.Empty());
-        heap.Resize(5);
-        assert(heap.Size() == 5);
-        for (unsigned long i = 0; i < 5; ++i)
-            heap[i] = i;
-        assert(heap[0] == 0);
-        assert(heap[4] == 4);
-        heap.Clear();
-        assert(heap.Empty());
-        // Altri test
-    }
+//     // Operazioni ereditate (25 test)
+//     {
+//         HeapVec<double> heap;
+//         assert(heap.Empty());
+//         heap.Resize(5);
+//         assert(heap.Size() == 5);
+//         for (unsigned long i = 0; i < 5; ++i)
+//             heap[i] = i;
+//         assert(heap[0] == 0);
+//         assert(heap[4] == 4);
+//         heap.Clear();
+//         assert(heap.Empty());
+//         // Altri test
+//     }
 
-    std::cout << "Fine dei test per HeapVec<double>\n";
-}
+//     std::cout << "Fine dei test per HeapVec<double>\n";
+// }
 
-// Test per HeapVec<std::string>
-void testHeapVecString()
-{
-    std::cout << "\nInizio dei test per HeapVec<std::string>\n";
+// // Test per HeapVec<std::string>
+// void testHeapVecString()
+// {
+//     std::cout << "\nInizio dei test per HeapVec<std::string>\n";
 
-    // Costruttore predefinito (25 test)
-    {
-        HeapVec<std::string> heap;
-        assert(heap.Empty());
-        assert(heap.Size() == 0);
-        assert(heap.IsHeap());
-        bool throws = false;
-        try
-        {
-            heap.Front();
-        }
-        catch (const std::length_error &)
-        {
-            throws = true;
-        }
-        assert(throws);
-        // Altri test
-    }
+//     // Costruttore predefinito (25 test)
+//     {
+//         HeapVec<std::string> heap;
+//         assert(heap.Empty());
+//         assert(heap.Size() == 0);
+//         assert(heap.IsHeap());
+//         bool throws = false;
+//         try
+//         {
+//             heap.Front();
+//         }
+//         catch (const std::length_error &)
+//         {
+//             throws = true;
+//         }
+//         assert(throws);
+//         // Altri test
+//     }
 
-    // Costruttore da TraversableContainer (25 test)
-    {
-        Vector<std::string> vec(5);
-        vec[0] = "apple";
-        vec[1] = "banana";
-        vec[2] = "cherry";
-        vec[3] = "date";
-        vec[4] = "elderberry";
-        HeapVec<std::string> heap(vec);
-        assert(heap.Size() == 5);
-        assert(heap.IsHeap());
-        VerifyMaxHeap(heap);
-        // Altri test
-    }
+//     // Costruttore da TraversableContainer (25 test)
+//     {
+//         Vector<std::string> vec(5);
+//         vec[0] = "apple";
+//         vec[1] = "banana";
+//         vec[2] = "cherry";
+//         vec[3] = "date";
+//         vec[4] = "elderberry";
+//         HeapVec<std::string> heap(vec);
+//         assert(heap.Size() == 5);
+//         assert(heap.IsHeap());
+//         VerifyMaxHeap(heap);
+//         // Altri test
+//     }
 
-    // Costruttore da MappableContainer (25 test)
-    {
-        Vector<std::string> vec(5);
-        vec[0] = "apple";
-        vec[1] = "banana";
-        vec[2] = "cherry";
-        vec[3] = "date";
-        vec[4] = "elderberry";
-        HeapVec<std::string> heap(std::move(vec));
-        assert(heap.Size() == 5);
-        assert(heap.IsHeap());
-        assert(vec.Size() == 5);
-        // Altri test
-    }
+//     // Costruttore da MappableContainer (25 test)
+//     {
+//         Vector<std::string> vec(5);
+//         vec[0] = "apple";
+//         vec[1] = "banana";
+//         vec[2] = "cherry";
+//         vec[3] = "date";
+//         vec[4] = "elderberry";
+//         HeapVec<std::string> heap(std::move(vec));
+//         assert(heap.Size() == 5);
+//         assert(heap.IsHeap());
+//         assert(vec.Size() == 5);
+//         // Altri test
+//     }
 
-    // Costruttore di copia (25 test)
-    {
-        Vector<std::string> vec(5);
-        vec[0] = "apple";
-        vec[1] = "banana";
-        vec[2] = "cherry";
-        vec[3] = "date";
-        vec[4] = "elderberry";
-        HeapVec<std::string> heap(vec);
-        HeapVec<std::string> copy(heap);
-        assert(copy == heap);
-        // Altri test
-    }
+//     // Costruttore di copia (25 test)
+//     {
+//         Vector<std::string> vec(5);
+//         vec[0] = "apple";
+//         vec[1] = "banana";
+//         vec[2] = "cherry";
+//         vec[3] = "date";
+//         vec[4] = "elderberry";
+//         HeapVec<std::string> heap(vec);
+//         HeapVec<std::string> copy(heap);
+//         assert(copy == heap);
+//         // Altri test
+//     }
 
-    // Costruttore di spostamento (25 test)
-    {
-        Vector<std::string> vec(5);
-        vec[0] = "apple";
-        vec[1] = "banana";
-        vec[2] = "cherry";
-        vec[3] = "date";
-        vec[4] = "elderberry";
-        HeapVec<std::string> heap(vec);
-        HeapVec<std::string> moved(std::move(heap));
-        assert(moved.Size() == 5);
-        assert(moved.IsHeap());
-        assert(heap.Size() == 0);
-        // Altri test
-    }
+//     // Costruttore di spostamento (25 test)
+//     {
+//         Vector<std::string> vec(5);
+//         vec[0] = "apple";
+//         vec[1] = "banana";
+//         vec[2] = "cherry";
+//         vec[3] = "date";
+//         vec[4] = "elderberry";
+//         HeapVec<std::string> heap(vec);
+//         HeapVec<std::string> moved(std::move(heap));
+//         assert(moved.Size() == 5);
+//         assert(moved.IsHeap());
+//         assert(heap.Size() == 0);
+//         // Altri test
+//     }
 
-    // Assegnazione di copia (25 test)
-    {
-        Vector<std::string> vec(5);
-        vec[0] = "apple";
-        vec[1] = "banana";
-        vec[2] = "cherry";
-        vec[3] = "date";
-        vec[4] = "elderberry";
-        HeapVec<std::string> heap(vec);
-        HeapVec<std::string> assign;
-        assign = heap;
-        assert(assign == heap);
-        // Altri test
-    }
+//     // Assegnazione di copia (25 test)
+//     {
+//         Vector<std::string> vec(5);
+//         vec[0] = "apple";
+//         vec[1] = "banana";
+//         vec[2] = "cherry";
+//         vec[3] = "date";
+//         vec[4] = "elderberry";
+//         HeapVec<std::string> heap(vec);
+//         HeapVec<std::string> assign;
+//         assign = heap;
+//         assert(assign == heap);
+//         // Altri test
+//     }
 
-    // Assegnazione di spostamento (25 test)
-    {
-        Vector<std::string> vec(5);
-        vec[0] = "apple";
-        vec[1] = "banana";
-        vec[2] = "cherry";
-        vec[3] = "date";
-        vec[4] = "elderberry";
-        HeapVec<std::string> heap(vec);
-        HeapVec<std::string> assign;
-        assign = std::move(heap);
-        assert(assign.Size() == 5);
-        assert(assign.IsHeap());
-        assert(heap.Size() == 0);
-        // Altri test
-    }
+//     // Assegnazione di spostamento (25 test)
+//     {
+//         Vector<std::string> vec(5);
+//         vec[0] = "apple";
+//         vec[1] = "banana";
+//         vec[2] = "cherry";
+//         vec[3] = "date";
+//         vec[4] = "elderberry";
+//         HeapVec<std::string> heap(vec);
+//         HeapVec<std::string> assign;
+//         assign = std::move(heap);
+//         assert(assign.Size() == 5);
+//         assert(assign.IsHeap());
+//         assert(heap.Size() == 0);
+//         // Altri test
+//     }
 
-    // Operatori di confronto (25 test)
-    {
-        Vector<std::string> vec1(5);
-        vec1[0] = "apple";
-        vec1[1] = "banana";
-        vec1[2] = "cherry";
-        vec1[3] = "date";
-        vec1[4] = "elderberry";
-        HeapVec<std::string> heap1(vec1);
-        Vector<std::string> vec2(5);
-        vec2[0] = "apple";
-        vec2[1] = "banana";
-        vec2[2] = "cherry";
-        vec2[3] = "date";
-        vec2[4] = "elderberry";
-        HeapVec<std::string> heap2(vec2);
-        assert(heap1 == heap2);
-        assert(!(heap1 != heap2));
-        // Altri test
-    }
+//     // Operatori di confronto (25 test)
+//     {
+//         Vector<std::string> vec1(5);
+//         vec1[0] = "apple";
+//         vec1[1] = "banana";
+//         vec1[2] = "cherry";
+//         vec1[3] = "date";
+//         vec1[4] = "elderberry";
+//         HeapVec<std::string> heap1(vec1);
+//         Vector<std::string> vec2(5);
+//         vec2[0] = "apple";
+//         vec2[1] = "banana";
+//         vec2[2] = "cherry";
+//         vec2[3] = "date";
+//         vec2[4] = "elderberry";
+//         HeapVec<std::string> heap2(vec2);
+//         assert(heap1 == heap2);
+//         assert(!(heap1 != heap2));
+//         // Altri test
+//     }
 
-    // IsHeap (25 test)
-    {
-        HeapVec<std::string> emptyHeap;
-        assert(emptyHeap.IsHeap());
-        HeapVec<std::string> singleHeap;
-        singleHeap.Resize(1);
-        singleHeap[0] = "test";
-        assert(singleHeap.IsHeap());
-        // Altri test
-    }
+//     // IsHeap (25 test)
+//     {
+//         HeapVec<std::string> emptyHeap;
+//         assert(emptyHeap.IsHeap());
+//         HeapVec<std::string> singleHeap;
+//         singleHeap.Resize(1);
+//         singleHeap[0] = "test";
+//         assert(singleHeap.IsHeap());
+//         // Altri test
+//     }
 
-    // Heapify (25 test)
-    {
-        Vector<std::string> vec(5);
-        vec[0] = "apple";
-        vec[1] = "banana";
-        vec[2] = "cherry";
-        vec[3] = "date";
-        vec[4] = "elderberry";
-        HeapVec<std::string> heap(vec);
-        heap.Heapify();
-        assert(heap.IsHeap());
-        // Altri test
-    }
+//     // Heapify (25 test)
+//     {
+//         Vector<std::string> vec(5);
+//         vec[0] = "apple";
+//         vec[1] = "banana";
+//         vec[2] = "cherry";
+//         vec[3] = "date";
+//         vec[4] = "elderberry";
+//         HeapVec<std::string> heap(vec);
+//         heap.Heapify();
+//         assert(heap.IsHeap());
+//         // Altri test
+//     }
 
-    // Sort (25 test)
-    {
-        Vector<std::string> vec(5);
-        vec[0] = "apple";
-        vec[1] = "banana";
-        vec[2] = "cherry";
-        vec[3] = "date";
-        vec[4] = "elderberry";
-        HeapVec<std::string> heap(vec);
-        heap.Sort();
-        for (unsigned long i = 1; i < heap.Size(); ++i)
-        {
-            assert(heap[i - 1] <= heap[i]);
-        }
-        assert(!heap.IsHeap());
-        // Altri test
-    }
+//     // Sort (25 test)
+//     {
+//         Vector<std::string> vec(5);
+//         vec[0] = "apple";
+//         vec[1] = "banana";
+//         vec[2] = "cherry";
+//         vec[3] = "date";
+//         vec[4] = "elderberry";
+//         HeapVec<std::string> heap(vec);
+//         heap.Sort();
+//         for (unsigned long i = 1; i < heap.Size(); ++i)
+//         {
+//             assert(heap[i - 1] <= heap[i]);
+//         }
+//         assert(!heap.IsHeap());
+//         // Altri test
+//     }
 
-    // Operazioni ereditate (25 test)
-    {
-        HeapVec<std::string> heap;
-        assert(heap.Empty());
-        heap.Resize(5);
-        assert(heap.Size() == 5);
-        heap[0] = "apple";
-        heap[1] = "banana";
-        heap[2] = "cherry";
-        heap[3] = "date";
-        heap[4] = "elderberry";
-        assert(heap[0] == "apple");
-        assert(heap[4] == "elderberry");
-        heap.Clear();
-        assert(heap.Empty());
-        // Altri test
-    }
+//     // Operazioni ereditate (25 test)
+//     {
+//         HeapVec<std::string> heap;
+//         assert(heap.Empty());
+//         heap.Resize(5);
+//         assert(heap.Size() == 5);
+//         heap[0] = "apple";
+//         heap[1] = "banana";
+//         heap[2] = "cherry";
+//         heap[3] = "date";
+//         heap[4] = "elderberry";
+//         assert(heap[0] == "apple");
+//         assert(heap[4] == "elderberry");
+//         heap.Clear();
+//         assert(heap.Empty());
+//         // Altri test
+//     }
 
-    std::cout << "Fine dei test per HeapVec<std::string>\n";
-}
+//     std::cout << "Fine dei test per HeapVec<std::string>\n";
+// }
 
-void testHeapVecStress()
-{
-    std::cout << "\nInizio dei test di stress per HeapVec\n";
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(-10000, 10000);
+// void testHeapVecStress()
+// {
+//     std::cout << "\nInizio dei test di stress per HeapVec\n";
+//     std::random_device rd;
+//     std::mt19937 gen(rd());
+//     std::uniform_int_distribution<> dist(-10000, 10000);
 
-    // Test con dataset grande (50 test)
-    {
-        const unsigned long size = 100000;
-        Vector<int> vec(size);
-        for (unsigned long i = 0; i < size; ++i)
-            vec[i] = dist(gen);
-        HeapVec<int> heap(vec);
-        assert(heap.Size() == size);
-        heap.Heapify();
-        assert(heap.IsHeap());
-        heap.Sort();
-        for (unsigned long i = 1; i < heap.Size(); ++i)
-        {
-            assert(heap[i - 1] <= heap[i]);
-        }
-        assert(!heap.IsHeap());
-        // Altri test
-    }
+//     // Test con dataset grande (50 test)
+//     {
+//         const unsigned long size = 100000;
+//         Vector<int> vec(size);
+//         for (unsigned long i = 0; i < size; ++i)
+//             vec[i] = dist(gen);
+//         HeapVec<int> heap(vec);
+//         assert(heap.Size() == size);
+//         heap.Heapify();
+//         assert(heap.IsHeap());
+//         heap.Sort();
+//         for (unsigned long i = 1; i < heap.Size(); ++i)
+//         {
+//             assert(heap[i - 1] <= heap[i]);
+//         }
+//         assert(!heap.IsHeap());
+//         // Altri test
+//     }
 
-    // Test con valori estremi (25 test)
-    {
-        Vector<int> vec(10);
-        for (unsigned long i = 0; i < 10; ++i)
-            vec[i] = INT_MAX;
-        HeapVec<int> heap(vec);
-        assert(heap.IsHeap());
-        // Altri test
-    }
+//     // Test con valori estremi (25 test)
+//     {
+//         Vector<int> vec(10);
+//         for (unsigned long i = 0; i < 10; ++i)
+//             vec[i] = INT_MAX;
+//         HeapVec<int> heap(vec);
+//         assert(heap.IsHeap());
+//         // Altri test
+//     }
 
-    // Test di allocazione memoria (25 test)
-    {
-        HeapVec<int> hugeHeap;
-        const unsigned long newSize = 10000;
-        hugeHeap.Resize(newSize);
-        assert(hugeHeap.Size() == newSize); // Verify size after resize
-        // Optionally fill and test heap properties
-        for (unsigned long i = 0; i < newSize; ++i)
-            hugeHeap[i] = dist(gen);
-        hugeHeap.Heapify();
-        assert(hugeHeap.IsHeap()); // Verify heap property after resize and fill
-        // Altri test
-    }
+//     // Test di allocazione memoria (25 test)
+//     {
+//         HeapVec<int> hugeHeap;
+//         const unsigned long newSize = 10000;
+//         hugeHeap.Resize(newSize);
+//         assert(hugeHeap.Size() == newSize); // Verify size after resize
+//         // Optionally fill and test heap properties
+//         for (unsigned long i = 0; i < newSize; ++i)
+//             hugeHeap[i] = dist(gen);
+//         hugeHeap.Heapify();
+//         assert(hugeHeap.IsHeap()); // Verify heap property after resize and fill
+//         // Altri test
+//     }
 
-    std::cout << "Fine dei test di stress per HeapVec\n";
-}
+//     std::cout << "Fine dei test di stress per HeapVec\n";
+// }
 
 
-void testHeapVec()
-{
-    std::cout<<""<<std::endl;
+// void testHeapVec()
+// {
+//     std::cout<<""<<std::endl;
 
-    std::cout << "Inizio dei test per HeapVec\n";
+//     std::cout << "Inizio dei test per HeapVec\n";
 
-    // Test per HeapVec<int>
-    testHeapVecInt();
+//     // Test per HeapVec<int>
+//     testHeapVecInt();
 
-    // Test per HeapVec<double>
-    testHeapVecDouble();
+//     // Test per HeapVec<double>
+//     testHeapVecDouble();
 
-    // Test per HeapVec<std::string>
-    testHeapVecString();
+//     // Test per HeapVec<std::string>
+//     testHeapVecString();
 
-    // Test di stress
-    testHeapVecStress();
+//     // Test di stress
+//     testHeapVecStress();
 
-    std::cout<<""<<std::endl;
-    std::cout << "Tutti i test per HeapVec completati con successo!\n";
-}
-// Funzione principale di test
+//     std::cout<<""<<std::endl;
+//     std::cout << "Tutti i test per HeapVec completati con successo!\n";
+// }
+// // Funzione principale di test
 
-//-------------------------------------------------------------------------
+// //-------------------------------------------------------------------------
+
 
 
 
 //Test HeapVec Stressanti
 
+// // Funzione ausiliaria per verificare la proprietà di Max-Heap
+// template <typename Data>
+// bool VerifyHeapProperty(const HeapVec<Data>& heap) {
+//     for (unsigned long i = 0; i < heap.Size() / 2; ++i) {
+//         unsigned long left = 2 * i + 1;
+//         unsigned long right = 2 * i + 2;
+//         if (left < heap.Size() && heap[left] > heap[i]) return false;
+//         if (right < heap.Size() && heap[right] > heap[i]) return false;
+//     }
+//     return true;
+// }
+
+// template <typename Data>
+// bool CompareHeapWithSortedVector(const HeapVec<Data>& heap, const Vector<Data>& vec) {
+//     std::vector<Data> sortedVec(vec.Size());
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         sortedVec[i] = vec[i];
+//     }
+//     std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>());
+    
+//     HeapVec<Data> tempHeap = heap;
+//     for (unsigned long i = 0; i < sortedVec.size(); ++i) {
+//         if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap[0]) {
+//             return false;
+//         }
+//         // Simulate RemoveMax: swap root with last element
+//         std::swap(tempHeap[0], tempHeap[tempHeap.Size() - 1]);
+//         // Create a new HeapVec with one less element
+//         HeapVec<Data> newHeap;
+//         newHeap = HeapVec<Data>(Vector<Data>(tempHeap.Size() - 1));
+//         for (unsigned long j = 0; j < tempHeap.Size() - 1; ++j) {
+//             newHeap[j] = tempHeap[j];
+//         }
+//         newHeap.Heapify(); // Restore heap property
+//         tempHeap = std::move(newHeap); // Replace tempHeap with newHeap
+//     }
+//     return tempHeap.Size() == 0;
+// }
+
+
+
+// // Test costruttore con TraversableContainer
+// template <typename Data>
+// void TestConstructorTraversableContainer() {
+//     std::cout << "Running TestConstructorTraversableContainer...\n";
+
+//     // Caso 1: Contenitore vuoto
+//     Vector<Data> emptyVec(0);
+//     HeapVec<Data> heap(emptyVec);
+//     assert(heap.Size() == 0);
+//     assert(heap.IsHeap());
+
+//     // Caso 2: Contenitore con un solo elemento
+//     Vector<Data> singleVec(1);
+//     singleVec[0] = Data{42};
+//     HeapVec<Data> singleHeap(singleVec);
+//     assert(singleHeap.Size() == 1);
+//     assert(singleHeap.IsHeap());
+//     assert(singleHeap[0] == Data{42});
+
+//     // Caso 3: Contenitore grande con valori casuali
+//     Vector<Data> largeVec(1000);
+//     std::mt19937 gen(42); // Seed fisso per riproducibilità
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+//         largeVec[i] = static_cast<Data>(dist(gen));
+//     }
+//     Vector<Data> copyVec = largeVec; // Per confronto
+//     HeapVec<Data> largeHeap(largeVec);
+//     assert(largeHeap.Size() == 1000);
+//     assert(largeHeap.IsHeap());
+//     assert(VerifyHeapProperty(largeHeap));
+//     assert(CompareHeapWithSortedVector(largeHeap, copyVec));
+
+//     // Caso 4: Contenitore con valori duplicati
+//     Vector<Data> dupVec(100);
+//     for (unsigned long i = 0; i < dupVec.Size(); ++i) {
+//         dupVec[i] = Data{42};
+//     }
+//     HeapVec<Data> dupHeap(dupVec);
+//     assert(dupHeap.Size() == 100);
+//     assert(dupHeap.IsHeap());
+//     for (unsigned long i = 0; i < dupHeap.Size(); ++i) {
+//         assert(dupHeap[i] == Data{42});
+//     }
+
+//     // Caso 5: Contenitore già ordinato in modo decrescente (peggiore per Max-Heap)
+//     Vector<Data> descVec(100);
+//     for (unsigned long i = 0; i < descVec.Size(); ++i) {
+//         descVec[i] = static_cast<Data>(100 - i);
+//     }
+//     HeapVec<Data> descHeap(descVec);
+//     assert(descHeap.IsHeap());
+//     assert(VerifyHeapProperty(descHeap));
+
+//     std::cout << "TestConstructorTraversableContainer passed!\n";
+// }
+
+// // Test costruttore con MappableContainer
+// template <typename Data>
+// void TestConstructorMappableContainer() {
+//     std::cout << "Running TestConstructorMappableContainer...\n";
+
+//     // Caso 1: Contenitore vuoto
+//     Vector<Data> emptyVec(0);
+//     HeapVec<Data> heap(std::move(emptyVec));
+//     assert(heap.Size() == 0);
+//     assert(heap.IsHeap());
+
+//     // Caso 2: Contenitore grande
+//     Vector<Data> largeVec(1000);
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+//         largeVec[i] = static_cast<Data>(dist(gen));
+//     }
+//     Vector<Data> copyVec = largeVec; // Per confronto
+//     HeapVec<Data> largeHeap(std::move(largeVec));
+//     assert(largeHeap.Size() == 1000);
+//     assert(largeHeap.IsHeap());
+//     assert(VerifyHeapProperty(largeHeap));
+//     assert(CompareHeapWithSortedVector(largeHeap, copyVec)); // Verifica che i dati siano stati trasferiti correttamente
+
+//     std::cout << "TestConstructorMappableContainer passed!\n";
+// }
+
+// // Test costruttore di copia
+// template <typename Data>
+// void TestCopyConstructor() {
+//     std::cout << "Running TestCopyConstructor...\n";
+
+//     // Caso 1: Copia di un heap vuoto
+//     HeapVec<Data> emptyHeap;
+//     HeapVec<Data> copyEmpty(emptyHeap);
+//     assert(copyEmpty.Size() == 0);
+//     assert(copyEmpty.IsHeap());
+
+//     // Caso 2: Copia di un heap grande
+//     Vector<Data> largeVec(1000);
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+//         largeVec[i] = static_cast<Data>(dist(gen));
+//     }
+//     HeapVec<Data> largeHeap(largeVec);
+//     HeapVec<Data> copyHeap(largeHeap);
+//     assert(copyHeap.Size() == largeHeap.Size());
+//     assert(copyHeap.IsHeap());
+//     assert(VerifyHeapProperty(copyHeap));
+//     assert(copyHeap == largeHeap);
+
+//     std::cout << "TestCopyConstructor passed!\n";
+// }
+
+// // Test costruttore di move
+// template <typename Data>
+// void TestMoveConstructor() {
+//     std::cout << "Running TestMoveConstructor...\n";
+
+//     Vector<Data> vec(1000);
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         vec[i] = static_cast<Data>(dist(gen));
+//     }
+//     Vector<Data> copyVec = vec; // Per confronto
+//     HeapVec<Data> heap(vec);
+//     HeapVec<Data> copyHeap = heap; // Per confronto
+//     HeapVec<Data> movedHeap(std::move(heap));
+//     assert(movedHeap.Size() == copyHeap.Size());
+//     assert(movedHeap.IsHeap());
+//     assert(VerifyHeapProperty(movedHeap));
+//     assert(CompareHeapWithSortedVector(movedHeap, copyVec));
+//     assert(heap.Size() == 0); // Verifica che il move sia avvenuto
+
+//     std::cout << "TestMoveConstructor passed!\n";
+// }
+
+// // Test assegnamento di copia
+// template <typename Data>
+// void TestCopyAssignment() {
+//     std::cout << "Running TestCopyAssignment...\n";
+
+//     HeapVec<Data> heap1, heap2;
+//     Vector<Data> vec(100);
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         vec[i] = static_cast<Data>(dist(gen));
+//     }
+//     Vector<Data> copyVec = vec; // Per confronto
+//     heap1 = HeapVec<Data>(vec);
+//     heap2 = heap1;
+//     assert(heap1.Size() == heap2.Size());
+//     assert(heap2.IsHeap());
+//     assert(VerifyHeapProperty(heap2));
+//     assert(heap1 == heap2);
+//     assert(CompareHeapWithSortedVector(heap2, copyVec));
+
+//     std::cout << "TestCopyAssignment passed!\n";
+// }
+
+// // Test assegnamento di move
+// template <typename Data>
+// void TestMoveAssignment() {
+//     std::cout << "Running TestMoveAssignment...\n";
+
+//     HeapVec<Data> heap1, heap2;
+//     Vector<Data> vec(100);
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         vec[i] = static_cast<Data>(dist(gen));
+//     }
+//     Vector<Data> copyVec = vec; // Per confronto
+//     heap1 = HeapVec<Data>(vec);
+//     HeapVec<Data> copyHeap = heap1;
+//     heap2 = std::move(heap1);
+//     assert(heap2.Size() == copyHeap.Size());
+//     assert(heap2.IsHeap());
+//     assert(VerifyHeapProperty(heap2));
+//     assert(CompareHeapWithSortedVector(heap2, copyVec));
+//     assert(heap1.Size() == 0);
+
+//     std::cout << "TestMoveAssignment passed!\n";
+// }
+
+// // Test operatori di confronto
+// template <typename Data>
+// void TestComparisonOperators() {
+//     std::cout << "Running TestComparisonOperators...\n";
+
+//     HeapVec<Data> heap1, heap2;
+//     // Caso 1: Heap con stessi elementi
+//     Vector<Data> vec(3);
+//     vec[0] = Data{1};
+//     vec[1] = Data{2};
+//     vec[2] = Data{3};
+//     heap1 = HeapVec<Data>(vec);
+//     heap2 = HeapVec<Data>(vec);
+//     assert(heap1 == heap2);
+//     assert(!(heap1 != heap2));
+
+//     // Caso 2: Heap con elementi diversi
+//     Vector<Data> vec2(3);
+//     vec2[0] = Data{4};
+//     vec2[1] = Data{5};
+//     vec2[2] = Data{6};
+//     heap2 = HeapVec<Data>(vec2);
+//     assert(!(heap1 == heap2));
+//     assert(heap1 != heap2);
+
+//     // Caso 3: Heap di dimensioni diverse
+//     Vector<Data> vec3(4);
+//     vec3[0] = Data{1};
+//     vec3[1] = Data{2};
+//     vec3[2] = Data{3};
+//     vec3[3] = Data{4};
+//     heap2 = HeapVec<Data>(vec3);
+//     assert(!(heap1 == heap2));
+//     assert(heap1 != heap2);
+
+//     std::cout << "TestComparisonOperators passed!\n";
+// }
+
+// // Test IsHeap
+// template <typename Data>
+// void TestIsHeap() {
+//     std::cout << "Running TestIsHeap...\n";
+
+//     HeapVec<Data> heap;
+//     // Caso 1: Heap vuoto
+//     assert(heap.IsHeap());
+
+//     // Caso 2: Heap valido
+//     Vector<Data> validHeapVec(5);
+//     validHeapVec[0] = Data{100};
+//     validHeapVec[1] = Data{50};
+//     validHeapVec[2] = Data{75};
+//     validHeapVec[3] = Data{25};
+//     validHeapVec[4] = Data{30};
+//     heap = HeapVec<Data>(validHeapVec);
+//     assert(heap.IsHeap());
+
+//     // Caso 3: Heap non valido (modifica manuale)
+//     heap[1] = Data{200}; // Viola la proprietà di Max-Heap
+//     assert(!heap.IsHeap());
+//     heap.Heapify(); // Ripristina
+//     assert(heap.IsHeap());
+
+//     std::cout << "TestIsHeap passed!\n";
+// }
+
+// // Test per Empty e Clear
+// template <typename Data>
+// void TestEmptyAndClear() {
+//     std::cout << "Running TestEmptyAndClear...\n";
+
+//     // Caso 1: Heap vuoto
+//     HeapVec<Data> emptyHeap;
+//     assert(emptyHeap.Empty() == true);
+//     assert(emptyHeap.Size() == 0);
+//     emptyHeap.Clear();
+//     assert(emptyHeap.Empty() == true);
+//     assert(emptyHeap.Size() == 0);
+//     assert(emptyHeap.IsHeap());
+
+//     // Caso 2: Heap con un solo elemento
+//     Vector<Data> singleVec(1);
+//     singleVec[0] = Data{42};
+//     HeapVec<Data> singleHeap(singleVec);
+//     assert(singleHeap.Empty() == false);
+//     assert(singleHeap.Size() == 1);
+//     singleHeap.Clear();
+//     assert(singleHeap.Empty() == true);
+//     assert(singleHeap.Size() == 0);
+//     assert(singleHeap.IsHeap());
+
+//     // Caso 3: Heap grande
+//     Vector<Data> largeVec(1000);
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+//         largeVec[i] = static_cast<Data>(dist(gen));
+//     }
+//     HeapVec<Data> largeHeap(largeVec);
+//     assert(largeHeap.Empty() == false);
+//     assert(largeHeap.Size() == 1000);
+//     assert(largeHeap.IsHeap());
+//     largeHeap.Clear();
+//     assert(largeHeap.Empty() == true);
+//     assert(largeHeap.Size() == 0);
+//     assert(largeHeap.IsHeap());
+
+//     std::cout << "TestEmptyAndClear passed!\n";
+// }
+// template <typename Data>
+// void TestDestructor() {
+//     std::cout << "Running TestDestructor...\n";
+//     Vector<Data> vec(1000);
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         vec[i] = static_cast<Data>(dist(gen));
+//     }
+//     {
+//         HeapVec<Data> heap(vec);
+//         assert(heap.Size() == 1000);
+//         assert(heap.IsHeap());
+//     } // Distruttore chiamato qui
+//     std::cout << "TestDestructor passed!\n";
+// }
+
+// template <typename Data>
+// void TestAccess() {
+//     std::cout << "Running TestAccess...\n";
+//     Vector<Data> vec(5);
+//     vec[0] = Data{100};
+//     vec[1] = Data{50};
+//     vec[2] = Data{75};
+//     vec[3] = Data{25};
+//     vec[4] = Data{30};
+//     HeapVec<Data> heap(vec);
+//     assert(heap[0] == Data{100}); // Elemento iniziale
+//     assert(heap[heap.Size()-1] == Data{30}); // Elemento finale (dopo Heapify)
+//     assert(heap[2] == Data{75}); // Elemento a indice specifico
+//     std::cout << "TestAccess passed!\n";
+// }
+
+// template <typename Data>
+// void TestExists() {
+//     std::cout << "Running TestExists...\n";
+//     Vector<Data> vec(5);
+//     vec[0] = Data{100};
+//     vec[1] = Data{50};
+//     vec[2] = Data{75};
+//     vec[3] = Data{25};
+//     vec[4] = Data{30};
+//     HeapVec<Data> heap(vec);
+//     assert(heap.Exists(Data{100}) == true);
+//     assert(heap.Exists(Data{50}) == true);
+//     assert(heap.Exists(Data{999}) == false);
+//     std::cout << "TestExists passed!\n";
+// }
+
+// template <typename Data>
+// void TestTraverseAndFold() {
+//     std::cout << "Running TestTraverseAndFold...\n";
+//     Vector<Data> vec(5);
+//     vec[0] = Data{100};
+//     vec[1] = Data{50};
+//     vec[2] = Data{75};
+//     vec[3] = Data{25};
+//     vec[4] = Data{30};
+//     HeapVec<Data> heap(vec);
+    
+//     // Test Traverse
+//     std::vector<Data> traversed(heap.Size()); // Pre-allocate vector
+//     unsigned long index = 0;
+//     heap.Traverse([&traversed, &index](const Data& value) { 
+//         traversed[index++] = value; 
+//     });
+//     assert(index == heap.Size()); // Verify all elements were traversed
+    
+//     // Test Fold (esempio: somma per int/double)
+//     std::function<Data(const Data&, const Data&)> foldFunc = 
+//         [](const Data& value, const Data& acc) { return acc + value; };
+//     Data sum = heap.Fold(foldFunc, Data{0});
+//     Data expectedSum = Data{100 + 50 + 75 + 25 + 30};
+//     assert(sum == expectedSum);
+    
+//     std::cout << "TestTraverseAndFold passed!\n";
+// }
+
+// template <typename Data>
+// void TestHeapify() {
+//     std::cout << "Running TestHeapify...\n";
+//     Vector<Data> vec(5);
+//     vec[0] = Data{10};
+//     vec[1] = Data{50};
+//     vec[2] = Data{20};
+//     vec[3] = Data{30};
+//     vec[4] = Data{40};
+//     HeapVec<Data> heap(vec);
+//     heap[0] = Data{5}; // Viola la proprietà di Max-Heap
+//     assert(!heap.IsHeap());
+//     heap.Heapify();
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     std::cout << "TestHeapify passed!\n";
+// }
+
+// // Test Sort (HeapSort) corretto
+// template <typename Data>
+// void TestSort() {
+//     std::cout << "Running TestSort...\n";
+
+//     // Caso 1: Heap vuoto
+//     std::cout << "Testing Sort on empty heap...\n";
+//     HeapVec<Data> emptyHeap;
+//     assert(emptyHeap.Empty() == true);
+//     assert(emptyHeap.Size() == 0);
+//     emptyHeap.Sort();
+//     assert(emptyHeap.Empty() == true);
+//     assert(emptyHeap.Size() == 0);
+//     assert(emptyHeap.IsHeap()); // Un heap vuoto è un heap valido
+
+//     // Caso 2: Heap con un solo elemento
+//     std::cout << "Testing Sort on single-element heap...\n";
+//     Vector<Data> singleVec(1);
+//     singleVec[0] = Data{42};
+//     HeapVec<Data> singleHeap(singleVec);
+//     assert(singleHeap.Size() == 1);
+//     assert(singleHeap.IsHeap());
+//     singleHeap.Sort();
+//     assert(singleHeap.Size() == 1);
+//     assert(singleHeap[0] == Data{42});
+//     assert(singleHeap.IsHeap()); // Un heap con un elemento è ancora un heap valido
+
+//     // Caso 3: Heap con valori casuali
+//     std::cout << "Testing Sort on large random heap...\n";
+//     Vector<Data> vec(1000);
+//     std::mt19937 gen(42);
+//     std::uniform_int_distribution<int> dist(-1000, 1000);
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         vec[i] = static_cast<Data>(dist(gen));
+//     }
+//     std::vector<Data> sortedVec(vec.Size());
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         sortedVec[i] = vec[i];
+//     }
+//     std::sort(sortedVec.begin(), sortedVec.end()); // Ordina in modo crescente
+//     HeapVec<Data> heap(vec);
+//     assert(heap.Size() == 1000);
+//     assert(heap.IsHeap());
+//     heap.Sort();
+//     assert(heap.Size() == 1000);
+//     assert(!heap.IsHeap()); // Dopo il sort, non è più un heap (tranne casi particolari)
+//     for (unsigned long i = 0; i < heap.Size(); ++i) {
+//         assert(heap[i] == sortedVec[i]); // Verifica che l'array sia ordinato in modo crescente
+//     }
+
+//     // Caso 4: Heap con valori duplicati
+//     std::cout << "Testing Sort on duplicate values heap...\n";
+//     Vector<Data> dupVec(100);
+//     for (unsigned long i = 0; i < dupVec.Size(); ++i) {
+//         dupVec[i] = Data{42};
+//     }
+//     heap = HeapVec<Data>(dupVec);
+//     assert(heap.Size() == 100);
+//     assert(heap.IsHeap());
+//     heap.Sort();
+//     assert(heap.Size() == 100);
+//     // Non verifichiamo !heap.IsHeap() qui, perché un array di valori uguali è ancora un heap valido
+//     for (unsigned long i = 0; i < heap.Size(); ++i) {
+//         assert(heap[i] == Data{42}); // Verifica che tutti gli elementi siano 42
+//     }
+
+//     std::cout << "TestSort passed!\n";
+// }
+
+// // Test HeapDown stress (indirettamente tramite Heapify)
+// template <typename Data>
+// void TestHeapDownStress() {
+//     std::cout << "Running TestHeapDownStress...\n";
+
+//     HeapVec<Data> heap;
+//     // Caso 1: Heap con struttura lineare (tutti i nodi hanno lo stesso valore)
+//     Vector<Data> linearVec(1000);
+//     for (unsigned long i = 0; i < linearVec.Size(); ++i) {
+//         linearVec[i] = Data{42};
+//     }
+//     heap = HeapVec<Data>(linearVec);
+//     heap.Heapify(); // Usa Heapify per testare indirettamente HeapDown
+//     assert(heap.IsHeap());
+
+//     // Caso 2: Heap con struttura patologica (valore minimo alla radice)
+//     Vector<Data> pathoVec(1000);
+//     pathoVec[0] = Data{0}; // Valore minimo alla radice
+//     for (unsigned long i = 1; i < pathoVec.Size(); ++i) {
+//         pathoVec[i] = Data{1};
+//     }
+//     heap = HeapVec<Data>(pathoVec);
+//     heap.Heapify(); // Usa Heapify per testare indirettamente HeapDown
+//     assert(heap.IsHeap());
+
+//     std::cout << "TestHeapDownStress passed!\n";
+// }
+
+
+// // Test con std::string (tipo complesso)
+// void TestComplexType() {
+//     std::cout << "Running TestComplexType...\n";
+
+//     HeapVec<std::string> heap;
+//     Vector<std::string> vec(5);
+//     vec[0] = "zebra";
+//     vec[1] = "apple";
+//     vec[2] = "banana";
+//     vec[3] = "cat";
+//     vec[4] = "dog";
+//     heap = HeapVec<std::string>(vec);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     heap.Sort();
+//     assert(!heap.IsHeap());
+//     assert(heap[0] == "apple");
+//     assert(heap[1] == "banana");
+//     assert(heap[2] == "cat");
+//     assert(heap[3] == "dog");
+//     assert(heap[4] == "zebra");
+
+//     std::cout << "TestComplexType passed!\n";
+// }
+
+// // Test con valori estremi (solo per int)
+// void TestExtremeValues() {
+//     std::cout << "Running TestExtremeValues...\n";
+
+//     HeapVec<int> heap;
+//     Vector<int> vec(3);
+//     vec[0] = std::numeric_limits<int>::max();
+//     vec[1] = std::numeric_limits<int>::min();
+//     vec[2] = 0;
+//     heap = HeapVec<int>(vec);
+//     assert(heap.IsHeap());
+//     assert(VerifyHeapProperty(heap));
+//     heap.Sort();
+//     assert(heap[0] == std::numeric_limits<int>::min());
+//     assert(heap[1] == 0);
+//     assert(heap[2] == std::numeric_limits<int>::max());
+
+//     std::cout << "TestExtremeValues passed!\n";
+// }
+
+
+
+// // Funzione principale che richiama tutti i test
+// void TestHeapVec() {
+
+//     std::cout<<""<<std::endl;
+
+//     std::cout << "Starting all tests...\n";
+    
+//     std::cout<<""<<std::endl;
+
+//     TestConstructorTraversableContainer<int>();
+//     TestConstructorMappableContainer<int>();
+//     TestCopyConstructor<int>();
+//     TestMoveConstructor<int>();
+//     TestCopyAssignment<int>();
+//     TestMoveAssignment<int>();
+//     TestComparisonOperators<int>();
+//     TestIsHeap<int>();
+//     TestSort<int>();
+//     TestHeapDownStress<int>();
+//     TestEmptyAndClear<int>();
+//     TestAccess<int>();
+//     TestExists<int>();
+//     TestTraverseAndFold<int>();
+//     TestHeapify<int>();
+
+//     TestConstructorTraversableContainer<double>();
+//     TestConstructorMappableContainer<double>();
+//     TestCopyConstructor<double>();
+//     TestMoveConstructor<double>();
+//     TestCopyAssignment<double>();
+//     TestMoveAssignment<double>();
+//     TestComparisonOperators<double>();
+//     TestIsHeap<double>();
+//     TestSort<double>();
+//     TestHeapDownStress<double>();
+//     TestEmptyAndClear<double>();
+//     TestAccess<double>();
+//     TestExists<double>();
+//     TestTraverseAndFold<double>();
+
+//     TestComplexType();
+//     TestExtremeValues();
+
+//     std::cout<<""<<std::endl;
+
+
+//     std::cout << "All tests passed successfully!\n";
+// }
+
+
+
+// // Assumendo che HeapVec e Vector siano definiti altrove
+// // Funzione ausiliaria per verificare la proprietà di Max-Heap
+// template <typename Data>
+// bool VerifyHeapProperty(const HeapVec<Data>& heap) {
+//     for (unsigned long i = 0; i < heap.Size() / 2; ++i) {
+//         unsigned long left = 2 * i + 1;
+//         unsigned long right = 2 * i + 2;
+//         if (left < heap.Size() && heap[left] > heap[i]) return false;
+//         if (right < heap.Size() && heap[right] > heap[i]) return false;
+//     }
+//     return true;
+// }
+
+// template <typename Data>
+// bool CompareHeapWithSortedVector(const HeapVec<Data>& heap, const Vector<Data>& vec) {
+//     std::vector<Data> sortedVec(vec.Size());
+//     for (unsigned long i = 0; i < vec.Size(); ++i) {
+//         sortedVec[i] = vec[i];
+//     }
+//     std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>());
+    
+//     HeapVec<Data> tempHeap = heap;
+//     for (unsigned long i = 0; i < sortedVec.size(); ++i) {
+//         if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap[0]) {
+//             return false;
+//         }
+//         // Simulate RemoveMax: swap root with last element
+//         std::swap(tempHeap[0], tempHeap[tempHeap.Size() - 1]);
+//         // Create a new HeapVec with one less element
+//         HeapVec<Data> newHeap;
+//         newHeap = HeapVec<Data>(Vector<Data>(tempHeap.Size() - 1));
+//         for (unsigned long j = 0; j < tempHeap.Size() - 1; ++j) {
+//             newHeap[j] = tempHeap[j];
+//         }
+//         newHeap.Heapify(); // Restore heap property
+//         tempHeap = std::move(newHeap); // Replace tempHeap with newHeap
+//     }
+//     return tempHeap.Size() == 0;
+// }
+
+// // Test costruttore con TraversableContainer
+// template <typename Data>
+// void TestConstructorTraversableContainer() {
+//     std::cout << "Running TestConstructorTraversableContainer...\n";
+//     const int numTests = 15; // Numero di iterazioni per ogni test
+//     for (int testNum = 1; testNum <= numTests; ++testNum) 
+//     {
+//         std::random_device rd; // Generatore di semi casuali
+//         std::mt19937 gen(rd()); // Inizializzazione con seme casuale
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         // Caso 1: Contenitore vuoto
+//         Vector<Data> emptyVec(0);
+//         HeapVec<Data> heap(emptyVec);
+//         assert(heap.Size() == 0);
+//         assert(heap.IsHeap());
+
+//         // Caso 2: Contenitore con un solo elemento
+//         Vector<Data> singleVec(1);
+//         singleVec[0] = Data{42};
+//         HeapVec<Data> singleHeap(singleVec);
+//         assert(singleHeap.Size() == 1);
+//         assert(singleHeap.IsHeap());
+//         assert(singleHeap[0] == Data{42});
+
+//         // Caso 3: Contenitore grande con valori casuali
+//         Vector<Data> largeVec(1000);
+//         for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+//             largeVec[i] = static_cast<Data>(dist(gen));
+//         }
+//         Vector<Data> copyVec = largeVec; // Per confronto
+//         HeapVec<Data> largeHeap(largeVec);
+//         assert(largeHeap.Size() == 1000);
+//         assert(largeHeap.IsHeap());
+//         assert(VerifyHeapProperty(largeHeap));
+//         assert(CompareHeapWithSortedVector(largeHeap, copyVec));
+
+//         // Caso 4: Contenitore con valori duplicati
+//         Vector<Data> dupVec(100);
+//         for (unsigned long i = 0; i < dupVec.Size(); ++i) {
+//             dupVec[i] = Data{42};
+//         }
+//         HeapVec<Data> dupHeap(dupVec);
+//         assert(dupHeap.Size() == 100);
+//         assert(dupHeap.IsHeap());
+//         for (unsigned long i = 0; i < dupHeap.Size(); ++i) {
+//             assert(dupHeap[i] == Data{42});
+//         }
+
+//         // Caso 5: Contenitore già ordinato in modo decrescente
+//         Vector<Data> descVec(100);
+//         for (unsigned long i = 0; i < descVec.Size(); ++i) {
+//             descVec[i] = static_cast<Data>(100 - i);
+//         }
+//         HeapVec<Data> descHeap(descVec);
+//         assert(descHeap.IsHeap());
+//         assert(VerifyHeapProperty(descHeap));
+
+//         std::cout << "Passed test #" << testNum << " for TestConstructorTraversableContainer\n";
+//     }
+//     std::cout << "TestConstructorTraversableContainer passed!\n";
+// }
+
+// // Test costruttore con MappableContainer
+// template <typename Data>
+// void TestConstructorMappableContainer() {
+//     std::cout << "Running TestConstructorMappableContainer...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         // Caso 1: Contenitore vuoto
+//         Vector<Data> emptyVec(0);
+//         HeapVec<Data> heap(std::move(emptyVec));
+//         assert(heap.Size() == 0);
+//         assert(heap.IsHeap());
+
+//         // Caso 2: Contenitore grande
+//         Vector<Data> largeVec(1000);
+//         for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+//             largeVec[i] = static_cast<Data>(dist(gen));
+//         }
+//         Vector<Data> copyVec = largeVec; // Per confronto
+//         HeapVec<Data> largeHeap(std::move(largeVec));
+//         assert(largeHeap.Size() == 1000);
+//         assert(largeHeap.IsHeap());
+//         assert(VerifyHeapProperty(largeHeap));
+//         assert(CompareHeapWithSortedVector(largeHeap, copyVec));
+
+//         std::cout << "Passed test #" << testNum << " for TestConstructorMappableContainer\n";
+//     }
+//     std::cout << "TestConstructorMappableContainer passed!\n";
+// }
+
+// // Test costruttore di copia
+// template <typename Data>
+// void TestCopyConstructor() {
+//     std::cout << "Running TestCopyConstructor...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         // Caso 1: Copia di un heap vuoto
+//         HeapVec<Data> emptyHeap;
+//         HeapVec<Data> copyEmpty(emptyHeap);
+//         assert(copyEmpty.Size() == 0);
+//         assert(copyEmpty.IsHeap());
+
+//         // Caso 2: Copia di un heap grande
+//         Vector<Data> largeVec(1000);
+//         for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+//             largeVec[i] = static_cast<Data>(dist(gen));
+//         }
+//         HeapVec<Data> largeHeap(largeVec);
+//         HeapVec<Data> copyHeap(largeHeap);
+//         assert(copyHeap.Size() == largeHeap.Size());
+//         assert(copyHeap.IsHeap());
+//         assert(VerifyHeapProperty(copyHeap));
+//         assert(copyHeap == largeHeap);
+
+//         std::cout << "Passed test #" << testNum << " for TestCopyConstructor\n";
+//     }
+//     std::cout << "TestCopyConstructor passed!\n";
+// }
+
+// // Test costruttore di move
+// template <typename Data>
+// void TestMoveConstructor() {
+//     std::cout << "Running TestMoveConstructor...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         Vector<Data> vec(1000);
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             vec[i] = static_cast<Data>(dist(gen));
+//         }
+//         Vector<Data> copyVec = vec; // Per confronto
+//         HeapVec<Data> heap(vec);
+//         HeapVec<Data> copyHeap = heap; // Per confronto
+//         HeapVec<Data> movedHeap(std::move(heap));
+//         assert(movedHeap.Size() == copyHeap.Size());
+//         assert(movedHeap.IsHeap());
+//         assert(VerifyHeapProperty(movedHeap));
+//         assert(CompareHeapWithSortedVector(movedHeap, copyVec));
+//         assert(heap.Size() == 0); // Verifica che il move sia avvenuto
+
+//         std::cout << "Passed test #" << testNum << " for TestMoveConstructor\n";
+//     }
+//     std::cout << "TestMoveConstructor passed!\n";
+// }
+
+// // Test assegnamento di copia
+// template <typename Data>
+// void TestCopyAssignment() {
+//     std::cout << "Running TestCopyAssignment...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         HeapVec<Data> heap1, heap2;
+//         Vector<Data> vec(100);
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             vec[i] = static_cast<Data>(dist(gen));
+//         }
+//         Vector<Data> copyVec = vec; // Per confronto
+//         heap1 = HeapVec<Data>(vec);
+//         heap2 = heap1;
+//         assert(heap1.Size() == heap2.Size());
+//         assert(heap2.IsHeap());
+//         assert(VerifyHeapProperty(heap2));
+//         assert(heap1 == heap2);
+//         assert(CompareHeapWithSortedVector(heap2, copyVec));
+
+//         std::cout << "Passed test #" << testNum << " for TestCopyAssignment\n";
+//     }
+//     std::cout << "TestCopyAssignment passed!\n";
+// }
+
+// // Test assegnamento di move
+// template <typename Data>
+// void TestMoveAssignment() {
+//     std::cout << "Running TestMoveAssignment...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         HeapVec<Data> heap1, heap2;
+//         Vector<Data> vec(100);
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             vec[i] = static_cast<Data>(dist(gen));
+//         }
+//         Vector<Data> copyVec = vec; // Per confronto
+//         heap1 = HeapVec<Data>(vec);
+//         HeapVec<Data> copyHeap = heap1;
+//         heap2 = std::move(heap1);
+//         assert(heap2.Size() == copyHeap.Size());
+//         assert(heap2.IsHeap());
+//         assert(VerifyHeapProperty(heap2));
+//         assert(CompareHeapWithSortedVector(heap2, copyVec));
+//         assert(heap1.Size() == 0);
+
+//         std::cout << "Passed test #" << testNum << " for TestMoveAssignment\n";
+//     }
+//     std::cout << "TestMoveAssignment passed!\n";
+// }
+
+// // Test operatori di confronto
+// template <typename Data>
+// void TestComparisonOperators() {
+//     std::cout << "Running TestComparisonOperators...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         HeapVec<Data> heap1, heap2;
+//         // Caso 1: Heap con stessi elementi
+//         Vector<Data> vec(3);
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             vec[i] = static_cast<Data>(dist(gen));
+//         }
+//         heap1 = HeapVec<Data>(vec);
+//         heap2 = HeapVec<Data>(vec);
+//         assert(heap1 == heap2);
+//         assert(!(heap1 != heap2));
+
+//         // Caso 2: Heap con elementi diversi
+//         Vector<Data> vec2(3);
+//         for (unsigned long i = 0; i < vec2.Size(); ++i) {
+//             vec2[i] = static_cast<Data>(dist(gen));
+//         }
+//         heap2 = HeapVec<Data>(vec2);
+//         assert(!(heap1 == heap2));
+//         assert(heap1 != heap2);
+
+//         // Caso 3: Heap di dimensioni diverse
+//         Vector<Data> vec3(4);
+//         for (unsigned long i = 0; i < vec3.Size(); ++i) {
+//             vec3[i] = static_cast<Data>(dist(gen));
+//         }
+//         heap2 = HeapVec<Data>(vec3);
+//         assert(!(heap1 == heap2));
+//         assert(heap1 != heap2);
+
+//         std::cout << "Passed test #" << testNum << " for TestComparisonOperators\n";
+//     }
+//     std::cout << "TestComparisonOperators passed!\n";
+// }
+
+// // Test IsHeap
+// template <typename Data>
+// void TestIsHeap() {
+//     std::cout << "Running TestIsHeap...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         HeapVec<Data> heap;
+//         // Caso 1: Heap vuoto
+//         assert(heap.IsHeap());
+
+//         // Caso 2: Heap valido
+//         Vector<Data> validHeapVec(5);
+//         validHeapVec[0] = Data{100};
+//         validHeapVec[1] = Data{50};
+//         validHeapVec[2] = Data{75};
+//         validHeapVec[3] = Data{25};
+//         validHeapVec[4] = Data{30};
+//         heap = HeapVec<Data>(validHeapVec);
+//         assert(heap.IsHeap());
+
+//         // Caso 3: Heap non valido (modifica manuale)
+//         heap[1] = Data{200}; // Viola la proprietà di Max-Heap
+//         assert(!heap.IsHeap());
+//         heap.Heapify(); // Ripristina
+//         assert(heap.IsHeap());
+
+//         std::cout << "Passed test #" << testNum << " for TestIsHeap\n";
+//     }
+//     std::cout << "TestIsHeap passed!\n";
+// }
+
+// // Test per Empty e Clear
+// template <typename Data>
+// void TestEmptyAndClear() {
+//     std::cout << "Running TestEmptyAndClear...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         // Caso 1: Heap vuoto
+//         HeapVec<Data> emptyHeap;
+//         assert(emptyHeap.Empty() == true);
+//         assert(emptyHeap.Size() == 0);
+//         emptyHeap.Clear();
+//         assert(emptyHeap.Empty() == true);
+//         assert(emptyHeap.Size() == 0);
+//         assert(emptyHeap.IsHeap());
+
+//         // Caso 2: Heap con un solo elemento
+//         Vector<Data> singleVec(1);
+//         singleVec[0] = Data{42};
+//         HeapVec<Data> singleHeap(singleVec);
+//         assert(singleHeap.Empty() == false);
+//         assert(singleHeap.Size() == 1);
+//         singleHeap.Clear();
+//         assert(singleHeap.Empty() == true);
+//         assert(singleHeap.Size() == 0);
+//         assert(singleHeap.IsHeap());
+
+//         // Caso 3: Heap grande
+//         Vector<Data> largeVec(1000);
+//         for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+//             largeVec[i] = static_cast<Data>(dist(gen));
+//         }
+//         HeapVec<Data> largeHeap(largeVec);
+//         assert(largeHeap.Empty() == false);
+//         assert(largeHeap.Size() == 1000);
+//         assert(largeHeap.IsHeap());
+//         largeHeap.Clear();
+//         assert(largeHeap.Empty() == true);
+//         assert(largeHeap.Size() == 0);
+//         assert(largeHeap.IsHeap());
+
+//         std::cout << "Passed test #" << testNum << " for TestEmptyAndClear\n";
+//     }
+//     std::cout << "TestEmptyAndClear passed!\n";
+// }
+
+// // Test distruttore
+// template <typename Data>
+// void TestDestructor() {
+//     std::cout << "Running TestDestructor...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         Vector<Data> vec(1000);
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             vec[i] = static_cast<Data>(dist(gen));
+//         }
+//         {
+//             HeapVec<Data> heap(vec);
+//             assert(heap.Size() == 1000);
+//             assert(heap.IsHeap());
+//         } // Distruttore chiamato qui
+//         std::cout << "Passed test #" << testNum << " for TestDestructor\n";
+//     }
+//     std::cout << "TestDestructor passed!\n";
+// }
+
+// // Test accesso
+// template <typename Data>
+// void TestAccess() {
+//     std::cout << "Running TestAccess...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         Vector<Data> vec(5);
+//         vec[0] = Data{100};
+//         vec[1] = Data{50};
+//         vec[2] = Data{75};
+//         vec[3] = Data{25};
+//         vec[4] = Data{30};
+//         HeapVec<Data> heap(vec);
+//         assert(heap[0] == Data{100}); // Elemento iniziale
+//         assert(heap[heap.Size()-1] == Data{30}); // Elemento finale (dopo Heapify)
+//         assert(heap[2] == Data{75}); // Elemento a indice specifico
+//         std::cout << "Passed test #" << testNum << " for TestAccess\n";
+//     }
+//     std::cout << "TestAccess passed!\n";
+// }
+
+// // Test Exists
+// template <typename Data>
+// void TestExists() {
+//     std::cout << "Running TestExists...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         Vector<Data> vec(5);
+//         vec[0] = Data{100};
+//         vec[1] = Data{50};
+//         vec[2] = Data{75};
+//         vec[3] = Data{25};
+//         vec[4] = Data{30};
+//         HeapVec<Data> heap(vec);
+//         assert(heap.Exists(Data{100}) == true);
+//         assert(heap.Exists(Data{50}) == true);
+//         assert(heap.Exists(Data{999}) == false);
+//         std::cout << "Passed test #" << testNum << " for TestExists\n";
+//     }
+//     std::cout << "TestExists passed!\n";
+// }
+
+// // Test Traverse e Fold
+// template <typename Data>
+// void TestTraverseAndFold() {
+//     std::cout << "Running TestTraverseAndFold...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         Vector<Data> vec(5);
+//         vec[0] = Data{100};
+//         vec[1] = Data{50};
+//         vec[2] = Data{75};
+//         vec[3] = Data{25};
+//         vec[4] = Data{30};
+//         HeapVec<Data> heap(vec);
+        
+//         // Test Traverse
+//         std::vector<Data> traversed(heap.Size());
+//         unsigned long index = 0;
+//         heap.Traverse([&traversed, &index](const Data& value) { 
+//             traversed[index++] = value; 
+//         });
+//         assert(index == heap.Size());
+        
+//         // Test Fold
+//         std::function<Data(const Data&, const Data&)> foldFunc = 
+//             [](const Data& value, const Data& acc) { return acc + value; };
+//         Data sum = heap.Fold(foldFunc, Data{0});
+//         Data expectedSum = Data{100 + 50 + 75 + 25 + 30};
+//         assert(sum == expectedSum);
+        
+//         std::cout << "Passed test #" << testNum << " for TestTraverseAndFold\n";
+//     }
+//     std::cout << "TestTraverseAndFold passed!\n";
+// }
+
+// // Test Heapify
+// template <typename Data>
+// void TestHeapify() {
+//     std::cout << "Running TestHeapify...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         Vector<Data> vec(5);
+//         vec[0] = Data{10};
+//         vec[1] = Data{50};
+//         vec[2] = Data{20};
+//         vec[3] = Data{30};
+//         vec[4] = Data{40};
+//         HeapVec<Data> heap(vec);
+//         heap[0] = Data{5}; // Viola la proprietà di Max-Heap
+//         assert(!heap.IsHeap());
+//         heap.Heapify();
+//         assert(heap.IsHeap());
+//         assert(VerifyHeapProperty(heap));
+//         std::cout << "Passed test #" << testNum << " for TestHeapify\n";
+//     }
+//     std::cout << "TestHeapify passed!\n";
+// }
+
+// // Test Sort (HeapSort)
+// template <typename Data>
+// void TestSort() {
+//     std::cout << "Running TestSort...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         // Caso 1: Heap vuoto
+//         HeapVec<Data> emptyHeap;
+//         assert(emptyHeap.Empty() == true);
+//         assert(emptyHeap.Size() == 0);
+//         emptyHeap.Sort();
+//         assert(emptyHeap.Empty() == true);
+//         assert(emptyHeap.Size() == 0);
+//         assert(emptyHeap.IsHeap());
+
+//         // Caso 2: Heap con un solo elemento
+//         Vector<Data> singleVec(1);
+//         singleVec[0] = Data{42};
+//         HeapVec<Data> singleHeap(singleVec);
+//         assert(singleHeap.Size() == 1);
+//         assert(singleHeap.IsHeap());
+//         singleHeap.Sort();
+//         assert(singleHeap.Size() == 1);
+//         assert(singleHeap[0] == Data{42});
+//         assert(singleHeap.IsHeap());
+
+//         // Caso 3: Heap con valori casuali
+//         Vector<Data> vec(1000);
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             vec[i] = static_cast<Data>(dist(gen));
+//         }
+//         std::vector<Data> sortedVec(vec.Size());
+//         for (unsigned long i = 0; i < vec.Size(); ++i) {
+//             sortedVec[i] = vec[i];
+//         }
+//         std::sort(sortedVec.begin(), sortedVec.end());
+//         HeapVec<Data> heap(vec);
+//         assert(heap.Size() == 1000);
+//         assert(heap.IsHeap());
+//         heap.Sort();
+//         assert(heap.Size() == 1000);
+//         assert(!heap.IsHeap());
+//         for (unsigned long i = 0; i < heap.Size(); ++i) {
+//             assert(heap[i] == sortedVec[i]);
+//         }
+
+//         // Caso 4: Heap con valori duplicati
+//         Vector<Data> dupVec(100);
+//         for (unsigned long i = 0; i < dupVec.Size(); ++i) {
+//             dupVec[i] = Data{42};
+//         }
+//         heap = HeapVec<Data>(dupVec);
+//         assert(heap.Size() == 100);
+//         assert(heap.IsHeap());
+//         heap.Sort();
+//         assert(heap.Size() == 100);
+//         for (unsigned long i = 0; i < heap.Size(); ++i) {
+//             assert(heap[i] == Data{42});
+//         }
+
+//         std::cout << "Passed test #" << testNum << " for TestSort\n";
+//     }
+//     std::cout << "TestSort passed!\n";
+// }
+
+// // Test HeapDown stress
+// template <typename Data>
+// void TestHeapDownStress() {
+//     std::cout << "Running TestHeapDownStress...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         std::random_device rd;
+//         std::mt19937 gen(rd());
+//         std::uniform_int_distribution<int> dist(-1000, 1000);
+
+//         HeapVec<Data> heap;
+//         // Caso 1: Heap con struttura lineare
+//         Vector<Data> linearVec(1000);
+//         for (unsigned long i = 0; i < linearVec.Size(); ++i) {
+//             linearVec[i] = Data{42};
+//         }
+//         heap = HeapVec<Data>(linearVec);
+//         heap.Heapify();
+//         assert(heap.IsHeap());
+
+//         // Caso 2: Heap con struttura patologica
+//         Vector<Data> pathoVec(1000);
+//         pathoVec[0] = Data{0};
+//         for (unsigned long i = 1; i < pathoVec.Size(); ++i) {
+//             pathoVec[i] = Data{1};
+//         }
+//         heap = HeapVec<Data>(pathoVec);
+//         heap.Heapify();
+//         assert(heap.IsHeap());
+
+//         std::cout << "Passed test #" << testNum << " for TestHeapDownStress\n";
+//     }
+//     std::cout << "TestHeapDownStress passed!\n";
+// }
+
+// // Test con std::string
+// void TestComplexType() {
+//     std::cout << "Running TestComplexType...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         HeapVec<std::string> heap;
+//         Vector<std::string> vec(5);
+//         vec[0] = "zebra";
+//         vec[1] = "apple";
+//         vec[2] = "banana";
+//         vec[3] = "cat";
+//         vec[4] = "dog";
+//         heap = HeapVec<std::string>(vec);
+//         assert(heap.IsHeap());
+//         assert(VerifyHeapProperty(heap));
+//         heap.Sort();
+//         assert(!heap.IsHeap());
+//         assert(heap[0] == "apple");
+//         assert(heap[1] == "banana");
+//         assert(heap[2] == "cat");
+//         assert(heap[3] == "dog");
+//         assert(heap[4] == "zebra");
+
+//         std::cout << "Passed test #" << testNum << " for TestComplexType\n";
+//     }
+//     std::cout << "TestComplexType passed!\n";
+// }
+
+// // Test con valori estremi
+// void TestExtremeValues() {
+//     std::cout << "Running TestExtremeValues...\n";
+//     const int numTests = 30;
+//     for (int testNum = 1; testNum <= numTests; ++testNum) {
+//         HeapVec<int> heap;
+//         Vector<int> vec(3);
+//         vec[0] = std::numeric_limits<int>::max();
+//         vec[1] = std::numeric_limits<int>::min();
+//         vec[2] = 0;
+//         heap = HeapVec<int>(vec);
+//         assert(heap.IsHeap());
+//         assert(VerifyHeapProperty(heap));
+//         heap.Sort();
+//         assert(heap[0] == std::numeric_limits<int>::min());
+//         assert(heap[1] == 0);
+//         assert(heap[2] == std::numeric_limits<int>::max());
+
+//         std::cout << "Passed test #" << testNum << " for TestExtremeValues\n";
+//     }
+//     std::cout << "TestExtremeValues passed!\n";
+// }
+
+// // Funzione principale che richiama tutti i test
+// void TestHeapVec() {
+//     std::cout << "\nStarting all tests...\n\n";
+
+//     std::cout << "-------------------Running tests for HeapVec int-------------------\n";
+//     TestConstructorTraversableContainer<int>();
+//     TestConstructorMappableContainer<int>();
+//     TestCopyConstructor<int>();
+//     TestMoveConstructor<int>();
+//     TestCopyAssignment<int>();
+//     TestMoveAssignment<int>();
+//     TestComparisonOperators<int>();
+//     TestIsHeap<int>();
+//     TestSort<int>();
+//     TestHeapDownStress<int>();
+//     TestEmptyAndClear<int>();
+//     TestAccess<int>();
+//     TestExists<int>();
+//     TestTraverseAndFold<int>();
+//     TestHeapify<int>();
+
+//     std::cout << "-------------------Running tests for HeapVec double-------------------\n";
+
+//     TestConstructorTraversableContainer<double>();
+//     TestConstructorMappableContainer<double>();
+//     TestCopyConstructor<double>();
+//     TestMoveConstructor<double>();
+//     TestCopyAssignment<double>();
+//     TestMoveAssignment<double>();
+//     TestComparisonOperators<double>();
+//     TestIsHeap<double>();
+//     TestSort<double>();
+//     TestHeapDownStress<double>();
+//     TestEmptyAndClear<double>();
+//     TestAccess<double>();
+//     TestExists<double>();
+//     TestTraverseAndFold<double>();
+
+
+//     std::cout << "-------------------Running tests for HeapVec float type-------------------\n";
+//     TestConstructorTraversableContainer<float>();
+//     TestConstructorMappableContainer<float>();
+//     TestCopyConstructor<float>();
+//     TestMoveConstructor<float>();
+//     TestCopyAssignment<float>();
+//     TestMoveAssignment<float>();
+//     TestComparisonOperators<float>();
+//     TestIsHeap<float>();
+//     TestSort<float>();
+//     TestHeapDownStress<float>();
+//     TestEmptyAndClear<float>();
+//     TestAccess<float>();
+//     TestExists<float>();
+//     TestTraverseAndFold<float>();
+
+
+
+//     TestComplexType();
+//     TestExtremeValues();
+
+//     std::cout << "\nAll tests passed successfully!\n";
+// }
+
+
+
+
+// Assumendo che HeapVec e Vector siano definiti altrove
 // Funzione ausiliaria per verificare la proprietà di Max-Heap
 template <typename Data>
 bool VerifyHeapProperty(const HeapVec<Data>& heap) {
@@ -6169,10 +12635,8 @@ bool VerifyHeapProperty(const HeapVec<Data>& heap) {
     return true;
 }
 
-// Funzione ausiliaria per confrontare i contenuti di un HeapVec con un Vector ordinato
 template <typename Data>
 bool CompareHeapWithSortedVector(const HeapVec<Data>& heap, const Vector<Data>& vec) {
-    // Copia i dati in uno std::vector per l'ordinamento
     std::vector<Data> sortedVec(vec.Size());
     for (unsigned long i = 0; i < vec.Size(); ++i) {
         sortedVec[i] = vec[i];
@@ -6181,10 +12645,17 @@ bool CompareHeapWithSortedVector(const HeapVec<Data>& heap, const Vector<Data>& 
     
     HeapVec<Data> tempHeap = heap;
     for (unsigned long i = 0; i < sortedVec.size(); ++i) {
-        if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap[0]) return false;
+        if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap[0]) {
+            return false;
+        }
         std::swap(tempHeap[0], tempHeap[tempHeap.Size() - 1]);
-        tempHeap.Resize(tempHeap.Size() - 1);
-        tempHeap.Heapify();
+        HeapVec<Data> newHeap;
+        newHeap = HeapVec<Data>(Vector<Data>(tempHeap.Size() - 1));
+        for (unsigned long j = 0; j < tempHeap.Size() - 1; ++j) {
+            newHeap[j] = tempHeap[j];
+        }
+        newHeap.Heapify();
+        tempHeap = std::move(newHeap);
     }
     return tempHeap.Size() == 0;
 }
@@ -6192,547 +12663,765 @@ bool CompareHeapWithSortedVector(const HeapVec<Data>& heap, const Vector<Data>& 
 // Test costruttore con TraversableContainer
 template <typename Data>
 void TestConstructorTraversableContainer() {
-    std::cout << "Running TestConstructorTraversableContainer...\n";
+        std::cout << "\n";
 
-    // Caso 1: Contenitore vuoto
-    Vector<Data> emptyVec(0);
-    HeapVec<Data> heap(emptyVec);
-    assert(heap.Size() == 0);
-    assert(heap.IsHeap());
+    std::cout << "---------------Running TestConstructorTraversableContainer---------------\n";
+        std::cout << "\n";
 
-    // Caso 2: Contenitore con un solo elemento
-    Vector<Data> singleVec(1);
-    singleVec[0] = Data{42};
-    HeapVec<Data> singleHeap(singleVec);
-    assert(singleHeap.Size() == 1);
-    assert(singleHeap.IsHeap());
-    assert(singleHeap[0] == Data{42});
+    const int numTests = 15; // Numero di iterazioni per ogni test
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd; // Generatore di semi casuali
+        std::mt19937 gen(rd()); // Inizializzazione con seme casuale
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
-    // Caso 3: Contenitore grande con valori casuali
-    Vector<Data> largeVec(1000);
-    std::mt19937 gen(42); // Seed fisso per riproducibilità
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < largeVec.Size(); ++i) {
-        largeVec[i] = static_cast<Data>(dist(gen));
+        // Caso 1: Contenitore vuoto
+        Vector<Data> emptyVec(0);
+        HeapVec<Data> heap(emptyVec);
+        assert(heap.Size() == 0);
+        assert(heap.IsHeap());
+
+        // Caso 2: Contenitore con un solo elemento
+        Vector<Data> singleVec(1);
+        singleVec[0] = static_cast<Data>(dist(gen)); // Valore casuale
+        HeapVec<Data> singleHeap(singleVec);
+        assert(singleHeap.Size() == 1);
+        assert(singleHeap.IsHeap());
+        assert(singleHeap[0] == singleVec[0]);
+
+        // Caso 3: Contenitore grande con valori casuali
+        Vector<Data> largeVec(1000);
+        for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+            largeVec[i] = static_cast<Data>(dist(gen));
+        }
+        Vector<Data> copyVec = largeVec; // Per confronto
+        HeapVec<Data> largeHeap(largeVec);
+        assert(largeHeap.Size() == 1000);
+        assert(largeHeap.IsHeap());
+        assert(VerifyHeapProperty(largeHeap));
+        assert(CompareHeapWithSortedVector(largeHeap, copyVec));
+
+        // Caso 4: Contenitore con valori duplicati
+        Vector<Data> dupVec(100);
+        Data dupValue = static_cast<Data>(dist(gen)); // Valore casuale per tutti gli elementi
+        for (unsigned long i = 0; i < dupVec.Size(); ++i) {
+            dupVec[i] = dupValue;
+        }
+        HeapVec<Data> dupHeap(dupVec);
+        assert(dupHeap.Size() == 100);
+        assert(dupHeap.IsHeap());
+        for (unsigned long i = 0; i < dupHeap.Size(); ++i) {
+            assert(dupHeap[i] == dupValue);
+        }
+
+        // Caso 5: Contenitore già ordinato in modo decrescente
+        Vector<Data> descVec(100);
+        Data baseValue = static_cast<Data>(dist(gen)); // Valore base casuale
+        for (unsigned long i = 0; i < descVec.Size(); ++i) {
+            descVec[i] = static_cast<Data>(baseValue - i); // Sequenza decrescente
+        }
+        HeapVec<Data> descHeap(descVec);
+        assert(descHeap.IsHeap());
+        assert(VerifyHeapProperty(descHeap));
+
+        std::cout << "Passed test #" << testNum << " for TestConstructorTraversableContainer\n";
     }
-    Vector<Data> copyVec = largeVec; // Per confronto
-    HeapVec<Data> largeHeap(largeVec);
-    assert(largeHeap.Size() == 1000);
-    assert(largeHeap.IsHeap());
-    assert(VerifyHeapProperty(largeHeap));
-    assert(CompareHeapWithSortedVector(largeHeap, copyVec));
-
-    // Caso 4: Contenitore con valori duplicati
-    Vector<Data> dupVec(100);
-    for (unsigned long i = 0; i < dupVec.Size(); ++i) {
-        dupVec[i] = Data{42};
-    }
-    HeapVec<Data> dupHeap(dupVec);
-    assert(dupHeap.Size() == 100);
-    assert(dupHeap.IsHeap());
-    for (unsigned long i = 0; i < dupHeap.Size(); ++i) {
-        assert(dupHeap[i] == Data{42});
-    }
-
-    // Caso 5: Contenitore già ordinato in modo decrescente (peggiore per Max-Heap)
-    Vector<Data> descVec(100);
-    for (unsigned long i = 0; i < descVec.Size(); ++i) {
-        descVec[i] = static_cast<Data>(100 - i);
-    }
-    HeapVec<Data> descHeap(descVec);
-    assert(descHeap.IsHeap());
-    assert(VerifyHeapProperty(descHeap));
-
     std::cout << "TestConstructorTraversableContainer passed!\n";
 }
 
 // Test costruttore con MappableContainer
 template <typename Data>
 void TestConstructorMappableContainer() {
-    std::cout << "Running TestConstructorMappableContainer...\n";
+        std::cout << "\n";
 
-    // Caso 1: Contenitore vuoto
-    Vector<Data> emptyVec(0);
-    HeapVec<Data> heap(std::move(emptyVec));
-    assert(heap.Size() == 0);
-    assert(heap.IsHeap());
+    std::cout << "---------------Running TestConstructorMappableContainer---------------\n";
+        std::cout << "\n";
 
-    // Caso 2: Contenitore grande
-    Vector<Data> largeVec(1000);
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < largeVec.Size(); ++i) {
-        largeVec[i] = static_cast<Data>(dist(gen));
+    const int numTests = 15;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        // Caso 1: Contenitore vuoto
+        Vector<Data> emptyVec(0);
+        HeapVec<Data> heap(std::move(emptyVec));
+        assert(heap.Size() == 0);
+        assert(heap.IsHeap());
+
+        // Caso 2: Contenitore grande
+        Vector<Data> largeVec(1000);
+        for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+            largeVec[i] = static_cast<Data>(dist(gen));
+        }
+        Vector<Data> copyVec = largeVec; // Per confronto
+        HeapVec<Data> largeHeap(std::move(largeVec));
+        assert(largeHeap.Size() == 1000);
+        assert(largeHeap.IsHeap());
+        assert(VerifyHeapProperty(largeHeap));
+        assert(CompareHeapWithSortedVector(largeHeap, copyVec));
+
+        std::cout << "Passed test #" << testNum << " for TestConstructorMappableContainer\n";
     }
-    Vector<Data> copyVec = largeVec; // Per confronto
-    HeapVec<Data> largeHeap(std::move(largeVec));
-    assert(largeHeap.Size() == 1000);
-    assert(largeHeap.IsHeap());
-    assert(VerifyHeapProperty(largeHeap));
-    assert(CompareHeapWithSortedVector(largeHeap, copyVec)); // Verifica che i dati siano stati trasferiti correttamente
-
     std::cout << "TestConstructorMappableContainer passed!\n";
 }
 
 // Test costruttore di copia
 template <typename Data>
 void TestCopyConstructor() {
-    std::cout << "Running TestCopyConstructor...\n";
+    std::cout << "\n";
 
-    // Caso 1: Copia di un heap vuoto
-    HeapVec<Data> emptyHeap;
-    HeapVec<Data> copyEmpty(emptyHeap);
-    assert(copyEmpty.Size() == 0);
-    assert(copyEmpty.IsHeap());
+    std::cout << "---------------Running TestCopyConstructor---------------\n";
+        std::cout << "\n";
 
-    // Caso 2: Copia di un heap grande
-    Vector<Data> largeVec(1000);
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < largeVec.Size(); ++i) {
-        largeVec[i] = static_cast<Data>(dist(gen));
+    
+    const int numTests = 15;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        // Caso 1: Copia di un heap vuoto
+        HeapVec<Data> emptyHeap;
+        HeapVec<Data> copyEmpty(emptyHeap);
+        assert(copyEmpty.Size() == 0);
+        assert(copyEmpty.IsHeap());
+
+        // Caso 2: Copia di un heap grande
+        Vector<Data> largeVec(1000);
+        for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+            largeVec[i] = static_cast<Data>(dist(gen));
+        }
+        HeapVec<Data> largeHeap(largeVec);
+        HeapVec<Data> copyHeap(largeHeap);
+        assert(copyHeap.Size() == largeHeap.Size());
+        assert(copyHeap.IsHeap());
+        assert(VerifyHeapProperty(copyHeap));
+        assert(copyHeap == largeHeap);
+
+        std::cout << "Passed test #" << testNum << " for TestCopyConstructor\n";
     }
-    HeapVec<Data> largeHeap(largeVec);
-    HeapVec<Data> copyHeap(largeHeap);
-    assert(copyHeap.Size() == largeHeap.Size());
-    assert(copyHeap.IsHeap());
-    assert(VerifyHeapProperty(copyHeap));
-    assert(copyHeap == largeHeap);
-
     std::cout << "TestCopyConstructor passed!\n";
 }
 
 // Test costruttore di move
 template <typename Data>
 void TestMoveConstructor() {
-    std::cout << "Running TestMoveConstructor...\n";
+    std::cout << "\n";
 
-    Vector<Data> vec(1000);
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < vec.Size(); ++i) {
-        vec[i] = static_cast<Data>(dist(gen));
+    std::cout << "---------------Running TestMoveConstructor---------------\n";
+    std::cout << "\n";
+   
+    const int numTests = 15;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        Vector<Data> vec(1000);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        Vector<Data> copyVec = vec; // Per confronto
+        HeapVec<Data> heap(vec);
+        HeapVec<Data> copyHeap = heap; // Per confronto
+        HeapVec<Data> movedHeap(std::move(heap));
+        assert(movedHeap.Size() == copyHeap.Size());
+        assert(movedHeap.IsHeap());
+        assert(VerifyHeapProperty(movedHeap));
+        assert(CompareHeapWithSortedVector(movedHeap, copyVec));
+        assert(heap.Size() == 0); // Verifica che il move sia avvenuto
+
+        std::cout << "Passed test #" << testNum << " for TestMoveConstructor\n";
     }
-    Vector<Data> copyVec = vec; // Per confronto
-    HeapVec<Data> heap(vec);
-    HeapVec<Data> copyHeap = heap; // Per confronto
-    HeapVec<Data> movedHeap(std::move(heap));
-    assert(movedHeap.Size() == copyHeap.Size());
-    assert(movedHeap.IsHeap());
-    assert(VerifyHeapProperty(movedHeap));
-    assert(CompareHeapWithSortedVector(movedHeap, copyVec));
-    assert(heap.Size() == 0); // Verifica che il move sia avvenuto
-
     std::cout << "TestMoveConstructor passed!\n";
 }
 
 // Test assegnamento di copia
 template <typename Data>
 void TestCopyAssignment() {
-    std::cout << "Running TestCopyAssignment...\n";
+    std::cout << "\n";
+    std::cout << "---------------Running TestCopyAssignment-------------\n";
+    std::cout << "\n";
 
-    HeapVec<Data> heap1, heap2;
-    Vector<Data> vec(100);
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < vec.Size(); ++i) {
-        vec[i] = static_cast<Data>(dist(gen));
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        HeapVec<Data> heap1, heap2;
+        Vector<Data> vec(100);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        Vector<Data> copyVec = vec; // Per confronto
+        heap1 = HeapVec<Data>(vec);
+        heap2 = heap1;
+        assert(heap1.Size() == heap2.Size());
+        assert(heap2.IsHeap());
+        assert(VerifyHeapProperty(heap2));
+        assert(heap1 == heap2);
+        assert(CompareHeapWithSortedVector(heap2, copyVec));
+
+        std::cout << "Passed test #" << testNum << " for TestCopyAssignment\n";
     }
-    Vector<Data> copyVec = vec; // Per confronto
-    heap1 = HeapVec<Data>(vec);
-    heap2 = heap1;
-    assert(heap1.Size() == heap2.Size());
-    assert(heap2.IsHeap());
-    assert(VerifyHeapProperty(heap2));
-    assert(heap1 == heap2);
-    assert(CompareHeapWithSortedVector(heap2, copyVec));
-
     std::cout << "TestCopyAssignment passed!\n";
 }
 
 // Test assegnamento di move
 template <typename Data>
 void TestMoveAssignment() {
-    std::cout << "Running TestMoveAssignment...\n";
+    std::cout << "-----------Running TestMoveAssignment-----------\n";
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
-    HeapVec<Data> heap1, heap2;
-    Vector<Data> vec(100);
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < vec.Size(); ++i) {
-        vec[i] = static_cast<Data>(dist(gen));
+        HeapVec<Data> heap1, heap2;
+        Vector<Data> vec(100);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        Vector<Data> copyVec = vec; // Per confronto
+        heap1 = HeapVec<Data>(vec);
+        HeapVec<Data> copyHeap = heap1;
+        heap2 = std::move(heap1);
+        assert(heap2.Size() == copyHeap.Size());
+        assert(heap2.IsHeap());
+        assert(VerifyHeapProperty(heap2));
+        assert(CompareHeapWithSortedVector(heap2, copyVec));
+        assert(heap1.Size() == 0);
+
+        std::cout << "Passed test #" << testNum << " for TestMoveAssignment\n";
     }
-    Vector<Data> copyVec = vec; // Per confronto
-    heap1 = HeapVec<Data>(vec);
-    HeapVec<Data> copyHeap = heap1;
-    heap2 = std::move(heap1);
-    assert(heap2.Size() == copyHeap.Size());
-    assert(heap2.IsHeap());
-    assert(VerifyHeapProperty(heap2));
-    assert(CompareHeapWithSortedVector(heap2, copyVec));
-    assert(heap1.Size() == 0);
-
     std::cout << "TestMoveAssignment passed!\n";
 }
 
 // Test operatori di confronto
 template <typename Data>
 void TestComparisonOperators() {
-    std::cout << "Running TestComparisonOperators...\n";
+        std::cout << "\n";
 
-    HeapVec<Data> heap1, heap2;
-    // Caso 1: Heap con stessi elementi
-    Vector<Data> vec(3);
-    vec[0] = Data{1};
-    vec[1] = Data{2};
-    vec[2] = Data{3};
-    heap1 = HeapVec<Data>(vec);
-    heap2 = HeapVec<Data>(vec);
-    assert(heap1 == heap2);
-    assert(!(heap1 != heap2));
+    std::cout << "-----------Running TestComparisonOperators-----------\n";
+        std::cout << "\n";
 
-    // Caso 2: Heap con elementi diversi
-    Vector<Data> vec2(3);
-    vec2[0] = Data{4};
-    vec2[1] = Data{5};
-    vec2[2] = Data{6};
-    heap2 = HeapVec<Data>(vec2);
-    assert(!(heap1 == heap2));
-    assert(heap1 != heap2);
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
-    // Caso 3: Heap di dimensioni diverse
-    Vector<Data> vec3(4);
-    vec3[0] = Data{1};
-    vec3[1] = Data{2};
-    vec3[2] = Data{3};
-    vec3[3] = Data{4};
-    heap2 = HeapVec<Data>(vec3);
-    assert(!(heap1 == heap2));
-    assert(heap1 != heap2);
+        HeapVec<Data> heap1, heap2;
+        // Caso 1: Heap con stessi elementi
+        Vector<Data> vec(3);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        heap1 = HeapVec<Data>(vec);
+        heap2 = HeapVec<Data>(vec);
+        assert(heap1 == heap2);
+        assert(!(heap1 != heap2));
 
+        // Caso 2: Heap con elementi diversi
+        Vector<Data> vec2(3);
+        for (unsigned long i = 0; i < vec2.Size(); ++i) {
+            vec2[i] = static_cast<Data>(dist(gen));
+        }
+        heap2 = HeapVec<Data>(vec2);
+        assert(!(heap1 == heap2));
+        assert(heap1 != heap2);
+
+        // Caso 3: Heap di dimensioni diverse
+        Vector<Data> vec3(4);
+        for (unsigned long i = 0; i < vec3.Size(); ++i) {
+            vec3[i] = static_cast<Data>(dist(gen));
+        }
+        heap2 = HeapVec<Data>(vec3);
+        assert(!(heap1 == heap2));
+        assert(heap1 != heap2);
+
+        std::cout << "Passed test #" << testNum << " for TestComparisonOperators\n";
+    }
     std::cout << "TestComparisonOperators passed!\n";
 }
 
 // Test IsHeap
 template <typename Data>
 void TestIsHeap() {
-    std::cout << "Running TestIsHeap...\n";
+        std::cout << "\n";
 
-    HeapVec<Data> heap;
-    // Caso 1: Heap vuoto
-    assert(heap.IsHeap());
+    std::cout << "-----------Running TestIsHeap-----------\n";
+        std::cout << "\n";
 
-    // Caso 2: Heap valido
-    Vector<Data> validHeapVec(5);
-    validHeapVec[0] = Data{100};
-    validHeapVec[1] = Data{50};
-    validHeapVec[2] = Data{75};
-    validHeapVec[3] = Data{25};
-    validHeapVec[4] = Data{30};
-    heap = HeapVec<Data>(validHeapVec);
-    assert(heap.IsHeap());
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
-    // Caso 3: Heap non valido (modifica manuale)
-    heap[1] = Data{200}; // Viola la proprietà di Max-Heap
-    assert(!heap.IsHeap());
-    heap.Heapify(); // Ripristina
-    assert(heap.IsHeap());
+        HeapVec<Data> heap;
+        // Caso 1: Heap vuoto
+        assert(heap.IsHeap());
 
+        // Caso 2: Heap valido
+        Vector<Data> validHeapVec(5);
+        validHeapVec[0] = static_cast<Data>(dist(gen)); // Valore casuale grande
+        validHeapVec[1] = static_cast<Data>(dist(gen) % (std::abs(static_cast<int>(validHeapVec[0])) + 1)); // Minore del primo
+        validHeapVec[2] = static_cast<Data>(dist(gen) % (std::abs(static_cast<int>(validHeapVec[0])) + 1)); // Minore del primo
+        validHeapVec[3] = static_cast<Data>(dist(gen) % (std::abs(static_cast<int>(validHeapVec[1])) + 1)); // Minore del secondo
+        validHeapVec[4] = static_cast<Data>(dist(gen) % (std::abs(static_cast<int>(validHeapVec[2])) + 1)); // Minore del terzo
+        heap = HeapVec<Data>(validHeapVec);
+        assert(heap.IsHeap());
+
+        // Caso 3: Heap non valido
+        Data maxVal = validHeapVec[0];
+        if (maxVal < std::numeric_limits<Data>::max() - 1000) {
+            heap[1] = static_cast<Data>(std::abs(static_cast<int>(maxVal)) + std::abs(dist(gen)) + 1); // Maggiore di heap[0]
+        } else {
+            heap[1] = static_cast<Data>(std::numeric_limits<Data>::max()); // Usa il massimo per evitare overflow
+        }
+        assert(!heap.IsHeap());
+        heap.Heapify();
+        assert(heap.IsHeap());
+
+        std::cout << "Passed test #" << testNum << " for TestIsHeap\n";
+    }
     std::cout << "TestIsHeap passed!\n";
 }
 
 // Test per Empty e Clear
 template <typename Data>
 void TestEmptyAndClear() {
-    std::cout << "Running TestEmptyAndClear...\n";
+        std::cout << "\n";
 
-    // Caso 1: Heap vuoto
-    HeapVec<Data> emptyHeap;
-    assert(emptyHeap.Empty() == true);
-    assert(emptyHeap.Size() == 0);
-    emptyHeap.Clear();
-    assert(emptyHeap.Empty() == true);
-    assert(emptyHeap.Size() == 0);
-    assert(emptyHeap.IsHeap());
+    std::cout << "-----------Running TestEmptyAndClear-----------\n";
+        std::cout << "\n";
 
-    // Caso 2: Heap con un solo elemento
-    Vector<Data> singleVec(1);
-    singleVec[0] = Data{42};
-    HeapVec<Data> singleHeap(singleVec);
-    assert(singleHeap.Empty() == false);
-    assert(singleHeap.Size() == 1);
-    singleHeap.Clear();
-    assert(singleHeap.Empty() == true);
-    assert(singleHeap.Size() == 0);
-    assert(singleHeap.IsHeap());
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
-    // Caso 3: Heap grande
-    Vector<Data> largeVec(1000);
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < largeVec.Size(); ++i) {
-        largeVec[i] = static_cast<Data>(dist(gen));
+        // Caso 1: Heap vuoto
+        HeapVec<Data> emptyHeap;
+        assert(emptyHeap.Empty() == true);
+        assert(emptyHeap.Size() == 0);
+        emptyHeap.Clear();
+        assert(emptyHeap.Empty() == true);
+        assert(emptyHeap.Size() == 0);
+        assert(emptyHeap.IsHeap());
+
+        // Caso 2: Heap con un solo elemento
+        Vector<Data> singleVec(1);
+        singleVec[0] = static_cast<Data>(dist(gen));
+        HeapVec<Data> singleHeap(singleVec);
+        assert(singleHeap.Empty() == false);
+        assert(singleHeap.Size() == 1);
+        singleHeap.Clear();
+        assert(singleHeap.Empty() == true);
+        assert(singleHeap.Size() == 0);
+        assert(singleHeap.IsHeap());
+
+        // Caso 3: Heap grande
+        Vector<Data> largeVec(1000);
+        for (unsigned long i = 0; i < largeVec.Size(); ++i) {
+            largeVec[i] = static_cast<Data>(dist(gen));
+        }
+        HeapVec<Data> largeHeap(largeVec);
+        assert(largeHeap.Empty() == false);
+        assert(largeHeap.Size() == 1000);
+        assert(largeHeap.IsHeap());
+        largeHeap.Clear();
+        assert(largeHeap.Empty() == true);
+        assert(largeHeap.Size() == 0);
+        assert(largeHeap.IsHeap());
+
+        std::cout << "Passed test #" << testNum << " for TestEmptyAndClear\n";
     }
-    HeapVec<Data> largeHeap(largeVec);
-    assert(largeHeap.Empty() == false);
-    assert(largeHeap.Size() == 1000);
-    assert(largeHeap.IsHeap());
-    largeHeap.Clear();
-    assert(largeHeap.Empty() == true);
-    assert(largeHeap.Size() == 0);
-    assert(largeHeap.IsHeap());
-
     std::cout << "TestEmptyAndClear passed!\n";
 }
+
+// Test distruttore
 template <typename Data>
 void TestDestructor() {
-    std::cout << "Running TestDestructor...\n";
-    Vector<Data> vec(1000);
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < vec.Size(); ++i) {
-        vec[i] = static_cast<Data>(dist(gen));
+        std::cout << "\n";
+
+    std::cout << "-----------Running TestDestructor-----------\n";
+        std::cout << "\n";
+
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        Vector<Data> vec(1000);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        {
+            HeapVec<Data> heap(vec);
+            assert(heap.Size() == 1000);
+            assert(heap.IsHeap());
+        } // Distruttore chiamato qui
+        std::cout << "Passed test #" << testNum << " for TestDestructor\n";
     }
-    {
-        HeapVec<Data> heap(vec);
-        assert(heap.Size() == 1000);
-        assert(heap.IsHeap());
-    } // Distruttore chiamato qui
     std::cout << "TestDestructor passed!\n";
 }
 
+// Test accesso
 template <typename Data>
 void TestAccess() {
-    std::cout << "Running TestAccess...\n";
-    Vector<Data> vec(5);
-    vec[0] = Data{100};
-    vec[1] = Data{50};
-    vec[2] = Data{75};
-    vec[3] = Data{25};
-    vec[4] = Data{30};
-    HeapVec<Data> heap(vec);
-    assert(heap[0] == Data{100}); // Elemento iniziale
-    assert(heap[heap.Size()-1] == Data{30}); // Elemento finale (dopo Heapify)
-    assert(heap[2] == Data{75}); // Elemento a indice specifico
+        std::cout << "\n";
+
+    std::cout << "-----------Running TestAccess-----------\n";
+        std::cout << "\n";
+
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        Vector<Data> vec(5);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen)); // Valori casuali
+        }
+        HeapVec<Data> heap(vec);
+
+        // Verifica che heap[0] sia il massimo elemento di vec
+        Data maxVal = vec[0];
+        for (unsigned long i = 1; i < vec.Size(); ++i) {
+            if (vec[i] > maxVal) {
+                maxVal = vec[i];
+            }
+        }
+        assert(heap[0] == maxVal); // Il root deve essere il massimo
+        assert(heap.IsHeap()); // Verifica che sia un Max-Heap valido
+        assert(VerifyHeapProperty(heap)); // Verifica aggiuntiva della proprietà di Max-Heap
+
+        // Verifica che tutti gli elementi di vec siano presenti in heap
+        std::vector<Data> vecCopy(vec.Size());
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vecCopy[i] = vec[i];
+        }
+        std::vector<Data> heapCopy(heap.Size());
+        for (unsigned long i = 0; i < heap.Size(); ++i) {
+            heapCopy[i] = heap[i];
+        }
+        std::sort(vecCopy.begin(), vecCopy.end());
+        std::sort(heapCopy.begin(), heapCopy.end());
+        assert(vecCopy == heapCopy); // Verifica che gli elementi siano gli stessi
+
+        std::cout << "Passed test #" << testNum << " for TestAccess\n";
+    }
     std::cout << "TestAccess passed!\n";
 }
 
+// Test Exists
 template <typename Data>
 void TestExists() {
-    std::cout << "Running TestExists...\n";
-    Vector<Data> vec(5);
-    vec[0] = Data{100};
-    vec[1] = Data{50};
-    vec[2] = Data{75};
-    vec[3] = Data{25};
-    vec[4] = Data{30};
-    HeapVec<Data> heap(vec);
-    assert(heap.Exists(Data{100}) == true);
-    assert(heap.Exists(Data{50}) == true);
-    assert(heap.Exists(Data{999}) == false);
+        std::cout << "\n";
+
+    std::cout << "-----------Running TestExists-----------\n";
+        std::cout << "\n";
+
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        Vector<Data> vec(5);
+        vec[0] = static_cast<Data>(dist(gen));
+        vec[1] = static_cast<Data>(dist(gen));
+        vec[2] = static_cast<Data>(dist(gen));
+        vec[3] = static_cast<Data>(dist(gen));
+        vec[4] = static_cast<Data>(dist(gen));
+        HeapVec<Data> heap(vec);
+        assert(heap.Exists(vec[0]) == true);
+        assert(heap.Exists(vec[1]) == true);
+        assert(heap.Exists(static_cast<Data>(dist(gen) + 1000)) == false); // Valore improbabile
+        std::cout << "Passed test #" << testNum << " for TestExists\n";
+    }
     std::cout << "TestExists passed!\n";
 }
 
+// Test Traverse e Fold
 template <typename Data>
 void TestTraverseAndFold() {
-    std::cout << "Running TestTraverseAndFold...\n";
-    Vector<Data> vec(5);
-    vec[0] = Data{100};
-    vec[1] = Data{50};
-    vec[2] = Data{75};
-    vec[3] = Data{25};
-    vec[4] = Data{30};
-    HeapVec<Data> heap(vec);
-    
-    // Test Traverse
-    std::vector<Data> traversed(heap.Size()); // Pre-allocate vector
-    unsigned long index = 0;
-    heap.Traverse([&traversed, &index](const Data& value) { 
-        traversed[index++] = value; 
-    });
-    assert(index == heap.Size()); // Verify all elements were traversed
-    
-    // Test Fold (esempio: somma per int/double)
-    std::function<Data(const Data&, const Data&)> foldFunc = 
-        [](const Data& value, const Data& acc) { return acc + value; };
-    Data sum = heap.Fold(foldFunc, Data{0});
-    Data expectedSum = Data{100 + 50 + 75 + 25 + 30};
-    assert(sum == expectedSum);
-    
+        std::cout << "\n";
+
+    std::cout << "-----------Running TestTraverseAndFold-----------\n";
+        std::cout << "\n";
+
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        Vector<Data> vec(5);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        HeapVec<Data> heap(vec);
+        
+        // Test Traverse
+        std::vector<Data> traversed(heap.Size());
+        unsigned long index = 0;
+        heap.Traverse([&traversed, &index](const Data& value) { 
+            traversed[index++] = value; 
+        });
+        assert(index == heap.Size());
+        
+        // Test Fold
+        std::function<Data(const Data&, const Data&)> foldFunc = 
+            [](const Data& value, const Data& acc) { return acc + value; };
+        Data sum = heap.Fold(foldFunc, Data{0});
+        Data expectedSum = Data{0};
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            expectedSum = expectedSum + vec[i];
+        }
+        assert(sum == expectedSum);
+        
+        std::cout << "Passed test #" << testNum << " for TestTraverseAndFold\n";
+    }
     std::cout << "TestTraverseAndFold passed!\n";
 }
 
+// Test Heapify
 template <typename Data>
 void TestHeapify() {
-    std::cout << "Running TestHeapify...\n";
-    Vector<Data> vec(5);
-    vec[0] = Data{10};
-    vec[1] = Data{50};
-    vec[2] = Data{20};
-    vec[3] = Data{30};
-    vec[4] = Data{40};
-    HeapVec<Data> heap(vec);
-    heap[0] = Data{5}; // Viola la proprietà di Max-Heap
-    assert(!heap.IsHeap());
-    heap.Heapify();
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
+        std::cout << "\n";
+
+    std::cout << "-----------Running TestHeapify-----------\n";
+        std::cout << "\n";
+
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        Vector<Data> vec(5);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen)); // Valori casuali
+        }
+        HeapVec<Data> heap(vec); // Costruisce un heap valido
+        assert(heap.IsHeap()); // Verifica che l'heap iniziale sia valido
+
+        // Trova il valore minimo tra i figli (heap[1] e heap[2], se esiste)
+        Data minChild = heap[1]; // Figlio sinistro esiste sempre (size=5)
+        if (heap.Size() > 2) { // Controlla il figlio destro
+            minChild = std::min(minChild, heap[2]);
+        }
+        // Imposta heap[0] a un valore minore del minimo dei figli per violare la proprietà
+        if (minChild > std::numeric_limits<Data>::lowest() + 1) {
+            heap[0] = static_cast<Data>(minChild - 1); // Valore garantito minore
+        } else {
+            heap[0] = std::numeric_limits<Data>::lowest(); // Usa il minimo possibile
+        }
+        assert(!heap.IsHeap()); // Verifica che l'heap sia non valido
+        heap.Heapify(); // Ripristina l'heap
+        assert(heap.IsHeap()); // Verifica che l'heap sia di nuovo valido
+        assert(VerifyHeapProperty(heap)); // Verifica aggiuntiva
+
+        std::cout << "Passed test #" << testNum << " for TestHeapify\n";
+    }
     std::cout << "TestHeapify passed!\n";
 }
-
-// Test Sort (HeapSort) corretto
+// Test Sort (HeapSort)
 template <typename Data>
 void TestSort() {
+        std::cout << "\n";
+
     std::cout << "Running TestSort...\n";
+        std::cout << "\n";
 
-    // Caso 1: Heap vuoto
-    std::cout << "Testing Sort on empty heap...\n";
-    HeapVec<Data> emptyHeap;
-    assert(emptyHeap.Empty() == true);
-    assert(emptyHeap.Size() == 0);
-    emptyHeap.Sort();
-    assert(emptyHeap.Empty() == true);
-    assert(emptyHeap.Size() == 0);
-    assert(emptyHeap.IsHeap()); // Un heap vuoto è un heap valido
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
-    // Caso 2: Heap con un solo elemento
-    std::cout << "Testing Sort on single-element heap...\n";
-    Vector<Data> singleVec(1);
-    singleVec[0] = Data{42};
-    HeapVec<Data> singleHeap(singleVec);
-    assert(singleHeap.Size() == 1);
-    assert(singleHeap.IsHeap());
-    singleHeap.Sort();
-    assert(singleHeap.Size() == 1);
-    assert(singleHeap[0] == Data{42});
-    assert(singleHeap.IsHeap()); // Un heap con un elemento è ancora un heap valido
+        // Caso 1: Heap vuoto
+        HeapVec<Data> emptyHeap;
+        assert(emptyHeap.Empty() == true);
+        assert(emptyHeap.Size() == 0);
+        emptyHeap.Sort();
+        assert(emptyHeap.Empty() == true);
+        assert(emptyHeap.Size() == 0);
+        assert(emptyHeap.IsHeap());
 
-    // Caso 3: Heap con valori casuali
-    std::cout << "Testing Sort on large random heap...\n";
-    Vector<Data> vec(1000);
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < vec.Size(); ++i) {
-        vec[i] = static_cast<Data>(dist(gen));
-    }
-    std::vector<Data> sortedVec(vec.Size());
-    for (unsigned long i = 0; i < vec.Size(); ++i) {
-        sortedVec[i] = vec[i];
-    }
-    std::sort(sortedVec.begin(), sortedVec.end()); // Ordina in modo crescente
-    HeapVec<Data> heap(vec);
-    assert(heap.Size() == 1000);
-    assert(heap.IsHeap());
-    heap.Sort();
-    assert(heap.Size() == 1000);
-    assert(!heap.IsHeap()); // Dopo il sort, non è più un heap (tranne casi particolari)
-    for (unsigned long i = 0; i < heap.Size(); ++i) {
-        assert(heap[i] == sortedVec[i]); // Verifica che l'array sia ordinato in modo crescente
-    }
+        // Caso 2: Heap con un solo elemento
+        Vector<Data> singleVec(1);
+        singleVec[0] = static_cast<Data>(dist(gen));
+        HeapVec<Data> singleHeap(singleVec);
+        assert(singleHeap.Size() == 1);
+        assert(singleHeap.IsHeap());
+        singleHeap.Sort();
+        assert(singleHeap.Size() == 1);
+        assert(singleHeap[0] == singleVec[0]);
+        assert(singleHeap.IsHeap());
 
-    // Caso 4: Heap con valori duplicati
-    std::cout << "Testing Sort on duplicate values heap...\n";
-    Vector<Data> dupVec(100);
-    for (unsigned long i = 0; i < dupVec.Size(); ++i) {
-        dupVec[i] = Data{42};
-    }
-    heap = HeapVec<Data>(dupVec);
-    assert(heap.Size() == 100);
-    assert(heap.IsHeap());
-    heap.Sort();
-    assert(heap.Size() == 100);
-    // Non verifichiamo !heap.IsHeap() qui, perché un array di valori uguali è ancora un heap valido
-    for (unsigned long i = 0; i < heap.Size(); ++i) {
-        assert(heap[i] == Data{42}); // Verifica che tutti gli elementi siano 42
-    }
+        // Caso 3: Heap con valori casuali
+        Vector<Data> vec(1000);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        std::vector<Data> sortedVec(vec.Size());
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            sortedVec[i] = vec[i];
+        }
+        std::sort(sortedVec.begin(), sortedVec.end());
+        HeapVec<Data> heap(vec);
+        assert(heap.Size() == 1000);
+        assert(heap.IsHeap());
+        heap.Sort();
+        assert(heap.Size() == 1000);
+        assert(!heap.IsHeap());
+        for (unsigned long i = 0; i < heap.Size(); ++i) {
+            assert(heap[i] == sortedVec[i]);
+        }
 
+        // Caso 4: Heap con valori duplicati
+        Vector<Data> dupVec(100);
+        Data dupValue = static_cast<Data>(dist(gen));
+        for (unsigned long i = 0; i < dupVec.Size(); ++i) {
+            dupVec[i] = dupValue;
+        }
+        heap = HeapVec<Data>(dupVec);
+        assert(heap.Size() == 100);
+        assert(heap.IsHeap());
+        heap.Sort();
+        assert(heap.Size() == 100);
+        for (unsigned long i = 0; i < heap.Size(); ++i) {
+            assert(heap[i] == dupValue);
+        }
+
+        std::cout << "Passed test #" << testNum << " for TestSort\n";
+    }
     std::cout << "TestSort passed!\n";
 }
 
-// Test HeapDown stress (indirettamente tramite Heapify)
+// Test HeapDown stress
 template <typename Data>
 void TestHeapDownStress() {
+        std::cout << "\n";
+
     std::cout << "Running TestHeapDownStress...\n";
+        std::cout << "\n";
 
-    HeapVec<Data> heap;
-    // Caso 1: Heap con struttura lineare (tutti i nodi hanno lo stesso valore)
-    Vector<Data> linearVec(1000);
-    for (unsigned long i = 0; i < linearVec.Size(); ++i) {
-        linearVec[i] = Data{42};
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        HeapVec<Data> heap;
+        // Caso 1: Heap con struttura lineare
+        Vector<Data> linearVec(1000);
+        Data linearValue = static_cast<Data>(dist(gen));
+        for (unsigned long i = 0; i < linearVec.Size(); ++i) {
+            linearVec[i] = linearValue;
+        }
+        heap = HeapVec<Data>(linearVec);
+        heap.Heapify();
+        assert(heap.IsHeap());
+
+        // Caso 2: Heap con struttura patologica
+        Vector<Data> pathoVec(1000);
+        pathoVec[0] = static_cast<Data>(dist(gen) - 1000); // Valore minimo casuale
+        Data pathoValue = static_cast<Data>(dist(gen));
+        for (unsigned long i = 1; i < pathoVec.Size(); ++i) {
+            pathoVec[i] = pathoValue;
+        }
+        heap = HeapVec<Data>(pathoVec);
+        heap.Heapify();
+        assert(heap.IsHeap());
+
+        std::cout << "Passed test #" << testNum << " for TestHeapDownStress\n";
     }
-    heap = HeapVec<Data>(linearVec);
-    heap.Heapify(); // Usa Heapify per testare indirettamente HeapDown
-    assert(heap.IsHeap());
-
-    // Caso 2: Heap con struttura patologica (valore minimo alla radice)
-    Vector<Data> pathoVec(1000);
-    pathoVec[0] = Data{0}; // Valore minimo alla radice
-    for (unsigned long i = 1; i < pathoVec.Size(); ++i) {
-        pathoVec[i] = Data{1};
-    }
-    heap = HeapVec<Data>(pathoVec);
-    heap.Heapify(); // Usa Heapify per testare indirettamente HeapDown
-    assert(heap.IsHeap());
-
     std::cout << "TestHeapDownStress passed!\n";
 }
 
-
-// Test con std::string (tipo complesso)
+// Test con std::string
 void TestComplexType() {
+        std::cout << "\n";
+
     std::cout << "Running TestComplexType...\n";
+        std::cout << "\n";
 
-    HeapVec<std::string> heap;
-    Vector<std::string> vec(5);
-    vec[0] = "zebra";
-    vec[1] = "apple";
-    vec[2] = "banana";
-    vec[3] = "cat";
-    vec[4] = "dog";
-    heap = HeapVec<std::string>(vec);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    heap.Sort();
-    assert(!heap.IsHeap());
-    assert(heap[0] == "apple");
-    assert(heap[1] == "banana");
-    assert(heap[2] == "cat");
-    assert(heap[3] == "dog");
-    assert(heap[4] == "zebra");
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(1, 1000);
+        // Genera stringhe casuali
+        Vector<std::string> vec(5);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = "str" + std::to_string(dist(gen));
+        }
+        HeapVec<std::string> heap(vec);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
+        heap.Sort();
+        assert(!heap.IsHeap());
+        std::vector<std::string> sortedVec(vec.Size());
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            sortedVec[i] = vec[i];
+        }
+        std::sort(sortedVec.begin(), sortedVec.end());
+        for (unsigned long i = 0; i < heap.Size(); ++i) {
+            assert(heap[i] == sortedVec[i]);
+        }
 
+        std::cout << "Passed test #" << testNum << " for TestComplexType\n";
+    }
     std::cout << "TestComplexType passed!\n";
 }
 
-// Test con valori estremi (solo per int)
+// Test con valori estremi
 void TestExtremeValues() {
+        std::cout << "\n";
+
     std::cout << "Running TestExtremeValues...\n";
+        std::cout << "\n";
 
-    HeapVec<int> heap;
-    Vector<int> vec(3);
-    vec[0] = std::numeric_limits<int>::max();
-    vec[1] = std::numeric_limits<int>::min();
-    vec[2] = 0;
-    heap = HeapVec<int>(vec);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    heap.Sort();
-    assert(heap[0] == std::numeric_limits<int>::min());
-    assert(heap[1] == 0);
-    assert(heap[2] == std::numeric_limits<int>::max());
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
+        HeapVec<int> heap;
+        Vector<int> vec(3);
+        vec[0] = std::numeric_limits<int>::max();
+        vec[1] = std::numeric_limits<int>::min();
+        vec[2] = static_cast<int>(dist(gen));
+        heap = HeapVec<int>(vec);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
+        heap.Sort();
+        assert(heap[0] == std::numeric_limits<int>::min());
+        assert(heap[1] == vec[2]);
+        assert(heap[2] == std::numeric_limits<int>::max());
+
+        std::cout << "Passed test #" << testNum << " for TestExtremeValues\n";
+    }
     std::cout << "TestExtremeValues passed!\n";
 }
 
-
-
 // Funzione principale che richiama tutti i test
 void TestHeapVec() {
+    std::cout << "\nStarting all tests...\n\n";
 
-    std::cout<<""<<std::endl;
-
-    std::cout << "Starting all tests...\n";
-    
-    std::cout<<""<<std::endl;
+    std::cout << "\n";
+    std::cout << "-----------------------Testing HeapVec with int types-----------------------\n";
+    std::cout << "\n";
 
     TestConstructorTraversableContainer<int>();
     TestConstructorMappableContainer<int>();
@@ -6750,6 +13439,10 @@ void TestHeapVec() {
     TestTraverseAndFold<int>();
     TestHeapify<int>();
 
+    std::cout << "\n";
+    std::cout << "-----------------------Testing HeapVec with double types-----------------------\n";
+    std::cout << "\n";
+
     TestConstructorTraversableContainer<double>();
     TestConstructorMappableContainer<double>();
     TestCopyConstructor<double>();
@@ -6765,14 +13458,51 @@ void TestHeapVec() {
     TestExists<double>();
     TestTraverseAndFold<double>();
 
+    std::cout << "\n";
+    std::cout << "-----------------------Testing HeapVec with float types-----------------------\n";
+    std::cout << "\n";
+
+    TestConstructorTraversableContainer<float>();
+    TestConstructorMappableContainer<float>();
+    TestCopyConstructor<float>();
+    TestMoveConstructor<float>();
+    TestCopyAssignment<float>();
+    TestMoveAssignment<float>();
+    TestComparisonOperators<float>();
+    TestIsHeap<float>();
+    TestSort<float>();
+    TestHeapDownStress<float>();
+    TestEmptyAndClear<float>();
+    TestAccess<float>();
+    TestExists<float>();
+    TestTraverseAndFold<float>();
+
+    std::cout << "\n";
+    std::cout << "-----------------------Testing HeapVec with complextype types-----------------------\n";
+    std::cout << "\n";
     TestComplexType();
+    std::cout << "\n";
+    std::cout << "-----------------------Testing HeapVec with extremevalues types-----------------------\n";
+    std::cout << "\n";
     TestExtremeValues();
 
-    std::cout<<""<<std::endl;
-
-
-    std::cout << "All tests passed successfully!\n";
+    std::cout << "\nAll 1050 tests passed successfully!\n";
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7043,37 +13773,37 @@ void TestHeapVec() {
 // }
 
 
-// // Funzione ausiliaria per verificare la proprietà di Max-Heap
-// template <typename Data>
-// bool VerifyHeapProperty(const PQHeap<Data>& heap) {
-//     for (unsigned long i = 0; i < heap.Size() / 2; ++i) {
-//         unsigned long left = 2 * i + 1;
-//         unsigned long right = 2 * i + 2;
-//         if (left < heap.Size() && heap[left] > heap[i]) return false;
-//         if (right < heap.Size() && heap[right] > heap[i]) return false;
-//     }
-//     return true;
-// }
+// Funzione ausiliaria per verificare la proprietà di Max-Heap
+template <typename Data>
+bool VerifyHeapProperty(const PQHeap<Data>& heap) {
+    for (unsigned long i = 0; i < heap.Size() / 2; ++i) {
+        unsigned long left = 2 * i + 1;
+        unsigned long right = 2 * i + 2;
+        if (left < heap.Size() && heap[left] > heap[i]) return false;
+        if (right < heap.Size() && heap[right] > heap[i]) return false;
+    }
+    return true;
+}
 
-// // Funzione ausiliaria per confrontare i contenuti di un PQHeap con un Vector ordinato
-// template <typename Data>
-// bool CompareHeapWithSortedVector(const PQHeap<Data>& heap, const Vector<Data>& vec) {
-//     std::vector<Data> sortedVec(vec.Size());
-//     for (unsigned long i = 0; i < vec.Size(); ++i) {
-//         sortedVec[i] = vec[i];
-//     }
-//     std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>());
+// Funzione ausiliaria per confrontare i contenuti di un PQHeap con un Vector ordinato
+template <typename Data>
+bool CompareHeapWithSortedVector(const PQHeap<Data>& heap, const Vector<Data>& vec) {
+    std::vector<Data> sortedVec(vec.Size());
+    for (unsigned long i = 0; i < vec.Size(); ++i) {
+        sortedVec[i] = vec[i];
+    }
+    std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>());
     
-//     PQHeap<Data> tempHeap = heap;
-//     for (unsigned long i = 0; i < sortedVec.size(); ++i) {
-//         if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap.Tip()) return false;
-//         tempHeap.RemoveTip();
-//     }
-//     return tempHeap.Size() == 0;
-// }
+    PQHeap<Data> tempHeap = heap;
+    for (unsigned long i = 0; i < sortedVec.size(); ++i) {
+        if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap.Tip()) return false;
+        tempHeap.RemoveTip();
+    }
+    return tempHeap.Size() == 0;
+}
 
 
-// // Test per Insert
+// Test per Insert
 // template <typename Data>
 // void TestInsert() {
 //     std::cout << "Running TestInsert...\n";
@@ -7229,314 +13959,214 @@ void TestHeapVec() {
 //     std::cout << "TestChange passed!\n";
 // }
 
-
-// // Funzione principale che richiama tutti i test
-// void TestPqHeap() {
-//     std::cout << "\n";
-//     std::cout << "Starting all PQHeap tests...\n";
-//     std::cout << "\n";
-
-//     TestConstructorTraversableContainer<int>();
-//     TestConstructorMappableContainer<int>();
-//     TestCopyConstructor<int>();
-//     TestMoveConstructor<int>();
-//     TestCopyAssignment<int>();
-//     TestMoveAssignment<int>();
-//     TestEmptyAndClear<int>();
-//     TestDestructor<int>();
-//     TestInsert<int>();
-//     TestTipOperations<int>();
-//     TestChange<int>();
-//     TestHeapify<int>();
-
-//     TestConstructorTraversableContainer<double>();
-//     TestConstructorMappableContainer<double>();
-//     TestCopyConstructor<double>();
-//     TestMoveConstructor<double>();
-//     TestCopyAssignment<double>();
-//     TestMoveAssignment<double>();
-//     TestEmptyAndClear<double>();
-//     TestDestructor<double>();
-//     TestInsert<double>();
-//     TestTipOperations<double>();
-//     TestChange<double>();
-//     TestHeapify<double>();
-
-//     TestComplexType();
-//     TestExtremeValues();
-
-//     std::cout << "\n";
-//     std::cout << "All PQHeap tests passed successfully!\n";
-// }
-
-
-// Funzione ausiliaria per verificare la proprietà di Max-Heap
-// Controlla se ogni nodo genitore è maggiore o uguale ai suoi figli
 template <typename Data>
-bool VerifyHeapProperty(const PQHeap<Data>& heap) {
-    for (unsigned long i = 0; i < heap.Size() / 2; ++i) {
-        unsigned long left = 2 * i + 1;  // Indice del figlio sinistro
-        unsigned long right = 2 * i + 2; // Indice del figlio destro
-        if (left < heap.Size() && heap[left] > heap[i]) return false;  // Verifica il figlio sinistro
-        if (right < heap.Size() && heap[right] > heap[i]) return false; // Verifica il figlio destro
-        // Perché: assicura che la proprietà del max-heap sia rispettata
+Data FindMax(const lasd::Vector<Data>& vec) {
+    if (vec.Size() == 0) {
+        throw std::length_error("Vector is empty");
     }
-    return true;
+    Data max_val = vec[0];
+    for (unsigned long i = 1; i < vec.Size(); ++i) {
+        if (vec[i] > max_val) {
+            max_val = vec[i];
+        }
+    }
+    return max_val;
 }
 
-// Funzione ausiliaria per confrontare i contenuti di un PQHeap con un Vector ordinato
-// Ordina un vettore in ordine decrescente e verifica se gli elementi estratti dall'heap corrispondono
-template <typename Data>
-bool CompareHeapWithSortedVector(const PQHeap<Data>& heap, const Vector<Data>& vec) {
-    std::vector<Data> sortedVec(vec.Size());
-    for (unsigned long i = 0; i < vec.Size(); ++i) {
-        sortedVec[i] = vec[i]; // Copia gli elementi del Vector
-    }
-    std::sort(sortedVec.begin(), sortedVec.end(), std::greater<Data>()); // Ordina in ordine decrescente
-    PQHeap<Data> tempHeap = heap; // Crea una copia temporanea dell'heap
-    for (unsigned long i = 0; i < sortedVec.size(); ++i) {
-        if (tempHeap.Size() == 0 || sortedVec[i] != tempHeap.Tip()) return false; // Confronta l'elemento massimo
-        tempHeap.RemoveTip(); // Rimuove l'elemento massimo
-    }
-    return tempHeap.Size() == 0; // Verifica che l'heap sia vuoto
-    // Perché: controlla che l'heap produca gli elementi nell'ordine corretto
-}
-
-// Test per Insert
-// Verifica il comportamento dell'inserimento in vari scenari
 template <typename Data>
 void TestInsert() {
-    std::cout << "Running TestInsert...\n";
+    std::cout << "\n";
+    std::cout << "---------------Running TestInsert---------------\n";
+    std::cout << "\n";
 
-    // Caso 1: Inserimento in heap vuoto
-    PQHeap<Data> heap;
-    heap.Insert(Data{42});
-    assert(heap.Size() == 1);
-    assert(heap.IsHeap());
-    assert(heap.Tip() == Data{42});
-    // Perché: testa l'inserimento base e la proprietà dell'heap
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
-    // Caso 2: Inserimenti multipli
-    Vector<Data> vec(5);
-    vec[0] = Data{10};
-    vec[1] = Data{50};
-    vec[2] = Data{20};
-    vec[3] = Data{30};
-    vec[4] = Data{40};
-    heap = PQHeap<Data>(vec);
-    heap.Insert(Data{100});
-    assert(heap.Size() == 6);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    assert(heap.Tip() == Data{100});
-    // Perché: verifica che l'heap mantenga la proprietà dopo più inserimenti
+        // Caso 1: Inserimento in heap vuoto
+        lasd::PQHeap<Data> heap;
+        Data value1 = static_cast<Data>(dist(gen));
+        heap.Insert(value1);
+        assert(heap.Size() == 1);
+        assert(heap.IsHeap());
+        assert(heap.Tip() == value1);
 
-    // Caso 3: Inserimento con move
-    Data value = Data{200};
-    heap.Insert(std::move(value));
-    assert(heap.Size() == 7);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    assert(heap.Tip() == Data{200});
-    // Perché: testa l'inserimento con spostamento per efficienza
+        // Caso 2: Inserimenti multipli
+        lasd::Vector<Data> vec(5);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        lasd::Vector<Data> copyVec(vec); // Copia per confronto
+        heap = lasd::PQHeap<Data>(vec);
+        Data new_val = static_cast<Data>(dist(gen));
+        heap.Insert(new_val);
+        assert(heap.Size() == 6);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
+        lasd::Vector<Data> tempVec(vec.Size() + 1); // Creiamo un vettore temporaneo per il confronto
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            tempVec[i] = vec[i];
+        }
+        tempVec[vec.Size()] = new_val;
+        assert(heap.Tip() == FindMax(tempVec));
 
-    // Caso 4: Stress test con inserimenti
-    PQHeap<Data> stressHeap;
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < 1000; ++i) {
-        stressHeap.Insert(static_cast<Data>(dist(gen)));
+        // Caso 3: Inserimento con move
+        Data value_move = static_cast<Data>(dist(gen));
+        heap.Insert(std::move(value_move));
+        assert(heap.Size() == 7);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
+        lasd::Vector<Data> tempVec2(tempVec.Size() + 1);
+        for (unsigned long i = 0; i < tempVec.Size(); ++i) {
+            tempVec2[i] = tempVec[i];
+        }
+        tempVec2[tempVec.Size()] = value_move;
+        assert(heap.Tip() == FindMax(tempVec2));
+
+        // Caso 4: Stress test con inserimenti
+        lasd::PQHeap<Data> stressHeap;
+        for (unsigned long i = 0; i < 1000; ++i) {
+            stressHeap.Insert(static_cast<Data>(dist(gen)));
+        }
+        assert(stressHeap.Size() == 1000);
+        assert(stressHeap.IsHeap());
+        assert(VerifyHeapProperty(stressHeap));
+
+        std::cout << "Passed test #" << testNum << " for TestInsert\n";
     }
-    assert(stressHeap.Size() == 1000);
-    assert(stressHeap.IsHeap());
-    assert(VerifyHeapProperty(stressHeap));
-    // Perché: simula un uso intensivo per verificare robustezza
-
     std::cout << "TestInsert passed!\n";
 }
 
-// Test per Tip, RemoveTip e TipNRemove
-// Verifica le operazioni di accesso e rimozione dell'elemento massimo
 template <typename Data>
 void TestTipOperations() {
-    std::cout << "Running TestTipOperations...\n";
+    std::cout << "\n";
+    std::cout << "---------------Running TestTipOperations---------------\n";
+    std::cout << "\n";
 
-    // Caso 1: Heap vuoto
-    PQHeap<Data> emptyHeap;
-    try {
-        emptyHeap.Tip();
-        assert(false);
-    } catch (const std::length_error& e) {
-        assert(std::string(e.what()) == "Priority queue is empty");
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
+
+        // Caso 1: Heap vuoto
+        lasd::PQHeap<Data> emptyHeap;
+        try {
+            emptyHeap.Tip();
+            assert(false);
+        } catch (const std::length_error& e) {
+            assert(std::string(e.what()) == "Priority queue is empty");
+        }
+        try {
+            emptyHeap.RemoveTip();
+            assert(false);
+        } catch (const std::length_error& e) {
+            assert(std::string(e.what()) == "Priority queue is empty");
+        }
+        try {
+            emptyHeap.TipNRemove();
+            assert(false);
+        } catch (const std::length_error& e) {
+            assert(std::string(e.what()) == "Priority queue is empty");
+        }
+
+        // Caso 2: Heap con un solo elemento
+        lasd::Vector<Data> singleVec(1);
+        singleVec[0] = static_cast<Data>(dist(gen));
+        lasd::PQHeap<Data> singleHeap(singleVec);
+        assert(singleHeap.Tip() == singleVec[0]);
+        Data tip = singleHeap.TipNRemove();
+        assert(tip == singleVec[0]);
+        assert(singleHeap.Size() == 0);
+        assert(singleHeap.IsHeap());
+
+        // Caso 3: Heap con più elementi
+        lasd::PQHeap<Data> heap;
+        lasd::Vector<Data> vec(5);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        heap = lasd::PQHeap<Data>(vec);
+        assert(heap.Tip() == FindMax(vec));
+        heap.RemoveTip();
+        assert(heap.Size() == 4);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
+        heap.TipNRemove(); // Rimosso l'assegnazione a tip2
+        assert(heap.Size() == 3);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
+
+        std::cout << "Passed test #" << testNum << " for TestTipOperations\n";
     }
-    try {
-        emptyHeap.RemoveTip();
-        assert(false);
-    } catch (const std::length_error& e) {
-        assert(std::string(e.what()) == "Priority queue is empty");
-    }
-    try {
-        emptyHeap.TipNRemove();
-        assert(false);
-    } catch (const std::length_error& e) {
-        assert(std::string(e.what()) == "Priority queue is empty");
-    }
-    // Perché: verifica che le operazioni su heap vuoto lancino eccezioni corrette
-
-    // Caso 2: Heap con un solo elemento
-    Vector<Data> singleVec(1);
-    singleVec[0] = Data{42};
-    PQHeap<Data> singleHeap(singleVec);
-    assert(singleHeap.Tip() == Data{42});
-    Data tip = singleHeap.TipNRemove();
-    assert(tip == Data{42});
-    assert(singleHeap.Size() == 0);
-    assert(singleHeap.IsHeap());
-    // Perché: testa il comportamento con un solo elemento
-
-    // Caso 3: Heap con più elementi
-    Vector<Data> vec(5);
-    vec[0] = Data{10};
-    vec[1] = Data{50};
-    vec[2] = Data{20};
-    vec[3] = Data{30};
-    vec[4] = Data{40};
-    PQHeap<Data> heap(vec);
-    assert(heap.Tip() == Data{50});
-    heap.RemoveTip();
-    assert(heap.Size() == 4);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    tip = heap.TipNRemove();
-    assert(heap.Size() == 3);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    // Perché: verifica rimozione e accesso in un heap più complesso
-
     std::cout << "TestTipOperations passed!\n";
 }
 
-// Test per Change
-// Verifica la modifica della priorità di elementi nell'heap
 template <typename Data>
 void TestChange() {
-    std::cout << "Running TestChange...\n";
+    std::cout << "\n";
+    std::cout << "---------------Running TestChange---------------\n";
+    std::cout << "\n";
 
-    // Caso 1: Cambio su heap con più elementi
-    Vector<Data> vec(5);
-    vec[0] = Data{10};
-    vec[1] = Data{50};
-    vec[2] = Data{20};
-    vec[3] = Data{30};
-    vec[4] = Data{40};
-    PQHeap<Data> heap(vec);
-    heap.Change(2, Data{100});
-    assert(heap.Size() == 5);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    assert(heap.Tip() == Data{100});
-    // Perché: testa la modifica di un elemento e il riallineamento dell'heap
+    const int numTests = 30;
+    for (int testNum = 1; testNum <= numTests; ++testNum) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(-1000, 1000);
 
-    // Caso 2: Cambio con move
-    Data newVal = Data{200};
-    heap.Change(0, std::move(newVal));
-    assert(heap.Size() == 5);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    assert(heap.Tip() == Data{200});
-    // Perché: verifica la modifica con spostamento per efficienza
+        // Caso 1: Cambio su heap con più elementi
+        lasd::Vector<Data> vec(5);
+        for (unsigned long i = 0; i < vec.Size(); ++i) {
+            vec[i] = static_cast<Data>(dist(gen));
+        }
+        lasd::PQHeap<Data> heap(vec);
+        Data new_val1 = static_cast<Data>(dist(gen));
+        heap.Change(2, new_val1);
+        assert(heap.Size() == 5);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
 
-    // Caso 3: Cambio su indice non valido
-    heap.Change(1000, Data{500});
-    assert(heap.Size() == 5);
-    assert(heap.IsHeap());
-    assert(VerifyHeapProperty(heap));
-    assert(heap.Tip() == Data{200});
-    // Perché: assicura che un indice non valido non alteri l'heap
+        // Caso 2: Cambio con move
+        Data new_val2 = static_cast<Data>(dist(gen));
+        heap.Change(0, std::move(new_val2));
+        assert(heap.Size() == 5);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
 
-    // Caso 4: Stress test con cambi
-    PQHeap<Data> stressHeap;
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (unsigned long i = 0; i < 100; ++i) {
-        stressHeap.Insert(static_cast<Data>(dist(gen)));
+        // Caso 3: Cambio su indice non valido
+        heap.Change(1000, static_cast<Data>(dist(gen)));
+        assert(heap.Size() == 5);
+        assert(heap.IsHeap());
+        assert(VerifyHeapProperty(heap));
+
+        // Caso 4: Stress test con cambi
+        lasd::PQHeap<Data> stressHeap;
+        for (unsigned long i = 0; i < 100; ++i) {
+            stressHeap.Insert(static_cast<Data>(dist(gen)));
+        }
+        for (unsigned long i = 0; i < 100; ++i) {
+            stressHeap.Change(i % stressHeap.Size(), static_cast<Data>(dist(gen)));
+        }
+        assert(stressHeap.Size() == 100);
+        assert(stressHeap.IsHeap());
+        assert(VerifyHeapProperty(stressHeap));
+
+        std::cout << "Passed test #" << testNum << " for TestChange\n";
     }
-    for (unsigned long i = 0; i < 100; ++i) {
-        stressHeap.Change(i % stressHeap.Size(), static_cast<Data>(dist(gen)));
-    }
-    assert(stressHeap.Size() == 100);
-    assert(stressHeap.IsHeap());
-    assert(VerifyHeapProperty(stressHeap));
-    // Perché: testa la robustezza con molteplici modifiche casuali
-
     std::cout << "TestChange passed!\n";
 }
 
-// Test per Resize
-// Verifica il comportamento della funzione di ridimensionamento
-template <typename Data>
-void TestResize() {
-    std::cout << "Running TestResize...\n";
-
-    // Caso 1: Ridimensionamento su heap vuoto
-    PQHeap<Data> heap;
-    heap.Resize(10); // Ridimensiona a capacità 10
-    assert(heap.Size() == 0); // La dimensione logica resta 0
-    assert(heap.IsHeap()); // L'heap vuoto è sempre valido
-    // Perché: verifica che il ridimensionamento non alteri un heap vuoto
-
-    // Caso 2: Ridimensionamento con elementi e inserimenti successivi
-    Vector<Data> vec(5);
-    vec[0] = Data{10};
-    vec[1] = Data{50};
-    vec[2] = Data{20};
-    vec[3] = Data{30};
-    vec[4] = Data{40};
-    PQHeap<Data> heapWithData(vec);
-    heapWithData.Resize(10); // Ridimensiona a capacità 10
-    assert(heapWithData.Size() == 5); // La dimensione logica non cambia
-    assert(heapWithData.IsHeap()); // Verifica la proprietà dell'heap
-    assert(VerifyHeapProperty(heapWithData));
-    heapWithData.Insert(Data{100}); // Inserisce un nuovo elemento
-    assert(heapWithData.Size() == 6);
-    assert(heapWithData.IsHeap());
-    assert(heapWithData.Tip() == Data{100});
-    // Perché: testa che il ridimensionamento permetta inserimenti senza problemi
-
-    // Caso 3: Ridimensionamento a capacità minore
-    PQHeap<Data> heapForShrink(vec);
-    heapForShrink.Resize(2); // Tenta di ridimensionare a capacità minore
-    assert(heapForShrink.Size() == 5); // La dimensione logica non deve cambiare
-    assert(heapForShrink.IsHeap()); // La proprietà dell'heap deve essere mantenuta
-    assert(VerifyHeapProperty(heapForShrink));
-    assert(heapForShrink.Tip() == Data{50});
-    // Perché: verifica che un ridimensionamento a capacità minore non corrompa l'heap
-
-    // Caso 4: Stress test con ridimensionamenti e inserimenti
-    PQHeap<Data> stressHeap;
-    std::mt19937 gen(42);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    stressHeap.Resize(1000); // Ridimensiona a capacità 1000
-    for (unsigned long i = 0; i < 500; ++i) {
-        stressHeap.Insert(static_cast<Data>(dist(gen))); // Inserisce 500 elementi
-    }
-    assert(stressHeap.Size() == 500);
-    assert(stressHeap.IsHeap());
-    assert(VerifyHeapProperty(stressHeap));
-    stressHeap.Resize(600); // Ridimensiona a capacità 600
-    assert(stressHeap.Size() == 500); // La dimensione logica resta invariata
-    assert(stressHeap.IsHeap());
-    assert(VerifyHeapProperty(stressHeap));
-    // Perché: simula ridimensionamenti e inserimenti intensivi per testare la robustezza
-
-    std::cout << "TestResize passed!\n";
-}
 
 // Funzione principale che richiama tutti i test
-// Esegue una suite completa di test per PQHeap con vari tipi di dati
 void TestPqHeap() {
     std::cout << "\n";
     std::cout << "Starting all PQHeap tests...\n";
+    std::cout << "\n";
+
+    std::cout << "\n";
+    std::cout << "-----------------------Testing PqHeap with int types-----------------------\n";
     std::cout << "\n";
 
     TestConstructorTraversableContainer<int>();
@@ -7546,13 +14176,17 @@ void TestPqHeap() {
     TestCopyAssignment<int>();
     TestMoveAssignment<int>();
     TestEmptyAndClear<int>();
+
     TestDestructor<int>();
     TestInsert<int>();
     TestTipOperations<int>();
     TestChange<int>();
-    TestResize<int>(); // Aggiunto test per Resize
+
     TestHeapify<int>();
 
+    std::cout << "\n";
+    std::cout << "-----------------------Testing PqHeap with double types-----------------------\n";
+    std::cout << "\n";
     TestConstructorTraversableContainer<double>();
     TestConstructorMappableContainer<double>();
     TestCopyConstructor<double>();
@@ -7560,16 +14194,48 @@ void TestPqHeap() {
     TestCopyAssignment<double>();
     TestMoveAssignment<double>();
     TestEmptyAndClear<double>();
+
     TestDestructor<double>();
     TestInsert<double>();
     TestTipOperations<double>();
     TestChange<double>();
-    TestResize<double>(); // Aggiunto test per Resize
+    
     TestHeapify<double>();
 
+    std::cout << "\n";
+    std::cout << "-----------------------Testing PqHeap with float types-----------------------\n";
+    std::cout << "\n";
+
+    TestConstructorTraversableContainer<float>();
+    TestConstructorMappableContainer<float>();
+    TestCopyConstructor<float>();
+    TestMoveConstructor<float>();
+    TestCopyAssignment<float>();
+    TestMoveAssignment<float>();
+    TestEmptyAndClear<float>();
+
+    TestDestructor<float>();
+    TestInsert<float>();
+    TestTipOperations<float>();
+    TestChange<float>();
+    
+    TestHeapify<float>();
+
+
+    std::cout << "\n";
+    std::cout << "-----------------------Testing PqHeap with complex types-----------------------\n";
+    std::cout << "\n";
     TestComplexType();
+
+
+    std::cout << "\n";
+    std::cout << "-----------------------Testing PqHeap with extremevalues types-----------------------\n";
+    std::cout << "\n";
     TestExtremeValues();
 
     std::cout << "\n";
     std::cout << "All PQHeap tests passed successfully!\n";
 }
+
+
+

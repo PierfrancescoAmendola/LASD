@@ -34,8 +34,8 @@ protected:
    using Container::size;
    //Vector<Data> vec;
    Data *elements = nullptr;
-   unsigned long capacity = 0;
-   unsigned long head = 0;
+  unsigned long capacity = 0;
+  unsigned long head = 0;
 
    unsigned long CircularIndex(unsigned long i) const noexcept;
 
@@ -153,14 +153,12 @@ public:
   // Specific member function (inherited from ClearableContainer)
 
   // type Clear() specifiers; // Override ClearableContainer member
-   void Clear() override;
-
-   void Resize(unsigned long) override;
-
+     void Clear() override;
 protected:
 
   // Auxiliary functions, if necessary!
 
+  void Resize(unsigned long) override;
 
    //BinarySearch
    //Ricerca binaria per trovare la posizione di un elemento in un vettore ordinato.

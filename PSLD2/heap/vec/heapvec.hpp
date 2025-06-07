@@ -21,7 +21,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class HeapVec : virtual public Heap<Data>, public SortableVector<Data> {
+class HeapVec : virtual public Heap<Data>, protected SortableVector<Data> {
   // Must extend Heap<Data>,
   // Could extend Vector<Data>
 
@@ -101,7 +101,12 @@ public:
 
   // type Sort(argument) specifiers; // Override SortableLinearContainer member
   void Sort() noexcept override; 
+
+  //Uso using per ereditare i metodi di Vector<Data>, ciò è dovuto al fatto che SortableVector<Data> è stato messo protected
   using Vector<Data>::Clear;
+  using Vector<Data>::Front;
+  using Vector<Data>::Back;
+  using Vector<Data>::operator[];
 
 protected:
 

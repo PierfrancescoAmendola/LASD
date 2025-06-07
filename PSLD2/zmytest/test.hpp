@@ -24,6 +24,8 @@ void testSetVec();
 void testHeapVec();
 void TestHeapVec();
 void TestPqHeap();
+
+void TestGaetano();
 /* ************************************************************************** */
 
 #endif

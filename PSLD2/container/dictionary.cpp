@@ -50,13 +50,15 @@ inline bool DictionaryContainer<Data>::RemoveAll(const TraversableContainer<Data
     return rimozioneTutto;
 }
 
-//Funzione InsertSome che inserisci qualche elemento di un TraversableContainer
+//Funzione InsertSome che inserisce qualche elemento di un TraversableContainer
+// Deve restituire true se almeno UN elemento è stato inserito, false altrimenti
+// (quindi va inizializzato a false e messo a true se almeno un Insert ha successo)
 template <typename Data>
 inline bool DictionaryContainer<Data>::InsertSome(const TraversableContainer<Data> & container)
 {
     bool qualcheInserimento = false;
     container.Traverse([this, &qualcheInserimento] (const Data& value) {
-        if (!Insert(value))
+        if (Insert(value))
         {
             qualcheInserimento = true;
         }
@@ -68,9 +70,9 @@ inline bool DictionaryContainer<Data>::InsertSome(const TraversableContainer<Dat
 template <typename Data>
 inline bool DictionaryContainer<Data>::InsertSome(MappableContainer<Data>&& container)
 {
-    bool qualcheInserimento = false ;
+    bool qualcheInserimento = false;
     container.Map([this, &qualcheInserimento] (Data value) {
-        if (!Insert(value))
+        if (Insert(value))
         {
             qualcheInserimento = true;
         }
@@ -85,7 +87,7 @@ inline bool DictionaryContainer<Data>::RemoveSome(const TraversableContainer<Dat
     bool qualcheRimozione = false;
     container.Traverse([this, &qualcheRimozione](const Data& value)
     {
-        if (!Remove(value))
+        if (Remove(value))
         {
             qualcheRimozione = true;
         }

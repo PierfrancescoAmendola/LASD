@@ -52,6 +52,7 @@ int main()
     std::cout << "8)Test n°8 HeapVec" << std::endl;
     std::cout << "9)Test n°9 HeapVec invasivo " << std::endl;
     std::cout << "10)Test n°10 PqHeap invasivo" << std::endl;
+    std::cout << "11)Test n°11 TestGaetano" << std::endl;
 
     std::cout << "0)Exit" << std::endl;
 
@@ -71,12 +72,14 @@ int main()
       testSetVec();
     if (scelta == 7)
       testSetLst();
-    if (scelta == 8)
-      testHeapVec();
+   // if (scelta == 8)
+      //testHeapVec();
     if (scelta == 9)
       TestHeapVec();
     if (scelta == 10)
       TestPqHeap();
+    if (scelta == 11)
+      TestGaetano();
 
       
 

@@ -100,9 +100,11 @@ public:
   void Change(unsigned long, Data&&) override; // Override PQ member (Change priority at index)
 
   void Clear() noexcept override;
-  void Resize(unsigned long newCapacity) override;
 
 protected:
+
+  void Resize(unsigned long newCapacity) override;
+
 
   // Auxiliary functions, if necessary!
   // type HeapifyUp(argument) specifiers; // Riorganizza l'heap verso l'alto
