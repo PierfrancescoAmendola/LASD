@@ -33,7 +33,7 @@ int main()
     std::cout << "" << std::endl;
 
     std::cout << "" << std::endl;
-    std::cout << "Test prima parte:" << std::endl;
+    std::cout << "----------------- Test prima parte: -----------------" << std::endl;
     std::cout << "" << std::endl;
 
     std::cout << "1)Test n°1 SimpleTest del Professore " << std::endl;
@@ -45,14 +45,12 @@ int main()
     std::cout << "7)Test n°7 SetList" << std::endl;
 
     std::cout << "" << std::endl;
-    std::cout << "Test seconda parte:" << std::endl;
+    std::cout << "----------------- Test seconda parte: -----------------" << std::endl;
     std::cout << "" << std::endl;
 
 
-    std::cout << "8)Test n°8 HeapVec" << std::endl;
-    std::cout << "9)Test n°9 HeapVec invasivo " << std::endl;
-    std::cout << "10)Test n°10 PqHeap invasivo" << std::endl;
-    std::cout << "11)Test n°11 TestGaetano" << std::endl;
+    std::cout << "8)Test n°8 HeapVec invasivo " << std::endl;
+    std::cout << "9)Test n°9 PqHeap invasivo" << std::endl;
 
     std::cout << "0)Exit" << std::endl;
 
@@ -72,14 +70,11 @@ int main()
       testSetVec();
     if (scelta == 7)
       testSetLst();
-   // if (scelta == 8)
-      //testHeapVec();
-    if (scelta == 9)
+    if (scelta == 8)
       TestHeapVec();
-    if (scelta == 10)
+    if (scelta == 9)
       TestPqHeap();
-    if (scelta == 11)
-      TestGaetano();
+    
 
       
 
