@@ -36,6 +36,13 @@ HeapVec<Data>::HeapVec(HeapVec<Data>&& heap) noexcept : SortableVector<Data>(std
 
 /* ************************************************************************ */
 
+// // Destructor
+// // Distruttore: non è necessario implementarlo esplicitamente, il distruttore di Vector<Data> gestisce tutto
+// template <typename Data>
+// HeapVec<Data>::~HeapVec() {
+//     // Il distruttore di Vector<Data> viene chiamato automaticamente
+// }
+
 /* ************************************************************************ */
 
 // Copy assignment
