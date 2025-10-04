@@ -3,8 +3,7 @@
 Questo repository contiene il codice sorgente per esercitazioni e implementazioni di strutture dati e algoritmi, organizzato in due versioni principali (`PSLD1` e `PSLD2`) e raccolte di test. Il progetto è pensato come supporto didattico per lo studio e la pratica delle strutture dati in C++.
 
 Autore
-- Pierfrancesco Amendola (assunto dal nome del repository/owner). Se l'autore è diverso, aggiorna questa sezione.
-
+- Pierfrancesco Amendola 
 Panoramica
 - Il progetto include implementazioni di astrazioni e strutture dati comuni: container generici, liste, vettori, insiemi, heap e code di priorità.
 - Sono presenti due directory principali (`PSLD1` e `PSLD2`) che rappresentano probabilmente due versioni/iterazioni dell'esercitazione o dell'esame.
